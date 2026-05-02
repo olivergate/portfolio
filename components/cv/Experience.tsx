@@ -1,3 +1,4 @@
+import { BulletMarker } from "@/components/cv/BulletMarker";
 import { SectionHeader } from "@/components/cv/SectionHeader";
 import type { CV, CVRole } from "@/lib/schemas";
 
@@ -16,10 +17,6 @@ const MONTH_NAMES = [
   "Dec",
 ];
 
-function formatRange(start: string, end: string): string {
-  return `${formatMonth(start)} – ${formatMonth(end)}`;
-}
-
 function formatMonth(value: string): string {
   const [yearStr, monthStr] = value.split("-");
   if (!yearStr) return value;
@@ -29,10 +26,15 @@ function formatMonth(value: string): string {
   return monthName ? `${monthName} ${yearStr}` : value;
 }
 
+function formatRange(start: string, end: string): string {
+  return `${formatMonth(start)} – ${formatMonth(end)}`;
+}
+
 function Role({ role, isFirst }: { role: CVRole; isFirst: boolean }) {
   return (
     <article
       id={`role-${role.id}`}
+      data-reveal
       style={{
         marginTop: isFirst ? 0 : "var(--gap-block)",
         paddingTop: isFirst ? 0 : "var(--gap-block)",
@@ -55,6 +57,7 @@ function Role({ role, isFirst }: { role: CVRole; isFirst: boolean }) {
             fontSize: "var(--size-h3)",
             fontWeight: "var(--weight-h3)",
             letterSpacing: "-0.005em",
+            textTransform: "var(--case-h3)",
             color: "var(--fg)",
             margin: 0,
             lineHeight: 1.2,
@@ -86,12 +89,14 @@ function Role({ role, isFirst }: { role: CVRole; isFirst: boolean }) {
           maxWidth: "72ch",
           marginBottom: "var(--gap-item)",
           textWrap: "pretty",
+          fontStyle: "var(--blurb-style, normal)",
         }}
       >
         {role.summary}
       </p>
 
       <ul
+        data-bullets
         style={{
           listStyle: "none",
           margin: 0,
@@ -101,10 +106,12 @@ function Role({ role, isFirst }: { role: CVRole; isFirst: boolean }) {
           gap: "var(--gap-item)",
         }}
       >
-        {role.bullets.map((bullet) => (
+        {role.bullets.map((bullet, idx) => (
           <li
             key={bullet.id}
             id={`bullet-${bullet.id}`}
+            className="bullet-row"
+            data-idx={idx}
             style={{
               fontSize: "var(--size-body)",
               lineHeight: "var(--line)",
@@ -115,18 +122,7 @@ function Role({ role, isFirst }: { role: CVRole; isFirst: boolean }) {
               maxWidth: "72ch",
             }}
           >
-            <span
-              aria-hidden="true"
-              style={{
-                position: "absolute",
-                left: 0,
-                top: "calc(var(--line) * 0.5em)",
-                transform: "translateY(-50%)",
-                width: "0.55rem",
-                height: "1px",
-                background: "var(--fg)",
-              }}
-            />
+            <BulletMarker />
             {bullet.text}
           </li>
         ))}
@@ -166,6 +162,7 @@ export function Experience({ roles, overview }: Props) {
       <section id="overview" style={{ marginTop: "var(--gap-section)" }}>
         <SectionHeader number="02" title="Experience overview" />
         <p
+          data-reveal
           style={{
             fontSize: "var(--size-body)",
             lineHeight: "var(--line)",

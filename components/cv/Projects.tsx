@@ -10,18 +10,21 @@ export function Projects({ projects }: Props) {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
+          gridTemplateColumns: "repeat(var(--proj-cols, 1), minmax(0, 1fr))",
           gap: "var(--gap-block)",
         }}
       >
         {projects.map((project, i) => (
           <article
             key={project.id}
+            data-reveal
+            className="cv-card"
             style={{
               background: "var(--card-bg)",
-              border: "1px solid var(--card-border)",
+              border: "var(--card-border-width) solid var(--card-border)",
               borderRadius: "var(--radius)",
               padding: "var(--pad-card)",
+              boxShadow: "var(--shadow)",
               display: "flex",
               flexDirection: "column",
               gap: "0.5rem",
@@ -44,6 +47,7 @@ export function Projects({ projects }: Props) {
                 fontFamily: "var(--font-display)",
                 fontSize: "var(--size-h3)",
                 fontWeight: "var(--weight-h3)",
+                textTransform: "var(--case-h3)",
                 color: "var(--fg)",
                 margin: 0,
                 lineHeight: 1.2,

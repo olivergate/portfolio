@@ -87,6 +87,12 @@
   --radius-pill:      999px;
   --rule-weight:      1px;
   --rule-weight-bold: 2px;              /* card bottom border, header rule */
+  --card-border-width: 1px;             /* dynamically widened to 2px at brutalist polish */
+
+  /* ─── LAYOUT (slider-driven; static defaults so SSR matches Phase 1 baseline) ── */
+  --col-count:        1;                /* skills grid columns; bumped to 2 at density > 0.55 */
+  --proj-cols:        2;                /* projects grid columns; collapses to 1 at density < 0.45 */
+  --bullet-cap:       5;                /* visible bullets per role; clamps via slider density */
 
   /* ─── MOTION ────────────────────────────────────────────────────────── */
   --motion-fast:      140ms;

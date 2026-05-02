@@ -14,11 +14,19 @@ Steps:
    bun run content:validate
    bun run test
    bun run build
+   bun run lint        # second pass — see note below
    ```
 
    If any step fails, stop and surface the failure. Do not continue to the
    next step until the failure is resolved (either by fixing it or by Oliver
    explicitly waiving it).
+
+   **Why two `lint` passes:** `next build` will silently rewrite
+   `tsconfig.json` (e.g. expanding single-line arrays into multi-line) to
+   match its required defaults. Biome formatter then sees the file as dirty.
+   Run `bun run lint:fix` after `build` if the second `lint` reports
+   `tsconfig.json` formatting diffs — these are not real issues, just
+   reformat noise. CI will catch the same thing if missed.
 
 2. Once all checks pass, run `git status` and `git diff --stat` to show what
    changed.

@@ -1,3 +1,4 @@
+import { BulletMarker } from "@/components/cv/BulletMarker";
 import { SectionHeader } from "@/components/cv/SectionHeader";
 import type { CV } from "@/lib/schemas";
 
@@ -34,6 +35,7 @@ export function Education({ education }: Props) {
       {education.map((entry) => (
         <article key={entry.id} style={{ marginBottom: "var(--gap-block)" }}>
           <div
+            data-reveal
             style={{
               display: "flex",
               flexWrap: "wrap",
@@ -48,6 +50,7 @@ export function Education({ education }: Props) {
                 fontFamily: "var(--font-display)",
                 fontSize: "var(--size-h3)",
                 fontWeight: "var(--weight-h3)",
+                textTransform: "var(--case-h3)",
                 color: "var(--fg)",
                 margin: 0,
               }}
@@ -82,6 +85,7 @@ export function Education({ education }: Props) {
               <li
                 // biome-ignore lint/suspicious/noArrayIndexKey: notes are static prose, no stable id
                 key={i}
+                data-reveal
                 style={{
                   fontSize: "var(--size-body)",
                   lineHeight: "var(--line)",
@@ -91,18 +95,7 @@ export function Education({ education }: Props) {
                   maxWidth: "72ch",
                 }}
               >
-                <span
-                  aria-hidden="true"
-                  style={{
-                    position: "absolute",
-                    left: 0,
-                    top: "calc(var(--line) * 0.5em)",
-                    transform: "translateY(-50%)",
-                    width: "0.55rem",
-                    height: "1px",
-                    background: "var(--fg)",
-                  }}
-                />
+                <BulletMarker />
                 {note}
               </li>
             ))}

@@ -1,17 +1,18 @@
+import { DeckProvider } from "@/components/controls/DeckProvider";
 import { Footer } from "@/components/layout/Footer";
 import { Nav } from "@/components/layout/Nav";
 
 export default function SiteLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className="site-shell">
-      <aside className="deck-slot" aria-hidden="true">
-        {/* Phase 1: slider deck mounts here. Empty in Phase 0. */}
-      </aside>
-      <div>
-        <Nav />
-        {children}
-        <Footer />
+    <DeckProvider>
+      <div className="site-shell">
+        <aside className="deck-slot" aria-label="Style controls" />
+        <div className="site-content">
+          <Nav />
+          {children}
+          <Footer />
+        </div>
       </div>
-    </div>
+    </DeckProvider>
   );
 }

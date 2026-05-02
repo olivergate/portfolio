@@ -1,3 +1,4 @@
+import { BulletMarker } from "@/components/cv/BulletMarker";
 import { SectionHeader } from "@/components/cv/SectionHeader";
 import type { CV } from "@/lib/schemas";
 
@@ -21,13 +22,14 @@ function buildBlocks(skills: CV["skills"]): SkillBlock[] {
 function Block({ block }: { block: SkillBlock }) {
   return (
     <div
+      data-reveal
       style={{
         paddingTop: "var(--gap-item)",
         paddingBottom: "var(--gap-item)",
         borderTop: "var(--rule-weight) solid var(--card-border)",
       }}
     >
-      <h4
+      <h3
         style={{
           fontFamily: "var(--font-mono)",
           fontSize: "var(--size-meta)",
@@ -40,7 +42,7 @@ function Block({ block }: { block: SkillBlock }) {
         }}
       >
         {block.title}
-      </h4>
+      </h3>
       {block.asList ? (
         <ul
           style={{
@@ -64,18 +66,7 @@ function Block({ block }: { block: SkillBlock }) {
                 position: "relative",
               }}
             >
-              <span
-                aria-hidden="true"
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  top: "calc(var(--line) * 0.5em)",
-                  transform: "translateY(-50%)",
-                  width: "0.5rem",
-                  height: "1px",
-                  background: "var(--fg)",
-                }}
-              />
+              <BulletMarker size="sm" />
               {item}
             </li>
           ))}
@@ -85,24 +76,39 @@ function Block({ block }: { block: SkillBlock }) {
           style={{
             display: "flex",
             flexWrap: "wrap",
-            gap: "0.4rem 0.6rem",
+            gap: "var(--skill-gap, 0.4rem 0.6rem)",
             alignItems: "baseline",
           }}
         >
-          {block.items.map((item) => (
+          {block.items.map((item, i) => (
             <span
               key={item}
+              className="skill-chip"
               style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "var(--size-meta)",
-                padding: "0.3rem 0.55rem",
-                border: "1px solid var(--card-border)",
+                fontFamily: "var(--skill-font, var(--font-mono))",
+                fontSize: "var(--skill-size, var(--size-meta))",
+                padding: "var(--skill-pad, 0.3rem 0.55rem)",
+                border: "var(--skill-border, 1px solid var(--card-border))",
                 borderRadius: "var(--radius-chip)",
                 color: "var(--fg)",
-                letterSpacing: "0.04em",
+                background: "var(--chip-bg, transparent)",
+                textTransform: "var(--skill-case, none)",
+                letterSpacing: "var(--skill-tracking, 0.04em)",
               }}
             >
               {item}
+              {i < block.items.length - 1 ? (
+                <span
+                  aria-hidden="true"
+                  style={{
+                    display: "var(--skill-sep-display, none)",
+                    marginLeft: "0.5rem",
+                    color: "var(--muted)",
+                  }}
+                >
+                  ·
+                </span>
+              ) : null}
             </span>
           ))}
         </div>
@@ -121,7 +127,7 @@ export function Skills({ skills }: Props) {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
+          gridTemplateColumns: "repeat(var(--col-count, 1), minmax(0, 1fr))",
           gap: "var(--gap-block) clamp(2rem, 4vw, 3.5rem)",
         }}
       >

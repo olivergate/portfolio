@@ -36,3 +36,8 @@ next-env.d.ts
 # Playwright MCP review artifacts (screenshots, snapshots, console logs)
 /.playwright-mcp/
 /live-*.png
+
+# Playwright e2e artifacts
+/tests/e2e/screenshots/
+/test-results/
+/playwright-report/

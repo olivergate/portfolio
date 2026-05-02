@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Script from "next/script";
+import { BOOTSTRAP_SCRIPT } from "@/lib/bootstrap-script";
 import { fontVariables } from "@/lib/fonts";
 import "@/styles/globals.css";
 
@@ -15,7 +17,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={fontVariables}>
-      <body>{children}</body>
+      <body>
+        <Script id="style-bootstrap" strategy="beforeInteractive">
+          {BOOTSTRAP_SCRIPT}
+        </Script>
+        {children}
+      </body>
     </html>
   );
 }

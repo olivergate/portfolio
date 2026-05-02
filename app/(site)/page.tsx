@@ -10,7 +10,7 @@ import { getCV } from "@/lib/content";
 export default function HomePage() {
   const cv = getCV();
   return (
-    <main>
+    <main className="cv-surface">
       <Header header={cv.header} />
       <About about={cv.about} />
       <Experience overview={cv.experienceOverview} roles={cv.roles} />

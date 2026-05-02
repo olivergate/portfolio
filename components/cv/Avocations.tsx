@@ -20,10 +20,13 @@ export function Avocations({ avocations }: Props) {
         {avocations.map((item) => (
           <li
             key={item}
+            data-reveal
             style={{
               fontFamily: "var(--font-display)",
               fontSize: "var(--size-h3)",
               fontWeight: "var(--weight-h3)",
+              textTransform: "var(--case-h3)",
+              fontStyle: "var(--avocation-style, normal)",
               color: "var(--fg)",
               padding: "0.4rem 0.9rem",
               border: "var(--rule-weight) solid var(--rule)",

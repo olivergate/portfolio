@@ -19,12 +19,15 @@ export function About({ about }: Props) {
           <p
             // biome-ignore lint/suspicious/noArrayIndexKey: paragraphs are static, ordered prose
             key={i}
+            data-reveal
             style={{
               fontSize: "var(--size-body)",
               lineHeight: "var(--line)",
               color: "var(--fg)",
               textWrap: "pretty",
               margin: 0,
+              fontStyle: i === 0 ? "var(--lede-style, normal)" : "normal",
+              fontWeight: i === 0 ? "var(--lede-weight, 400)" : "var(--weight-body)",
             }}
           >
             {paragraph}

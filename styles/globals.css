@@ -11,6 +11,10 @@
   --font-display: var(--font-display-next), Georgia, serif;
   --font-body: var(--font-body-next), system-ui, sans-serif;
   --font-mono: var(--font-mono-next), ui-monospace, monospace;
+  /* Phase 1 fall-back for the brutalist display family. We don't load
+     Space Grotesk (would mean a fourth Google Font for one slider position);
+     Inter is a reasonable fallback at brutalist max. */
+  --font-grotesk: var(--font-body-next), "Inter", sans-serif;
 }
 
 @theme inline {
@@ -58,28 +62,30 @@
   font-size: var(--size-h2);
   font-weight: var(--weight-h2);
   letter-spacing: var(--tracking-h2);
+  text-transform: var(--case-h2);
   line-height: var(--line-tight);
   color: var(--fg);
   margin: 0;
   text-wrap: balance;
 }
 
-/* Site shell layout — asymmetric 2-column grid.
-   Left column (380px max) reserved for the Phase 1 slider deck.
-   Collapses to single column < 1024px. */
+/* ─── Site shell ─────────────────────────────────────────────────────────── */
+
 .site-shell {
   display: grid;
-  grid-template-columns: minmax(0, 380px) minmax(0, 1fr);
-  gap: clamp(2rem, 5vw, 4rem);
-  padding: clamp(1.25rem, 3vw, 2.5rem) clamp(1rem, 3vw, 2.5rem);
-  max-width: 1400px;
+  grid-template-columns: minmax(320px, 380px) minmax(0, 1fr);
+  gap: clamp(1.5rem, 3vw, 3rem);
+  padding: clamp(1rem, 2.5vw, 2rem) clamp(1rem, 3vw, 2.5rem);
+  max-width: 1480px;
   margin: 0 auto;
+  align-items: start;
 }
 
 .site-shell > .deck-slot {
   position: sticky;
-  top: clamp(1.25rem, 3vw, 2.5rem);
+  top: clamp(1rem, 2.5vw, 2rem);
   align-self: start;
+  z-index: 30;
   height: fit-content;
 }
 
@@ -88,17 +94,588 @@
     grid-template-columns: minmax(0, 1fr);
   }
   .site-shell > .deck-slot {
-    position: static;
+    display: none;
   }
 }
 
-/* Print: hide the deck slot. */
 @media print {
   .site-shell {
     grid-template-columns: minmax(0, 1fr);
     padding: 0;
+    max-width: none;
   }
-  .site-shell > .deck-slot {
-    display: none;
+  .site-shell > .deck-slot,
+  .mobile-sheet-root,
+  .share-toast {
+    display: none !important;
+  }
+}
+
+/* Smoothly transition the CV body when slider tokens change.
+   Limited to compositor-friendly properties (color, background, border-color,
+   box-shadow, border-radius, transform). Layout-triggering properties
+   (font-size, font-weight, padding, margin, gap) are intentionally NOT
+   transitioned — animating them on every text node causes a slider scrub
+   to thrash the style/layout/paint pipeline across the whole CV tree. */
+.cv-surface,
+.cv-surface * {
+  transition:
+    background-color var(--motion-base) cubic-bezier(.2,.7,.2,1),
+    border-color var(--motion-base) cubic-bezier(.2,.7,.2,1),
+    color var(--motion-base) cubic-bezier(.2,.7,.2,1),
+    box-shadow var(--motion-base) cubic-bezier(.2,.7,.2,1),
+    border-radius var(--motion-base) cubic-bezier(.2,.7,.2,1),
+    transform var(--motion-base) cubic-bezier(.2,.7,.2,1);
+}
+
+/* ─── Bullet caps + reveal-on-scroll ─────────────────────────────────────── */
+
+.bullet-row {
+  overflow: hidden;
+  transition:
+    max-height var(--motion-base) cubic-bezier(.2,.7,.2,1),
+    opacity var(--motion-base) cubic-bezier(.2,.7,.2,1),
+    margin var(--motion-base) cubic-bezier(.2,.7,.2,1),
+    padding var(--motion-base) cubic-bezier(.2,.7,.2,1);
+  max-height: 16rem;
+  opacity: 1;
+}
+.bullet-row.is-hidden {
+  max-height: 0 !important;
+  opacity: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  pointer-events: none;
+}
+
+.cv-surface[data-kinetic="true"] [data-reveal] {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity var(--motion-slow) cubic-bezier(.2,.7,.2,1),
+    transform var(--motion-slow) cubic-bezier(.2,.7,.2,1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.cv-surface[data-kinetic="true"] [data-reveal].is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+.cv-surface[data-kinetic="true"] [data-reveal-display] {
+  letter-spacing: 0.05em;
+  opacity: 0;
+  transition:
+    opacity var(--motion-slow) cubic-bezier(.2,.7,.2,1),
+    letter-spacing var(--motion-slow) cubic-bezier(.2,.7,.2,1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.cv-surface[data-kinetic="true"] [data-reveal-display].is-revealed {
+  opacity: 1;
+  letter-spacing: var(--tracking-h1);
+}
+
+.cv-card { transform: translateY(0); }
+.cv-surface[data-kinetic="true"] .cv-card:hover {
+  transform: translateY(-3px);
+}
+
+.cv-surface[data-brutalist="true"] {
+  --shadow: none;
+}
+
+/* ─── Slider deck (hardcoded dark — DOES NOT retheme) ────────────────────── */
+
+.deck-shell {
+  font-family: var(--font-grotesk);
+  color: #f4f1ea;
+  background: radial-gradient(120% 60% at 50% 0%, #2a2825 0%, #16140f 70%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.6),
+    0 30px 80px -20px rgba(0, 0, 0, 0.65);
+  border-radius: 14px;
+  overflow: hidden;
+  /* Insulate from the .cv-surface * transitions */
+  transition: none;
+}
+.deck-shell *,
+.deck-shell *::before,
+.deck-shell *::after {
+  transition: none;
+}
+
+.deck-mono {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum" 1;
+}
+.deck-grotesk {
+  font-family: var(--font-grotesk);
+}
+
+.deck-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 38px;
+  padding: 0 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0));
+}
+.deck-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+.deck-led {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #d4ff3a;
+  box-shadow: 0 0 8px #d4ff3a, 0 0 0 1px rgba(0, 0, 0, 0.4);
+}
+.deck-header-label {
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(244, 241, 234, 0.55);
+}
+.deck-header-state {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 9px;
+}
+.deck-state-label {
+  letter-spacing: 0.18em;
+  color: rgba(244, 241, 234, 0.4);
+}
+.deck-state-value {
+  letter-spacing: 0.12em;
+  color: #d4ff3a;
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(212, 255, 58, 0.33);
+}
+
+.deck-sliders {
+  padding: 1.25rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.deck-actions {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+.deck-button-reset,
+.deck-button-share {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border-radius: 3px;
+  padding: 0.65rem 0.5rem;
+  cursor: pointer;
+  transition: background 180ms, color 180ms, box-shadow 180ms;
+}
+.deck-button-reset {
+  flex: 1;
+  color: rgba(244, 241, 234, 0.7);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.deck-button-reset:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f4f1ea;
+}
+.deck-button-share {
+  flex: 2;
+  color: #0a0a0a;
+  background: #d4ff3a;
+  border: 1px solid #d4ff3a;
+  font-weight: 700;
+  padding: 0.65rem 0.75rem;
+  box-shadow: 0 0 16px rgba(212, 255, 58, 0.25);
+}
+.deck-button-share:hover {
+  background: #e3ff6b;
+  box-shadow: 0 0 24px rgba(212, 255, 58, 0.4);
+}
+
+.deck-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.25);
+}
+.deck-footer-left,
+.deck-footer-right {
+  font-size: 8px;
+  letter-spacing: 0.28em;
+  color: rgba(244, 241, 234, 0.3);
+  text-transform: uppercase;
+}
+.deck-footer-right {
+  letter-spacing: 0.18em;
+}
+
+/* ─── Slider row ────────────────────────────────────────────────────────── */
+
+.slider-row {
+  transition: opacity 220ms cubic-bezier(.2,.7,.2,1), filter 220ms;
+}
+.deck-active .slider-row:not(.is-active) {
+  opacity: 0.32;
+  filter: blur(0.2px);
+}
+.deck-active .slider-row.is-active {
+  opacity: 1;
+}
+
+.slider-row-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.slider-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: #f4f1ea;
+  margin: 0;
+  text-transform: uppercase;
+  min-width: 0;
+}
+.slider-readout {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+  min-width: 78px;
+  justify-content: flex-end;
+}
+.slider-readout-label {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(244, 241, 234, 0.4);
+}
+.slider-readout-value {
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  min-width: 3.2ch;
+  display: inline-block;
+  text-align: right;
+}
+
+.slider-track-wrap {
+  position: relative;
+  height: 64px;
+}
+
+.slider-baseline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 22px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.slider-fill {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 22px;
+  border-radius: 2px 0 0 2px;
+  pointer-events: none;
+}
+
+.slider-ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.slider-tick {
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  width: 1px;
+  transform: translateX(-0.5px);
+  transition: background 120ms;
+}
+.slider-tick.is-major {
+  top: 6px;
+  bottom: 6px;
+}
+
+.slider-tick-labels {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% + 16px);
+  pointer-events: none;
+}
+.slider-tick-label {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  color: rgba(244, 241, 234, 0.35);
+}
+
+.raw-range {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: grab;
+  width: 100%;
+  height: 64px;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+.raw-range:active { cursor: grabbing; }
+.raw-range::-webkit-slider-runnable-track { height: 64px; background: transparent; }
+.raw-range::-moz-range-track { height: 64px; background: transparent; }
+.raw-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 36px;
+  height: 64px;
+  background: transparent;
+  border: none;
+  cursor: grab;
+}
+.raw-range::-moz-range-thumb {
+  width: 36px;
+  height: 64px;
+  background: transparent;
+  border: none;
+  cursor: grab;
+}
+.raw-range:focus-visible { outline: none; }
+.raw-range:focus-visible + .slider-thumb .slider-thumb-bar {
+  box-shadow:
+    0 0 0 2px #f4f1ea,
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.slider-thumb {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: 18px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 2;
+}
+.slider-thumb-glow {
+  position: absolute;
+  inset: -8px;
+  border-radius: 4px;
+  background: transparent;
+  transition: background 220ms;
+}
+.slider-track-wrap:hover .slider-thumb-glow,
+.slider-thumb-glow[data-active="true"] {
+  background: var(--thumb-glow-active, transparent);
+}
+.slider-thumb-bar {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #f8f5ed 0%, #d6d1c5 50%, #b8b3a6 100%);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-radius: 2px;
+}
+.slider-thumb-notch {
+  position: absolute;
+  left: 50%;
+  top: 20%;
+  bottom: 20%;
+  width: 2px;
+  background: #1c1b18;
+  transform: translateX(-50%);
+  border-radius: 1px;
+}
+.slider-thumb-accent {
+  position: absolute;
+  top: -2px;
+  left: -1px;
+  right: -1px;
+  height: 4px;
+  border-radius: 1px;
+}
+.slider-thumb-bar-tick {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  top: 50%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.slider-extremes {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.25rem;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(244, 241, 234, 0.42);
+}
+
+/* ─── Toast ──────────────────────────────────────────────────────────────── */
+
+@keyframes toast-in {
+  from { transform: translate(-50%, 18px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+.share-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  transform: translateX(-50%);
+  animation: toast-in 220ms cubic-bezier(.2,.7,.2,1);
+  /* Stays under the mobile sheet panel (z 80) so the toast doesn't visually
+     cover an open sheet on small viewports. Above the FAB (60) and backdrop (70). */
+  z-index: 75;
+  pointer-events: none;
+  display: block;
+}
+.share-toast-pill {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #0a0a0a;
+  background: #d4ff3a;
+  padding: 0.7rem 1.1rem;
+  border-radius: 999px;
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.4);
+  font-weight: 700;
+}
+
+/* ─── Mobile bottom sheet ────────────────────────────────────────────────── */
+
+.mobile-sheet-root {
+  display: none;
+}
+@media (max-width: 1024px) {
+  .mobile-sheet-root {
+    display: block;
+  }
+}
+
+.mobile-sheet-fab {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 60;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #0a0a0a;
+  background: #d4ff3a;
+  border: 1px solid #d4ff3a;
+  border-radius: 999px;
+  padding: 0.75rem 1.1rem;
+  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+.mobile-sheet-fab:hover {
+  background: #e3ff6b;
+}
+
+.mobile-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 70;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.mobile-sheet-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 80;
+  background: #16140f;
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+  transform: translateY(100%);
+  transition: transform 280ms cubic-bezier(.2,.7,.2,1);
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 0 1rem 1rem;
+}
+.mobile-sheet-panel.is-open {
+  transform: translateY(0);
+}
+
+.mobile-sheet-handle {
+  display: block;
+  width: 56px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(244, 241, 234, 0.35);
+  margin: 0.6rem auto 1rem;
+  border: 0;
+  cursor: pointer;
+}
+
+.mobile-sheet-body {
+  padding: 0;
+}
+
+@media print {
+  .mobile-sheet-root,
+  .mobile-sheet-fab,
+  .mobile-sheet-panel,
+  .mobile-sheet-backdrop {
+    display: none !important;
+  }
+  /* Force every reveal-on-scroll item visible. Without this, kinetic mode
+     hides most of the CV content behind opacity:0 transforms because print
+     has no scroll viewport to trip the IntersectionObserver. */
+  .cv-surface[data-kinetic="true"] [data-reveal],
+  .cv-surface[data-kinetic="true"] [data-reveal-display] {
+    opacity: 1 !important;
+    transform: none !important;
+    letter-spacing: var(--tracking-h1) !important;
+  }
+  /* Also re-show any bullets the density slider hid. The printed CV is the
+     full record; print is not the place to apply a UI density cap. */
+  .bullet-row.is-hidden {
+    max-height: none !important;
+    opacity: 1 !important;
+    margin: revert !important;
+    padding: revert !important;
+    pointer-events: auto !important;
   }
 }

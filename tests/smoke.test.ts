@@ -18,12 +18,12 @@ describe("content/cv.json", () => {
 });
 
 describe("style-tokens", () => {
-  it("has DEFAULT_STYLE with all four axes at 0.5", async () => {
+  it("DEFAULT_STYLE matches the design's resting state", async () => {
     const { DEFAULT_STYLE } = await import("@/lib/style-tokens");
     expect(DEFAULT_STYLE).toEqual({
       density: 0.5,
-      polish: 0.5,
-      hierarchy: 0.5,
+      polish: 0.55,
+      hierarchy: 0.55,
       motion: 0.5,
     });
   });

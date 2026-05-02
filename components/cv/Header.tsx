@@ -13,6 +13,7 @@ export function Header({ header }: Props) {
       }}
     >
       <div
+        data-reveal
         style={{
           fontFamily: "var(--font-mono)",
           fontSize: "var(--size-meta)",
@@ -33,6 +34,7 @@ export function Header({ header }: Props) {
       </div>
 
       <h1
+        data-reveal-display
         style={{
           fontFamily: "var(--font-display)",
           fontWeight: "var(--weight-display)",
@@ -40,6 +42,7 @@ export function Header({ header }: Props) {
           letterSpacing: "var(--tracking-h1)",
           lineHeight: 0.95,
           color: "var(--fg)",
+          textTransform: "var(--case-display)",
           textWrap: "balance",
           margin: 0,
         }}
@@ -48,6 +51,7 @@ export function Header({ header }: Props) {
       </h1>
 
       <p
+        data-reveal
         style={{
           marginTop: "1.25rem",
           fontFamily: "var(--font-body)",
@@ -56,12 +60,14 @@ export function Header({ header }: Props) {
           color: "var(--fg)",
           maxWidth: "60ch",
           textWrap: "pretty",
+          fontStyle: "var(--tagline-style, normal)",
         }}
       >
         {tagline}
       </p>
 
       <div
+        data-reveal
         style={{
           marginTop: "1.5rem",
           display: "flex",
