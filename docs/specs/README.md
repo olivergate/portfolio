@@ -6,7 +6,7 @@ session for the next phase.
 
 | Phase | Title | Page delivered | Status | Completed |
 |-------|-------|----------------|--------|-----------|
-| 0 | Foundations | site shell, `/` (CV static) | Not started | — |
+| 0 | Foundations | site shell, `/` (CV static) | Done | 2026-05-02 |
 | 1 | UX style sliders | `/` (CV interactive) | Not started | — |
 | 2 | Tone manifesto + AI infra | `/tone` | Not started | — |
 | 3 | JD adapter | `/jd` | Not started | — |
