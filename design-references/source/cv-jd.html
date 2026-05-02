@@ -1,0 +1,1148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Oliver Kaikane Gate — CV / JD Adapter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<style>
+  :root {
+    --bg: #faf7f2;
+    --bg-tint: #f3eee3;
+    --fg: #1c1915;
+    --fg-soft: #3a3530;
+    --muted: #7a746c;
+    --muted-2: #a39c91;
+    --rule: #c4b9a8;
+    --rule-soft: rgba(28,25,21,0.10);
+    --accent: #a04a26;
+    --accent-soft: #f5e8d8;
+    --hit: #2f6b3a;
+    --hit-bg: #e7f0d8;
+    --hit-bg-strong: #d8e7c0;
+    --stretch: #8a5a16;
+    --stretch-bg: #faecc7;
+    --stretch-bg-strong: #f4dca0;
+    --miss: #7a746c;
+    --miss-bg: #ece8df;
+    --card-bg: #fffdf7;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  *,*::before,*::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection { background: var(--accent-soft); color: var(--fg); }
+
+  /* Chip animations */
+  @keyframes chip-in {
+    from { opacity: 0; transform: translateY(6px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .chip-in { animation: chip-in 360ms cubic-bezier(.2,.7,.2,1) backwards; }
+  .chip { transition: background 320ms, color 320ms, border-color 320ms, box-shadow 200ms, transform 200ms; }
+  .chip:hover { transform: translateY(-1px); box-shadow: 0 6px 16px -8px rgba(28,25,21,0.25); }
+  .chip-pulse { animation: chip-pulse 1.4s ease-out 1; }
+  @keyframes chip-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(160,74,38,0.55); }
+    50%  { box-shadow: 0 0 0 14px rgba(160,74,38,0); }
+    100% { box-shadow: 0 0 0 0 rgba(160,74,38,0); }
+  }
+
+  /* Bullet pulse target */
+  .bullet-pulse {
+    animation: bullet-pulse 1.6s ease-out 1;
+    border-radius: 4px;
+  }
+  @keyframes bullet-pulse {
+    0%   { background: rgba(160,74,38,0); }
+    25%  { background: rgba(160,74,38,0.18); }
+    100% { background: rgba(160,74,38,0); }
+  }
+
+  /* Stretch slider — precision instrument feel */
+  .stretch-track {
+    position: relative;
+    height: 28px;
+    background:
+      linear-gradient(to right,
+        rgba(28,25,21,0.08) 0%,
+        rgba(28,25,21,0.04) 50%,
+        rgba(160,74,38,0.10) 100%);
+    border: 1px solid var(--rule);
+    border-radius: 0;
+  }
+  .stretch-tick {
+    position: absolute;
+    top: -6px; bottom: -6px;
+    width: 1px;
+    background: var(--fg);
+    opacity: 0.55;
+  }
+  .stretch-thumb {
+    position: absolute;
+    top: -2px; bottom: -2px;
+    width: 4px;
+    background: var(--accent);
+    box-shadow: 0 0 0 1px var(--card-bg), 0 0 0 2px var(--accent);
+    transition: left 240ms cubic-bezier(.34,1.2,.4,1);
+    transform: translateX(-50%);
+    cursor: ew-resize;
+  }
+  .stretch-thumb::before, .stretch-thumb::after {
+    content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+  }
+  .stretch-thumb::before { top: -7px; border-bottom: 6px solid var(--accent); }
+  .stretch-thumb::after  { bottom: -7px; border-top: 6px solid var(--accent); }
+
+  /* JD textarea */
+  .jd-textarea {
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--rule);
+    border-bottom-width: 2px;
+    padding: 18px 20px;
+    font-family: var(--font-body);
+    font-size: 0.96rem;
+    line-height: 1.55;
+    color: var(--fg);
+    resize: vertical;
+    min-height: 180px;
+    outline: none;
+    transition: border-color 200ms;
+  }
+  .jd-textarea:focus { border-color: var(--accent); }
+  .jd-textarea::placeholder { color: var(--muted-2); }
+
+  /* Score button */
+  .score-btn {
+    background: var(--fg);
+    color: var(--bg);
+    border: 1px solid var(--fg);
+    padding: 14px 22px;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 200ms, transform 100ms, box-shadow 200ms;
+    display: inline-flex; align-items: center; gap: 10px;
+    border-radius: 0;
+  }
+  .score-btn:hover { background: var(--accent); border-color: var(--accent); box-shadow: 0 6px 14px -8px rgba(160,74,38,0.5); }
+  .score-btn:active { transform: translateY(1px); }
+  .score-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .score-btn .arrow { font-size: 1rem; transition: transform 200ms; }
+  .score-btn:hover .arrow { transform: translateX(3px); }
+
+  /* Sample JD pills */
+  .jd-pill {
+    background: transparent;
+    border: 1px solid var(--rule);
+    padding: 7px 14px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-soft);
+    cursor: pointer;
+    border-radius: 999px;
+    transition: background 160ms, border-color 160ms, color 160ms;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .jd-pill:hover { background: var(--card-bg); border-color: var(--fg); color: var(--fg); }
+  .jd-pill.active { background: var(--fg); border-color: var(--fg); color: var(--bg); }
+
+  /* Reorder switch */
+  .switch {
+    position: relative; width: 44px; height: 24px;
+    background: var(--rule); border-radius: 999px;
+    cursor: pointer; transition: background 200ms;
+    flex-shrink: 0;
+  }
+  .switch.on { background: var(--accent); }
+  .switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 20px; height: 20px;
+    background: var(--card-bg); border-radius: 50%;
+    transition: left 240ms cubic-bezier(.34,1.2,.4,1);
+    box-shadow: 0 1px 3px rgba(28,25,21,0.2);
+  }
+  .switch.on::after { left: 22px; }
+
+  details.miss-detail summary { list-style: none; cursor: pointer; }
+  details.miss-detail summary::-webkit-details-marker { display: none; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useLayoutEffect, useMemo } = React;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "chipDensity": "comfortable",
+  "chipShape": "pill",
+  "reasoningStyle": "floating",
+  "accent": "#a04a26",
+  "showCounter": false,
+  "highlightCited": false
+}/*EDITMODE-END*/;
+
+// ─── CV CONTENT ──────────────────────────────────────────────────────────
+const CV = {
+  name: "Oliver Kaikane Gate",
+  location: "Valencia, Spain (remote)",
+  tagline: "Senior full-stack engineer (React/TypeScript, Python). 7+ years across data platforms and consumer products. Building with LLMs and going deep on agentic systems.",
+  overview: "Full-stack engineer with 7+ years shipping production systems for sustainability impact ventures and financial services. Comfortable across the stack with React and TypeScript on the frontend and Python and Node on the backend; deepest in dashboards, data platforms, and multi-tenant SaaS. Progressed from junior IC to leading a team of five, with experience running external consulting engagements end-to-end. Currently building with LLMs across multiple side projects and training in agentic systems, prompt security (OWASP AI Top 10), and agent orchestration.",
+};
+
+// Bullet IDs let the chip grid cite specific lines and the reorder rank them.
+const ROLES = [
+  {
+    id: "opensc",
+    role: "Senior Full-Stack Developer",
+    org: "OpenSC",
+    period: "July 2022 – April 2026",
+    blurb: "Sustainability impact venture co-founded by WWF and BCG, providing supply chain traceability for global brands. Standardised messy first-three-miles farm data into EPCIS, then surfaced it through dashboards used by Nespresso, Austral Fisheries, and internal teams to validate ethical sourcing claims and farmer payments.",
+    tech: "React, Next.js, TypeScript, Python, Plotly Dash, Dagster, Kuzu, Kotlin, AWS, Kubernetes, Postgres, Ethereum, Airflow.",
+    bullets: [
+      { id: "opensc-1", text: "Sole frontend engineer on the main analytics dashboard — built and maintained the entire system end-to-end. Plotly Dash for the analytical core; React and Next.js for the consumer-facing experiences." },
+      { id: "opensc-2", text: "Built the traceability and payments validation system used by Nespresso to verify coffee sourcing across Rainforest Alliance and their internal AAA premium-farmer program — including checks that base prices tracked the London robusta price index and that farmer payments matched contracted standards." },
+      { id: "opensc-3", text: "Surfaced supply chain anomalies — infiltration, exfiltration, breaches of farm productivity capacity, coffee from untraced origins — through graph-based analysis powered by Kuzu." },
+      { id: "opensc-4", text: "Worked with Austral Fisheries to validate the legal provenance of toothfish and prawn catches." },
+      { id: "opensc-5", text: "Re-architected supply chain onboarding in Dagster: replaced bespoke per-cluster orchestrations with a YAML-configured, data-contract-driven ingestion layer. Turned onboarding from a custom engineering effort per supply chain into a configuration task." },
+      { id: "opensc-6", text: "Built monitoring for data quality, ingestion accuracy and frequency across all supply chain feeds." },
+      { id: "opensc-7", text: "Earlier scope at OpenSC: an internal Android app (Kotlin), document scanning, internal tooling, API design, and orchestration in Airflow." },
+    ],
+  },
+  {
+    id: "redington",
+    role: "Associate Full-Stack Developer",
+    org: "Redington",
+    period: "February 2019 – June 2022",
+    blurb: "UK investment consultancy. Built and led the frontend on a multi-tenant research platform used by several thousand consultants across 7+ tenants to track investments and maintain observability across portfolios. Joined as a junior; promoted to leading a frontend team within two years as the company scaled from 10 engineers to 8 teams.",
+    tech: "React, TypeScript, MUI, Cypress, Jest, AWS, .NET (C#), PostgreSQL.",
+    bullets: [
+      { id: "red-1", text: "Owned frontend architectural decisions on a React and TypeScript dashboard handling sensitive multi-tenant data, where cross-tenant leakage would have been existential to the business." },
+      { id: "red-2", text: "Led a team of 5 engineers focused on frontend feature delivery; consistently the highest-performing team on UI work." },
+      { id: "red-3", text: "Co-led architectural decisions across the frontend codebase and implemented a significant portion of the dynamically configurable dashboard system." },
+      { id: "red-4", text: "Drove introduction of E2E testing with Cypress, improving deployment confidence and reducing release-time human error." },
+      { id: "red-5", text: "Beyond engineering: chaired the Bristol charity committee. Ran a pro-bono engagement with LifeCycle — a charity left dry by multiple high-cost agencies — running a one-day discovery workshop and orchestrating the migration of their database and supporting infrastructure onto Airtable. Successfully pushed for an expansion of company-sponsored charity days and helped colleagues find opportunities." },
+    ],
+  },
+];
+
+// ─── JD SAMPLES ──────────────────────────────────────────────────────────
+// Status thresholds: each chip carries baseStatus + optional shifts at strict/generous.
+// When stretchLevel is "strict" → use strictStatus (or baseStatus); "generous" → useGenerousStatus.
+// status precedence: hit > stretch > miss
+
+const SAMPLE_JDS = {
+  sustainability: {
+    label: "Tech Lead, Sustainability Tech",
+    text: `Tech Lead — Sustainability Tech (Remote, Europe)
+
+We are an early-stage climate-tech company building tooling for supply chain transparency in agricultural commodities. We work with global FMCG brands and producer cooperatives to verify ethical sourcing and trace product provenance from farm to shelf.
+
+We're hiring our first technical lead to take ownership of our data platform and customer-facing analytics. You'll set technical direction, mentor a small engineering team, and partner closely with our domain experts and customer-success leads.
+
+Responsibilities:
+• Lead architecture for our data ingestion and analytics stack — Python, Postgres, modern orchestration (Dagster or similar)
+• Own the customer-facing analytics dashboard end-to-end — React/TypeScript
+• Establish data quality and observability practices across messy, real-world supply chain data
+• Mentor a team of 3–6 engineers; set hiring bar
+• Work directly with non-technical stakeholders to translate domain requirements into systems
+• Set us up for AI/ML feature work over the next 12 months
+
+Requirements:
+• 6+ years building production software, full-stack preferred
+• Deep React + TypeScript experience
+• Strong Python; bonus for Dagster, Airflow, dbt, or similar
+• Comfortable making architectural decisions in ambiguity
+• Experience with multi-tenant SaaS or B2B platforms
+• Track record mentoring or leading engineers
+• Background in supply chain, sustainability, agritech, or fintech a plus
+• Prior experience with graph databases or anomaly-detection systems welcome
+• Familiarity with on-chain provenance / Ethereum a nice-to-have
+• EU-based or willing to overlap with European hours
+
+What we offer competitive equity, mission-led work, async culture, four-day discovery sprints quarterly.`,
+    chips: [
+      // Hits anchored by specific bullets (citing IDs).
+      { id: "r1", text: "6+ years full-stack production experience", baseStatus: "hit",
+        cite: ["opensc-1", "red-1"],
+        reasoning: "7+ years across OpenSC and Redington, both production systems with paying customers." },
+      { id: "r2", text: "React + TypeScript, dashboard-grade", baseStatus: "hit",
+        cite: ["opensc-1", "red-1", "red-3"],
+        reasoning: "Sole frontend on the OpenSC analytics dashboard; owned architectural decisions on the Redington multi-tenant TS dashboard." },
+      { id: "r3", text: "Python, Dagster orchestration", baseStatus: "hit",
+        cite: ["opensc-5"],
+        reasoning: "Re-architected OpenSC supply-chain onboarding in Dagster with a YAML-configured, data-contract-driven layer." },
+      { id: "r4", text: "Messy real-world supply chain data", baseStatus: "hit",
+        cite: ["opensc-2", "opensc-3"],
+        reasoning: "Built EPCIS standardisation for first-three-miles farm data; surfaced infiltration / exfiltration / untraced origins for Nespresso and Austral Fisheries." },
+      { id: "r5", text: "Data quality + observability practices", baseStatus: "hit",
+        cite: ["opensc-6"],
+        reasoning: "Built monitoring for data quality, ingestion accuracy, and frequency across all supply chain feeds." },
+      { id: "r6", text: "Multi-tenant SaaS / B2B platform", baseStatus: "hit",
+        cite: ["red-1"],
+        reasoning: "Owned architecture on a multi-tenant research platform used by thousands of consultants across 7+ tenants — cross-tenant leakage would have been existential." },
+      { id: "r7", text: "Graph DB / anomaly detection", baseStatus: "hit",
+        cite: ["opensc-3"],
+        reasoning: "Surfaced supply chain anomalies through graph-based analysis powered by Kuzu — direct match." },
+      { id: "r8", text: "Mentor / lead a small engineering team", baseStatus: "stretch",
+        strictStatus: "stretch", generousStatus: "hit",
+        cite: ["red-2"],
+        reasoning: "Led a 5-person frontend team at Redington and ran the LifeCycle pro-bono engagement end-to-end. Title was team-lead rather than tech-lead, so generosity matters here." },
+      { id: "r9", text: "Set technical direction in ambiguity", baseStatus: "stretch",
+        strictStatus: "stretch", generousStatus: "hit",
+        cite: ["opensc-1", "red-3"],
+        reasoning: "Sole frontend engineer at OpenSC + co-led architectural decisions at Redington both involved direction-setting under ambiguity, but neither role formally carried 'set technical direction for the company'." },
+      { id: "r10", text: "On-chain provenance / Ethereum", baseStatus: "stretch",
+        strictStatus: "miss", generousStatus: "hit",
+        cite: ["opensc-1"],
+        reasoning: "OpenSC stack listed Ethereum, but the CV doesn't claim primary ownership of the on-chain layer. Strict reading would call this a miss; generous would credit production exposure." },
+      { id: "r11", text: "Set hiring bar / formal hiring authority", baseStatus: "miss",
+        strictStatus: "miss", generousStatus: "stretch",
+        cite: [],
+        reasoning: "Team-lead at Redington implies interview involvement, but the CV doesn't claim ownership of a hiring bar. Honest gap; generous reading credits adjacent experience.",
+        gapFraming: "I led a 5-engineer team but the CV doesn't speak to setting a hiring bar — happy to talk about the interviews I ran and how I'd approach this if it's load-bearing for the role." },
+      { id: "r12", text: "Direct work with non-technical stakeholders", baseStatus: "stretch",
+        strictStatus: "stretch", generousStatus: "hit",
+        cite: ["opensc-2", "red-5"],
+        reasoning: "Nespresso/Austral integration work and the LifeCycle charity engagement were stakeholder-heavy, but the CV foregrounds the engineering rather than the relationship-management." },
+    ],
+    summary: { hits: 7, stretches: 4, misses: 1 },
+  },
+
+  ai: {
+    label: "Senior Full-Stack at AI startup",
+    text: `Senior Full-Stack Engineer — Series A AI Startup
+
+We're building agent-native developer tooling. Looking for a senior full-stack engineer who's been hands-on with LLMs in production and has strong opinions about agent harness design, prompt security, and what good orchestration looks like.
+
+You'll work directly with the founders. Small team, fast cycles, async, equity-heavy.
+
+Requirements:
+• 5+ years full-stack (React/TS + Python or Node)
+• Hands-on production LLM work — agents, tool-use, RAG, evals
+• Familiar with prompt injection, jailbreaks, OWASP AI Top 10
+• Comfortable with ambiguity; can hold the whole stack in your head
+• Bonus: open-source agent harnesses, custom Claude/Cursor setups, MCP servers
+• Bonus: developer-tool background`,
+    chips: [
+      { id: "a1", text: "5+ years full-stack", baseStatus: "hit", cite: ["opensc-1", "red-1"], reasoning: "7+ years across OpenSC + Redington." },
+      { id: "a2", text: "React/TS + Python", baseStatus: "hit", cite: ["opensc-1"], reasoning: "Primary stack across both roles." },
+      { id: "a3", text: "OWASP AI Top 10, prompt security", baseStatus: "stretch", strictStatus: "stretch", generousStatus: "hit", cite: [], reasoning: "Currently training in OWASP AI Top 10 and prompt injection; not yet shipped to production." },
+      { id: "a4", text: "Production LLM work — agents, tool-use", baseStatus: "stretch", strictStatus: "miss", generousStatus: "hit", cite: [], reasoning: "Three side projects in flight using LLMs; no production agent system shipped at scale." },
+      { id: "a5", text: "Custom Claude Code setup", baseStatus: "hit", cite: [], reasoning: "Custom Claude CLI setup with agents, skills, and telemetry — exactly the bonus call-out." },
+      { id: "a6", text: "Evals", baseStatus: "miss", strictStatus: "miss", generousStatus: "stretch", cite: [], reasoning: "No production evals on the CV.", gapFraming: "Reading + experimenting with eval frameworks; nothing production-grade yet. Honest gap." },
+      { id: "a7", text: "Agent harness design", baseStatus: "stretch", cite: [], reasoning: "Currently going deep on agentic systems and harness design as a stated focus area; not yet shipped." },
+      { id: "a8", text: "MCP servers", baseStatus: "miss", strictStatus: "miss", generousStatus: "stretch", cite: [], reasoning: "Not on the CV.", gapFraming: "Have read the spec, haven't built one. Could spike a working server in a day or two if it'd help the conversation." },
+      { id: "a9", text: "Hold whole stack in your head", baseStatus: "hit", cite: ["opensc-1"], reasoning: "Sole frontend on OpenSC analytics; full E2E ownership." },
+      { id: "a10", text: "Developer tooling background", baseStatus: "miss", strictStatus: "miss", generousStatus: "stretch", cite: [], reasoning: "No dev-tool company on the CV.", gapFraming: "Personal Claude Code setup is dev-tooling-shaped, but I haven't been paid to build dev tools." },
+    ],
+    summary: { hits: 4, stretches: 3, misses: 3 },
+  },
+
+  fintech: {
+    label: "Frontend Lead, Fintech",
+    text: `Frontend Lead — Fintech (London / hybrid)
+
+Established UK fintech (Series C) hiring a frontend lead to own the architecture of our customer-facing platform and lead a team of 6.
+
+Requirements:
+• 6+ years frontend, deep React + TypeScript
+• Multi-tenant or sensitive-data experience
+• Has led a frontend team
+• Strong testing culture (Cypress / Playwright)
+• Financial services background a strong plus
+• London or willing to relocate / hybrid 2 days/week`,
+    chips: [
+      { id: "f1", text: "6+ years frontend", baseStatus: "hit", cite: ["opensc-1", "red-1"], reasoning: "7+ years frontend leadership across OpenSC + Redington." },
+      { id: "f2", text: "Deep React + TypeScript", baseStatus: "hit", cite: ["red-1", "opensc-1"], reasoning: "Primary stack on every role." },
+      { id: "f3", text: "Multi-tenant / sensitive data", baseStatus: "hit", cite: ["red-1"], reasoning: "Owned architecture on Redington's multi-tenant platform with cross-tenant-existential risk." },
+      { id: "f4", text: "Led a frontend team", baseStatus: "hit", cite: ["red-2"], reasoning: "Led 5-engineer frontend team at Redington — direct match." },
+      { id: "f5", text: "Cypress / E2E testing culture", baseStatus: "hit", cite: ["red-4"], reasoning: "Drove Cypress E2E adoption at Redington." },
+      { id: "f6", text: "Financial services background", baseStatus: "hit", cite: ["red-1"], reasoning: "Three years at Redington, a UK investment consultancy — direct match." },
+      { id: "f7", text: "Architecture ownership", baseStatus: "hit", cite: ["red-1", "red-3"], reasoning: "Owned + co-led architectural decisions on the Redington frontend." },
+      { id: "f8", text: "Lead a team of 6", baseStatus: "stretch", strictStatus: "stretch", generousStatus: "hit", cite: ["red-2"], reasoning: "Led 5; one short of stated 6. Stretch under strict reading." },
+      { id: "f9", text: "London / hybrid 2 days/week", baseStatus: "miss", strictStatus: "miss", generousStatus: "stretch", cite: [], reasoning: "Currently Valencia-based, remote.", gapFraming: "Valencia-based and remote-first. Open to fly-in cadence — happy to discuss what would actually work." },
+      { id: "f10", text: "Playwright", baseStatus: "miss", strictStatus: "miss", generousStatus: "stretch", cite: [], reasoning: "Cypress on the CV, not Playwright.", gapFraming: "Cypress experience reads across; haven't shipped Playwright but would be a quick ramp." },
+    ],
+    summary: { hits: 7, stretches: 1, misses: 2 },
+  },
+};
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────
+function statusFor(chip, level) {
+  if (level === "strict")   return chip.strictStatus   || chip.baseStatus;
+  if (level === "generous") return chip.generousStatus || chip.baseStatus;
+  return chip.baseStatus;
+}
+function levelLabel(v) {
+  if (v < 0.34) return "strict";
+  if (v > 0.66) return "generous";
+  return "balanced";
+}
+function levelToValue(l) { return l === "strict" ? 0.15 : l === "generous" ? 0.85 : 0.5; }
+
+// Bullet citations indexed for reorder ranking.
+function rankBullets(role, scoredChips, level) {
+  const hitIds = new Set();
+  const stretchIds = new Set();
+  scoredChips.forEach((c) => {
+    const s = statusFor(c, level);
+    if (!c.cite) return;
+    c.cite.forEach((id) => {
+      if (s === "hit") hitIds.add(id);
+      else if (s === "stretch" && !hitIds.has(id)) stretchIds.add(id);
+    });
+  });
+  const ranked = role.bullets.map((b, originalIdx) => {
+    let rank = 2; // uncited
+    if (hitIds.has(b.id)) rank = 0;
+    else if (stretchIds.has(b.id)) rank = 1;
+    return { ...b, rank, originalIdx };
+  });
+  return ranked.sort((a, b) => a.rank - b.rank || a.originalIdx - b.originalIdx);
+}
+
+// ─── COMPONENTS ──────────────────────────────────────────────────────────
+
+function SamplePill({ active, onClick, children }) {
+  return (
+    <button className={`jd-pill ${active ? "active" : ""}`} onClick={onClick}>
+      <span style={{ fontSize: "0.6rem", opacity: 0.6 }}>◇</span>
+      {children}
+    </button>
+  );
+}
+
+function StretchSlider({ value, onChange }) {
+  const trackRef = useRef(null);
+  const [dragging, setDragging] = useState(false);
+
+  const setFromClientX = (clientX) => {
+    const r = trackRef.current.getBoundingClientRect();
+    const v = Math.max(0, Math.min(1, (clientX - r.left) / r.width));
+    onChange(v);
+  };
+
+  useEffect(() => {
+    if (!dragging) return;
+    const move = (e) => setFromClientX(e.clientX);
+    const up   = () => setDragging(false);
+    window.addEventListener("mousemove", move);
+    window.addEventListener("mouseup", up);
+    return () => {
+      window.removeEventListener("mousemove", move);
+      window.removeEventListener("mouseup", up);
+    };
+  }, [dragging]);
+
+  const label = levelLabel(value);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, minWidth: 280 }}>
+      <div style={{
+        display: "flex", justifyContent: "space-between", alignItems: "baseline",
+        fontFamily: "var(--font-mono)", fontSize: "0.68rem",
+        letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--muted)",
+      }}>
+        <span>Strict</span>
+        <span style={{ color: "var(--accent)", fontWeight: 600 }}>{label}</span>
+        <span>Generous</span>
+      </div>
+      <div
+        ref={trackRef}
+        className="stretch-track"
+        onMouseDown={(e) => { setDragging(true); setFromClientX(e.clientX); }}
+      >
+        {/* tick marks at thresholds */}
+        <div className="stretch-tick" style={{ left: "16.66%" }} />
+        <div className="stretch-tick" style={{ left: "50%" }} />
+        <div className="stretch-tick" style={{ left: "83.33%" }} />
+        {/* ticks labels */}
+        <div className="stretch-thumb" style={{ left: `${value * 100}%` }} />
+      </div>
+      <div style={{
+        display: "flex", justifyContent: "space-between",
+        fontFamily: "var(--font-mono)", fontSize: "0.62rem",
+        letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--muted-2)",
+      }}>
+        <button onClick={() => onChange(levelToValue("strict"))}
+                style={{ background: "none", border: 0, cursor: "pointer", color: "inherit", font: "inherit", letterSpacing: "inherit", textTransform: "inherit" }}>
+          ⊢ strict
+        </button>
+        <button onClick={() => onChange(levelToValue("balanced"))}
+                style={{ background: "none", border: 0, cursor: "pointer", color: "inherit", font: "inherit", letterSpacing: "inherit", textTransform: "inherit" }}>
+          ⊨ balanced
+        </button>
+        <button onClick={() => onChange(levelToValue("generous"))}
+                style={{ background: "none", border: 0, cursor: "pointer", color: "inherit", font: "inherit", letterSpacing: "inherit", textTransform: "inherit" }}>
+          ⊣ generous
+        </button>
+      </div>
+    </div>
+  );
+}
+
+const STATUS_STYLES = {
+  hit:     { fg: "var(--hit)",     bg: "var(--hit-bg)",     border: "var(--hit)",     symbol: "●", label: "Hit" },
+  stretch: { fg: "var(--stretch)", bg: "var(--stretch-bg)", border: "var(--stretch)", symbol: "◐", label: "Stretch" },
+  miss:    { fg: "var(--muted)",   bg: "var(--miss-bg)",    border: "var(--rule)",    symbol: "○", label: "Miss" },
+};
+
+function Chip({ chip, status, idx, onActivate, tweaks, onHoverChange }) {
+  const [hover, setHover] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const ref = useRef(null);
+  const s = STATUS_STYLES[status];
+  const isMiss = status === "miss";
+  const isHit  = status === "hit";
+
+  const dense = tweaks.chipDensity === "dense";
+  const padY = dense ? 8 : 12;
+  const padX = dense ? 11 : 14;
+  const radius = tweaks.chipShape === "rounded" ? 8 : tweaks.chipShape === "pill" ? 16 : 0;
+
+  const handleEnter = () => {
+    setHover(true);
+    if (tweaks.reasoningStyle === "floating" && ref.current) {
+      const r = ref.current.getBoundingClientRect();
+      onHoverChange({ chip, status, rect: { left: r.left, right: r.right, top: r.top, bottom: r.bottom, width: r.width } });
+    }
+  };
+  const handleLeave = () => {
+    setHover(false);
+    onHoverChange(null);
+  };
+
+  return (
+    <div
+      ref={ref}
+      className="chip chip-in"
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+      style={{
+        position: "relative",
+        animationDelay: `${idx * 65}ms`,
+        background: s.bg,
+        border: `1px solid ${s.border}`,
+        borderLeftWidth: 3,
+        borderRadius: radius,
+        padding: `${padY}px ${padX}px ${padY}px ${padX}px`,
+        cursor: "pointer",
+        display: "flex", flexDirection: "column", gap: dense ? 4 : 6,
+        minHeight: 0,
+      }}
+      onClick={() => {
+        if (isHit) onActivate(chip);
+        else if (isMiss) setExpanded((e) => !e);
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "baseline", gap: 8, justifyContent: "space-between" }}>
+        <span style={{
+          fontFamily: "var(--font-mono)", fontSize: "0.62rem",
+          letterSpacing: "0.22em", textTransform: "uppercase",
+          color: s.fg, fontWeight: 600,
+        }}>
+          {s.symbol} {s.label}
+        </span>
+        <span style={{
+          fontFamily: "var(--font-mono)", fontSize: "0.62rem",
+          color: "var(--muted-2)", letterSpacing: "0.1em",
+        }}>{String(idx + 1).padStart(2, "0")}</span>
+      </div>
+      <div style={{
+        fontFamily: "var(--font-display)", fontSize: "1.02rem",
+        fontWeight: 500, lineHeight: 1.25,
+        color: isMiss ? "var(--muted)" : "var(--fg)",
+        textWrap: "balance",
+      }}>
+        {chip.text}
+      </div>
+
+      {/* inline reasoning when tweak is set to inline */}
+      {hover && !expanded && tweaks.reasoningStyle === "inline" && (
+        <div style={{
+          marginTop: 6, paddingTop: 8,
+          borderTop: "1px dashed rgba(28,25,21,0.18)",
+          fontSize: "0.82rem", lineHeight: 1.5,
+          color: "var(--fg-soft)",
+          textWrap: "pretty",
+        }}>
+          <div style={{
+            fontFamily: "var(--font-mono)", fontSize: "0.58rem",
+            letterSpacing: "0.22em", textTransform: "uppercase",
+            color: "var(--muted)", marginBottom: 4,
+          }}>
+            {isHit ? "Why this is a hit" : status === "stretch" ? "Why this is a stretch" : "Honest gap"}
+          </div>
+          {chip.reasoning}
+        </div>
+      )}
+
+      {/* expanded miss framing */}
+      {expanded && isMiss && (
+        <div style={{
+          marginTop: 6, paddingTop: 10,
+          borderTop: "1px dashed var(--rule)",
+          fontStyle: "italic", color: "var(--fg-soft)",
+          fontFamily: "var(--font-display)", fontWeight: 400,
+          fontSize: "0.96rem", lineHeight: 1.45,
+          textWrap: "pretty",
+        }}>
+          “{chip.gapFraming || chip.reasoning}”
+        </div>
+      )}
+    </div>
+  );
+}
+
+function FloatingReasoning({ data }) {
+  if (!data) return null;
+  const { chip, status, rect } = data;
+  const isHit = status === "hit";
+  const isMiss = status === "miss";
+  const PANEL_W = Math.max(260, Math.min(360, rect.width * 1.1));
+  // Prefer below; flip above if no room.
+  const spaceBelow = window.innerHeight - rect.bottom;
+  const placeAbove = spaceBelow < 180 && rect.top > 200;
+  const top = placeAbove ? rect.top - 10 - 160 : rect.bottom + 8;
+  let left = rect.left + rect.width / 2 - PANEL_W / 2;
+  left = Math.max(12, Math.min(window.innerWidth - PANEL_W - 12, left));
+  return (
+    <div style={{
+      position: "fixed", left, top, width: PANEL_W,
+      background: "#1c1915", color: "#f4f1ea",
+      padding: "12px 14px",
+      fontSize: "0.84rem", lineHeight: 1.5,
+      zIndex: 1000,
+      boxShadow: "0 18px 40px -10px rgba(28,25,21,0.55)",
+      textWrap: "pretty",
+      pointerEvents: "none",
+    }}>
+      <div style={{
+        fontFamily: "var(--font-mono)", fontSize: "0.6rem",
+        letterSpacing: "0.22em", textTransform: "uppercase",
+        color: "rgba(244,241,234,0.55)", marginBottom: 6,
+      }}>
+        {isHit ? "Why this is a hit" : status === "stretch" ? "Why this is a stretch" : "Honest gap"}
+      </div>
+      {chip.reasoning}
+      {isHit && chip.cite && chip.cite.length > 0 && (
+        <div style={{ marginTop: 8, fontFamily: "var(--font-mono)", fontSize: "0.66rem", color: "#d4ff3a", letterSpacing: "0.1em" }}>
+          ↳ click to view supporting bullet
+        </div>
+      )}
+      {isMiss && (
+        <div style={{ marginTop: 8, fontFamily: "var(--font-mono)", fontSize: "0.66rem", color: "#ffb37a", letterSpacing: "0.1em" }}>
+          ↳ click to expand a candid framing
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ChipGrid({ chips, level, onActivate, tweaks, onHoverChange }) {
+  const minW = tweaks.chipDensity === "dense" ? 200 : 240;
+  return (
+    <div style={{
+      display: "grid",
+      gridTemplateColumns: `repeat(auto-fill, minmax(${minW}px, 1fr))`,
+      gap: "0.75rem",
+    }}>
+      {chips.map((chip, i) => (
+        <Chip key={chip.id} chip={chip} idx={i} status={statusFor(chip, level)} onActivate={onActivate} tweaks={tweaks} onHoverChange={onHoverChange} />
+      ))}
+    </div>
+  );
+}
+
+function SummaryLine({ chips, level }) {
+  const counts = { hit: 0, stretch: 0, miss: 0 };
+  chips.forEach((c) => { counts[statusFor(c, level)]++; });
+  const word = (n, s, p) => `${n} ${n === 1 ? s : p}`;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <h3 style={{
+        fontFamily: "var(--font-display)", fontWeight: 500,
+        fontSize: "clamp(1.6rem, 3vw, 2.2rem)",
+        lineHeight: 1.1, margin: 0, letterSpacing: "-0.015em",
+        textWrap: "balance",
+      }}>
+        Reading the JD as written, this CV lands{" "}
+        <span style={{ color: "var(--hit)" }}>{word(counts.hit, "hit", "hits")}</span>,{" "}
+        <span style={{ color: "var(--stretch)" }}>{word(counts.stretch, "stretch", "stretches")}</span>,{" "}
+        and <span style={{ color: "var(--muted)" }}>{word(counts.miss, "honest gap", "honest gaps")}</span>.
+      </h3>
+      <p style={{
+        margin: 0, fontFamily: "var(--font-mono)",
+        fontSize: "0.72rem", letterSpacing: "0.16em",
+        textTransform: "uppercase", color: "var(--muted)",
+      }}>
+        Conservative matching — when uncertain, defaults to stretch over hit.
+      </p>
+    </div>
+  );
+}
+
+// FLIP reorder for bullets within a role
+function BulletList({ role, ordered, pulseId, scoredChipIds, highlightCited }) {
+  const itemRefs = useRef({});
+  const prevPositions = useRef({});
+
+  useLayoutEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) return;
+    Object.entries(itemRefs.current).forEach(([id, el]) => {
+      if (!el) return;
+      const next = el.getBoundingClientRect();
+      const prev = prevPositions.current[id];
+      if (prev) {
+        const dy = prev.top - next.top;
+        if (Math.abs(dy) > 0.5) {
+          el.animate(
+            [
+              { transform: `translateY(${dy}px)` },
+              { transform: "translateY(0)" },
+            ],
+            { duration: 480, easing: "cubic-bezier(.2,.7,.2,1)" }
+          );
+        }
+      }
+      prevPositions.current[id] = next;
+    });
+  });
+
+  return (
+    <ul style={{
+      listStyle: "none", margin: 0, padding: 0,
+      display: "flex", flexDirection: "column", gap: "0.85rem",
+    }}>
+      {ordered.map((b) => {
+        const cited = scoredChipIds.has(b.id) && highlightCited !== false;
+        return (
+          <li
+            key={b.id}
+            ref={(el) => { itemRefs.current[b.id] = el; }}
+            data-bullet-id={b.id}
+            className={pulseId === b.id ? "bullet-pulse" : ""}
+            style={{
+              paddingLeft: "1.4rem", position: "relative",
+              maxWidth: "72ch", textWrap: "pretty",
+              padding: "0.25rem 0.4rem 0.25rem 1.4rem",
+              borderLeft: cited ? "2px solid var(--accent)" : "2px solid transparent",
+              marginLeft: cited ? "-2px" : "0",
+              transition: "border-color 320ms",
+            }}
+          >
+            <span style={{
+              position: "absolute", left: cited ? "0.2rem" : 0, top: "calc(1.6em * 0.5)",
+              width: "0.55rem", height: "1px", background: "var(--fg)",
+              transform: "translateY(-50%)",
+            }} />
+            {b.text}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function Role({ role, ordered, pulseId, scoredChipIds, highlightCited }) {
+  return (
+    <article style={{ marginTop: "2.5rem" }}>
+      <div style={{
+        display: "flex", flexWrap: "wrap", alignItems: "baseline",
+        justifyContent: "space-between", gap: "0.5rem 1.5rem", marginBottom: "0.6rem",
+      }}>
+        <h3 style={{
+          fontFamily: "var(--font-display)", fontSize: "1.25rem",
+          fontWeight: 600, color: "var(--fg)", margin: 0, lineHeight: 1.2,
+        }}>
+          {role.role}<span style={{ color: "var(--muted)", fontWeight: 400 }}> — {role.org}</span>
+        </h3>
+        <span style={{
+          fontFamily: "var(--font-mono)", fontSize: "0.78rem",
+          letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--muted)",
+          whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums",
+        }}>{role.period}</span>
+      </div>
+      <p style={{ maxWidth: "72ch", marginBottom: "1rem", textWrap: "pretty" }}>{role.blurb}</p>
+      <BulletList role={role} ordered={ordered} pulseId={pulseId} scoredChipIds={scoredChipIds} highlightCited={highlightCited} />
+      <div style={{
+        marginTop: "1rem", paddingLeft: "1.4rem",
+        fontFamily: "var(--font-mono)", fontSize: "0.78rem",
+        letterSpacing: "0.06em", color: "var(--muted)",
+      }}>
+        <span style={{ color: "var(--fg)", marginRight: "0.5rem", textTransform: "uppercase", letterSpacing: "0.2em" }}>Stack /</span>
+        {role.tech}
+      </div>
+    </article>
+  );
+}
+
+function Section({ num, title, kicker, children }) {
+  return (
+    <section style={{ marginTop: "4rem" }}>
+      <header style={{
+        display: "grid", gridTemplateColumns: "auto 1fr auto", gap: "1rem",
+        alignItems: "baseline", paddingBottom: "0.85rem",
+        borderBottom: "1px solid var(--rule)", marginBottom: "1.75rem",
+      }}>
+        <span style={{
+          fontFamily: "var(--font-mono)", fontSize: "0.78rem",
+          letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--muted)",
+        }}>{num}</span>
+        <h2 style={{
+          fontFamily: "var(--font-display)", fontSize: "clamp(1.5rem, 3vw, 2rem)",
+          fontWeight: 500, letterSpacing: "-0.01em", margin: 0, lineHeight: 1.05,
+        }}>{title}</h2>
+        {kicker && (
+          <span style={{
+            fontFamily: "var(--font-mono)", fontSize: "0.7rem",
+            letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--muted)",
+          }}>{kicker}</span>
+        )}
+      </header>
+      {children}
+    </section>
+  );
+}
+
+// ─── APP ─────────────────────────────────────────────────────────────────
+function App() {
+  const useTweaks = window.useTweaks;
+  const [fallbackTweaks, setFallbackTweaks] = useState(TWEAK_DEFAULTS);
+  const [tweaks, setTweak] = useTweaks
+    ? useTweaks(TWEAK_DEFAULTS)
+    : [fallbackTweaks, (k, v) => setFallbackTweaks((t) => ({ ...t, [k]: v }))];
+  const [hoverData, setHoverData] = useState(null);
+
+  // Apply accent live
+  useEffect(() => {
+    document.documentElement.style.setProperty('--accent', tweaks.accent || '#a04a26');
+  }, [tweaks.accent]);
+
+  const [activeKey, setActiveKey] = useState("sustainability");
+  const [jdText, setJdText] = useState(SAMPLE_JDS.sustainability.text);
+  const [scored, setScored] = useState(true); // start scored so visitors see the feature immediately
+  const [stretch, setStretch] = useState(0.5);
+  const [reorder, setReorder] = useState(false);
+  const [pulseId, setPulseId] = useState(null);
+
+  const sample = SAMPLE_JDS[activeKey];
+  const level = levelLabel(stretch);
+
+  const pickSample = (k) => {
+    setActiveKey(k);
+    setJdText(SAMPLE_JDS[k].text);
+    setScored(true); // show results for that JD
+    setStretch(0.5);
+    setReorder(false);
+  };
+
+  const handleScore = () => {
+    setScored(true);
+  };
+
+  const onActivate = (chip) => {
+    if (!chip.cite || chip.cite.length === 0) return;
+    const targetId = chip.cite[0];
+    const el = document.querySelector(`[data-bullet-id="${targetId}"]`);
+    if (el) {
+      const y = el.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: y, behavior: "smooth" });
+      setPulseId(targetId);
+      setTimeout(() => setPulseId(null), 1700);
+    }
+  };
+
+  const scoredChipIds = useMemo(() => {
+    if (!scored) return new Set();
+    const ids = new Set();
+    sample.chips.forEach((c) => {
+      const s = statusFor(c, level);
+      if (s !== "miss" && c.cite) c.cite.forEach((id) => ids.add(id));
+    });
+    return ids;
+  }, [sample, level, scored]);
+
+  const orderedByRole = useMemo(() => {
+    return ROLES.map((r) => {
+      if (!scored || !reorder) {
+        return r.bullets.map((b, i) => ({ ...b, rank: 99, originalIdx: i }));
+      }
+      return rankBullets(r, sample.chips, level);
+    });
+  }, [sample, level, reorder, scored]);
+
+  const charCount = jdText.length;
+
+  const TweaksPanel = window.TweaksPanel;
+  const TweakSection = window.TweakSection;
+  const TweakRadio = window.TweakRadio;
+  const TweakSelect = window.TweakSelect;
+  const TweakToggle = window.TweakToggle;
+  const TweakColor = window.TweakColor;
+
+  return (
+    <div style={{
+      maxWidth: 1200, margin: "0 auto",
+      padding: "clamp(1.5rem, 3vw, 2.5rem) clamp(1.25rem, 3vw, 2.5rem) 5rem",
+    }}>
+      {/* HEADER */}
+      <header style={{ paddingBottom: "1.5rem", borderBottom: "1px solid var(--rule)" }}>
+        <div style={{
+          display: "flex", flexWrap: "wrap", gap: "0.75rem 1.25rem",
+          fontFamily: "var(--font-mono)", fontSize: "0.78rem",
+          letterSpacing: "0.22em", textTransform: "uppercase",
+          color: "var(--muted)", marginBottom: "0.85rem",
+        }}>
+          <span>CV / 2026</span><span>—</span><span>{CV.location}</span>
+          <span>—</span><span>JD adapter</span>
+        </div>
+        <h1 style={{
+          fontFamily: "var(--font-display)",
+          fontSize: "clamp(2.4rem, 6vw, 4.2rem)",
+          fontWeight: 500, letterSpacing: "-0.025em", lineHeight: 0.95,
+          margin: 0, textWrap: "balance",
+        }}>{CV.name}</h1>
+        <p style={{
+          marginTop: "1.25rem", fontSize: "1.15rem", maxWidth: "60ch",
+          textWrap: "pretty",
+        }}>{CV.tagline}</p>
+      </header>
+
+      {/* JD ADAPTER */}
+      <Section num="01" title="Score this CV against a job" kicker="experimental">
+        <p style={{ maxWidth: "68ch", marginBottom: "1.5rem", textWrap: "pretty", color: "var(--fg-soft)" }}>
+          Paste a JD. The page will highlight which requirements I'd land cleanly, where I'd stretch,
+          and where I'd be honest about a gap. The slider tunes the matching threshold — if you're
+          reading conservatively, drag it left.
+        </p>
+
+        {/* Sample JD pills */}
+        <div style={{
+          display: "flex", flexWrap: "wrap", gap: "0.5rem 0.6rem", marginBottom: "0.85rem",
+          alignItems: "center",
+        }}>
+          <span style={{
+            fontFamily: "var(--font-mono)", fontSize: "0.68rem",
+            letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--muted)",
+            marginRight: "0.5rem",
+          }}>Sample JDs /</span>
+          {Object.entries(SAMPLE_JDS).map(([k, v]) => (
+            <SamplePill key={k} active={k === activeKey} onClick={() => pickSample(k)}>
+              {v.label}
+            </SamplePill>
+          ))}
+        </div>
+
+        <textarea
+          className="jd-textarea"
+          value={jdText}
+          onChange={(e) => { setJdText(e.target.value); setScored(false); }}
+          placeholder="Paste a job description here, or pick a sample above…"
+        />
+        <div style={{
+          display: "flex", justifyContent: "space-between", alignItems: "center",
+          fontFamily: "var(--font-mono)", fontSize: "0.7rem",
+          letterSpacing: "0.12em", color: "var(--muted)",
+          padding: "0.55rem 0.2rem 0",
+        }}>
+          <span>↳ private to your browser; nothing is sent anywhere</span>
+          {tweaks.showCounter && (
+            <span style={{ fontVariantNumeric: "tabular-nums" }}>
+              {charCount.toLocaleString()} <span style={{ color: "var(--muted-2)" }}>/ 10,000</span>
+            </span>
+          )}
+        </div>
+
+        {/* CTA row: score + stretch slider */}
+        <div style={{
+          display: "flex", flexWrap: "wrap", gap: "1.5rem 2rem",
+          alignItems: "flex-end", justifyContent: "space-between",
+          marginTop: "1.5rem",
+          padding: "1.25rem", background: "var(--bg-tint)",
+          border: "1px solid var(--rule-soft)",
+        }}>
+          <button className="score-btn" onClick={handleScore}>
+            Score this JD <span className="arrow">→</span>
+          </button>
+          <StretchSlider value={stretch} onChange={setStretch} />
+        </div>
+
+        {/* Score summary + chip grid */}
+        {scored && (
+          <div style={{ marginTop: "2.5rem" }}>
+            <SummaryLine chips={sample.chips} level={level} />
+            <div style={{ marginTop: "1.5rem" }}>
+              <ChipGrid chips={sample.chips} level={level} onActivate={onActivate} tweaks={tweaks} onHoverChange={setHoverData} />
+            </div>
+            <p style={{
+              marginTop: "1.25rem",
+              fontFamily: "var(--font-mono)", fontSize: "0.7rem",
+              letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--muted)",
+            }}>
+              <span style={{ color: "var(--hit)" }}>● Hit</span>
+              <span style={{ margin: "0 0.6rem", color: "var(--muted-2)" }}>·</span>
+              <span style={{ color: "var(--stretch)" }}>◐ Stretch</span>
+              <span style={{ margin: "0 0.6rem", color: "var(--muted-2)" }}>·</span>
+              <span style={{ color: "var(--muted)" }}>○ Honest gap</span>
+              <span style={{ margin: "0 0.6rem", color: "var(--muted-2)" }}>·</span>
+              <span>Hover for reasoning · click hits to jump to bullets · click gaps to expand</span>
+            </p>
+          </div>
+        )}
+      </Section>
+
+      {/* OVERVIEW */}
+      <Section num="02" title="Experience overview">
+        <p style={{ maxWidth: "72ch", textWrap: "pretty" }}>{CV.overview}</p>
+      </Section>
+
+      {/* EXPERIENCE */}
+      <Section num="03" title="Experience" kicker={scored ? `${reorder ? "reordered by relevance" : "original order"}` : ""}>
+        {/* Reorder toggle */}
+        {scored && (
+          <div style={{
+            display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.85rem 1.25rem",
+            padding: "0.85rem 1rem", background: "var(--card-bg)",
+            border: "1px solid var(--rule-soft)",
+            marginBottom: "1.5rem",
+          }}>
+            <div className={`switch ${reorder ? "on" : ""}`} onClick={() => setReorder((r) => !r)} role="switch" aria-checked={reorder} />
+            <div style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1, minWidth: 200 }}>
+              <span style={{
+                fontFamily: "var(--font-display)", fontWeight: 500, fontSize: "1rem", lineHeight: 1.2,
+              }}>
+                {reorder ? "Reordered by relevance to this JD" : "Original order"}
+              </span>
+              <span style={{
+                fontFamily: "var(--font-mono)", fontSize: "0.66rem",
+                letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--muted)",
+              }}>
+                {reorder
+                  ? "Hits float up · cited bullets marked"
+                  : "The CV as written — the truth, in date order"}
+              </span>
+            </div>
+            {reorder && (
+              <button
+                onClick={() => setReorder(false)}
+                style={{
+                  background: "transparent", border: "1px solid var(--rule)",
+                  padding: "8px 14px", cursor: "pointer",
+                  fontFamily: "var(--font-mono)", fontSize: "0.7rem",
+                  letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--fg)",
+                }}
+              >
+                Restore original
+              </button>
+            )}
+          </div>
+        )}
+
+        {ROLES.map((r, i) => (
+          <Role
+            key={r.id}
+            role={r}
+            ordered={orderedByRole[i]}
+            pulseId={pulseId}
+            scoredChipIds={scoredChipIds}
+            highlightCited={tweaks.highlightCited}
+          />
+        ))}
+      </Section>
+
+      <footer style={{
+        marginTop: "5rem", paddingTop: "2rem",
+        borderTop: "1px solid var(--rule)",
+        display: "flex", flexWrap: "wrap", gap: "0.75rem 2rem",
+        justifyContent: "space-between",
+        fontFamily: "var(--font-mono)", fontSize: "0.78rem",
+        letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--muted)",
+      }}>
+        <span>© {CV.name}</span>
+        <span>JD adapter — exploratory</span>
+        <span>{level} matching</span>
+      </footer>
+
+      <FloatingReasoning data={tweaks.reasoningStyle === "floating" ? hoverData : null} />
+
+      {TweaksPanel && (
+        <TweaksPanel title="Tweaks">
+          <TweakSection title="Chip grid">
+            <TweakRadio
+              label="Density"
+              value={tweaks.chipDensity}
+              onChange={(v) => setTweak("chipDensity", v)}
+              options={[{value: "comfortable", label: "Comfortable"}, {value: "dense", label: "Dense"}]}
+            />
+            <TweakRadio
+              label="Shape"
+              value={tweaks.chipShape}
+              onChange={(v) => setTweak("chipShape", v)}
+              options={[{value: "square", label: "Square"}, {value: "rounded", label: "Rounded"}, {value: "pill", label: "Pill"}]}
+            />
+            <TweakSelect
+              label="Reasoning placement"
+              value={tweaks.reasoningStyle}
+              onChange={(v) => setTweak("reasoningStyle", v)}
+              options={[
+                {value: "floating", label: "Floating tooltip (above other content)"},
+                {value: "inline", label: "Inline within chip"},
+              ]}
+            />
+          </TweakSection>
+          <TweakSection title="Surface">
+            <TweakColor
+              label="Accent hue"
+              value={tweaks.accent}
+              onChange={(v) => setTweak("accent", v)}
+            />
+            <TweakToggle
+              label="Highlight cited bullets"
+              value={tweaks.highlightCited}
+              onChange={(v) => setTweak("highlightCited", v)}
+            />
+            <TweakToggle
+              label="Show character counter"
+              value={tweaks.showCounter}
+              onChange={(v) => setTweak("showCounter", v)}
+            />
+          </TweakSection>
+        </TweaksPanel>
+      )}
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+</script>
+</body>
+</html>

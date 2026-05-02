@@ -1,0 +1,766 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Oliver Kaikane Gate — CV / Tone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  :root {
+    --bg: #faf7f2;
+    --fg: #1c1915;
+    --muted: #7a746c;
+    --rule: #c4b9a8;
+    --accent: #a04a26;
+    --card-bg: #fffdf7;
+    --card-border: rgba(28,25,21,0.10);
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --line: 1.6;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); }
+  body {
+    font-family: var(--font-body);
+    line-height: var(--line);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .crossfade {
+    transition: opacity 320ms cubic-bezier(.2,.7,.2,1);
+  }
+  .crossfade.is-out { opacity: 0; }
+  @media (prefers-reduced-motion: reduce) {
+    .crossfade { transition: none !important; }
+    .badge-anim { animation: none !important; }
+  }
+  @keyframes badge-in {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .badge-anim { animation: badge-in 320ms cubic-bezier(.2,.7,.2,1); }
+  .ticker-track { animation: ticker 32s linear infinite; }
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.18); border-radius: 8px; }
+
+  /* Tone toggle */
+  .tone-toggle {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 6px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(28,25,21,0.04), inset 0 1px 0 rgba(255,255,255,0.6);
+  }
+  .tone-thumb {
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    border-radius: 8px;
+    transition: left 280ms cubic-bezier(.34,1.2,.4,1), background 280ms, box-shadow 280ms;
+    z-index: 0;
+  }
+  .tone-btn {
+    position: relative;
+    z-index: 1;
+    border: 0;
+    background: transparent;
+    padding: 12px 14px 10px;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    border-radius: 8px;
+    transition: color 280ms;
+  }
+  .tone-btn .tone-name {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.08rem;
+    letter-spacing: -0.005em;
+    color: var(--fg);
+    line-height: 1.1;
+  }
+  .tone-btn .tone-desc {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .tone-btn[aria-selected="true"] .tone-name { color: var(--thumb-fg, var(--fg)); }
+  .tone-btn[aria-selected="true"] .tone-desc { color: var(--thumb-fg-muted, var(--muted)); }
+
+  .pessimistic-thumb { background: #2b2622; box-shadow: 0 4px 14px -4px rgba(43,38,34,0.35); }
+  .honest-thumb { background: #f4eee0; box-shadow: 0 1px 3px rgba(28,25,21,0.10), inset 0 1px 0 rgba(255,255,255,0.8); }
+  .absurd-thumb {
+    background: linear-gradient(135deg, #ffe27a 0%, #ff9a4d 100%);
+    box-shadow: 0 4px 14px -4px rgba(255,138,77,0.5);
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+// ─── CV CONTENT ───────────────────────────────────────────────────────────
+const CV = {
+  name: "Oliver Kaikane Gate",
+  location: "Valencia, Spain (remote)",
+  phone: "+34 633 861 683",
+  email: "oliver.kg2@gmail.com",
+  tagline: "Senior full-stack engineer (React/TypeScript, Python). 7+ years across data platforms and consumer products. Building with LLMs and going deep on agentic systems.",
+  bio: [
+    "Curious, restless, and interested in how things work — whether that's a supply chain, a user's mental model, or how an LLM decides to call a tool.",
+    "Came to engineering from analytical philosophy nearly 8 years ago, which still shapes how I approach problems: question the framing first, then build. I've shipped across multi-tenant SaaS, data platforms, consumer apps, and most recently sustainability tech, with a track record of going from junior IC to leading a team.",
+    "Right now I'm spending most of my time building with LLMs and going deep on agentic systems — what good orchestration looks like, where the security gaps sit, how harnesses should be designed for the next few years of this. Three side projects in flight; daily Claude Code user; gradually building my own agent and telemetry setup.",
+    "Outside of all that: food, cooking, travel, books, chess, and running.",
+  ],
+  overview: "Full-stack engineer with 7+ years shipping production systems for sustainability impact ventures and financial services. Comfortable across the stack with React and TypeScript on the frontend and Python and Node on the backend; deepest in dashboards, data platforms, and multi-tenant SaaS. Progressed from junior IC to leading a team of five, with experience running external consulting engagements end-to-end. Currently building with LLMs across multiple side projects and training in agentic systems, prompt security (OWASP AI Top 10), and agent orchestration. Looking for roles where full-stack depth meets AI-native product thinking.",
+};
+
+// Three-tone bullets for each role. Honest = source of truth.
+const ROLES = [
+  {
+    role: "Senior Full-Stack Developer",
+    org: "OpenSC",
+    period: "July 2022 – April 2026",
+    blurb: {
+      honest: "Sustainability impact venture co-founded by WWF and BCG, providing supply chain traceability for global brands. Standardised messy first-three-miles farm data into EPCIS, then surfaced it through dashboards used by Nespresso, Austral Fisheries, and internal teams to validate ethical sourcing claims and farmer payments.",
+      pessimistic: "Sustainability impact venture co-founded by WWF and BCG. The work was real and the brands were real; the underlying challenge — wrangling first-three-miles farm data into something a dashboard could honestly defend — was harder and slower than any of us would have liked to admit.",
+      absurd: "A sustainability impact venture co-founded by WWF and BCG, which is a sentence I still can't say without picturing pandas in suits. The job, more or less, was to convince messy farm data to behave like a respectable EPCIS citizen, then put it on a screen so coffee could be morally cleared for landing.",
+    },
+    bullets: {
+      honest: [
+        "Sole frontend engineer on the main analytics dashboard — built and maintained the entire system end-to-end. Plotly Dash for the analytical core; React and Next.js for the consumer-facing experiences.",
+        "Built the traceability and payments validation system used by Nespresso to verify coffee sourcing across Rainforest Alliance and their internal AAA premium-farmer program — including checks that base prices tracked the London robusta price index and that farmer payments matched contracted standards.",
+        "Surfaced supply chain anomalies — infiltration, exfiltration, breaches of farm productivity capacity, coffee from untraced origins — through graph-based analysis powered by Kuzu.",
+        "Worked with Austral Fisheries to validate the legal provenance of toothfish and prawn catches.",
+        "Re-architected supply chain onboarding in Dagster: replaced bespoke per-cluster orchestrations with a YAML-configured, data-contract-driven ingestion layer. Turned onboarding from a custom engineering effort per supply chain into a configuration task.",
+        "Built monitoring for data quality, ingestion accuracy and frequency across all supply chain feeds.",
+        "Earlier scope at OpenSC: an internal Android app (Kotlin), document scanning, internal tooling, API design, and orchestration in Airflow.",
+      ],
+      pessimistic: [
+        "Sole frontend engineer on the main analytics dashboard. End-to-end ownership is great when shipping fast and lonely when something subtle breaks at 11pm — there were stretches where I was the only person who knew how a particular Plotly Dash callback worked, and that's a bus-factor I'd inherit again only if I had to.",
+        "Built the traceability and payments validation system Nespresso adopted for Rainforest Alliance and their AAA program. Some of the price-tracking edge cases against the London robusta index took more iteration than I'd budgeted for, and the rollout had a rougher first quarter than I'd have liked before settling into something I'd actually defend.",
+        "Surfaced supply chain anomalies — infiltration, exfiltration, untraced origins — via graph analysis on Kuzu. Real catches, real value, but Kuzu was early and the queries that ran cleanly in dev sometimes did not run cleanly in production, which I learned about in the usual way.",
+        "Worked with Austral Fisheries on legal provenance for toothfish and prawn catches. The dataset was unforgiving and the domain expertise lived three time-zones away, which made every iteration cycle longer than the code suggested.",
+        "Re-architected supply chain onboarding in Dagster, replacing bespoke per-cluster orchestrations with YAML-configured, data-contract-driven ingestion. The migration paid off, but the in-between period — old system live, new system being trusted — required more babysitting than I'd planned.",
+        "Built monitoring for data quality, ingestion accuracy and frequency across feeds. Coverage is good now; getting the alerting thresholds calibrated took several false-positive cycles I'd run differently next time.",
+        "Earlier scope: internal Android app in Kotlin, document scanning, internal tooling, API design, Airflow orchestration. A useful range; not all of it was deep, and a couple of those early Airflow DAGs are still where I'd point if someone asked me to find a piece of code I'd want to rewrite.",
+      ],
+      absurd: [
+        "Sole frontend engineer on the main analytics dashboard, which means I was simultaneously the team lead, the team, and the team's only critic. Plotly Dash for the analytical core; React and Next.js for the bits humans were meant to enjoy. There is a Slack channel somewhere named after one of my callbacks.",
+        "Built a traceability and payments validation system that Nespresso uses to verify coffee sourcing across Rainforest Alliance and their AAA premium-farmer program. I have personally never met a coffee bean I didn't suspect of fraud. The London robusta price index and I are now on a first-name basis; we exchange thoughts on volatility.",
+        "Surfaced supply chain anomalies — infiltration, exfiltration, breaches of farm productivity capacity, coffee from untraced origins — via graph analysis on Kuzu. Most of my professional life is now spent asking nodes uncomfortable questions about where they came from and who they've been talking to.",
+        "Worked with Austral Fisheries on the legal provenance of toothfish and prawn catches. I now know more about the personal life of a toothfish than any human should reasonably know, and nothing has prepared me for the day someone at a dinner party asks what I do.",
+        "Re-architected supply chain onboarding in Dagster: turned bespoke per-cluster orchestrations into a YAML-configured, data-contract-driven layer. This means onboarding a new supply chain went from \"a quarter\" to \"an afternoon and a moderately serious lunch.\"",
+        "Built monitoring for data quality, ingestion accuracy, and frequency across every feed. The dashboards now know when they are sad before I do, which is a relationship dynamic I was not expecting from a piece of software.",
+        "Earlier scope at OpenSC: an internal Android app in Kotlin, document scanning, internal tooling, API design, and Airflow orchestration — a sampler platter of engineering, basically, served on a slowly improving plate.",
+      ],
+    },
+    tech: "React, Next.js, TypeScript, Python, Plotly Dash, Dagster, Kuzu (graph DB), Kotlin, AWS, Kubernetes, Postgres, Ethereum, Airflow.",
+  },
+  {
+    role: "Associate Full-Stack Developer",
+    org: "Redington",
+    period: "February 2019 – June 2022",
+    blurb: {
+      honest: "UK investment consultancy. Built and led the frontend on a multi-tenant research platform used by several thousand consultants across 7+ tenants to track investments and maintain observability across portfolios. Joined as a junior; promoted to leading a frontend team within two years as the company scaled from 10 engineers to 8 teams.",
+      pessimistic: "UK investment consultancy. Built and helped lead the frontend on a multi-tenant research platform — sensitive data, real consultants, real money. Joined as a junior, promoted into team lead within two years, which felt about a year earlier than I'd have promoted myself.",
+      absurd: "UK investment consultancy. I joined as a junior and was promoted to leading a frontend team within two years, which is the corporate equivalent of being asked to perform open-heart surgery because you once watched the procedure on a long-haul flight. Several thousand consultants across 7+ tenants used this thing. Several thousand.",
+    },
+    bullets: {
+      honest: [
+        "Owned frontend architectural decisions on a React and TypeScript dashboard handling sensitive multi-tenant data, where cross-tenant leakage would have been existential to the business.",
+        "Led a team of 5 engineers focused on frontend feature delivery; consistently the highest-performing team on UI work.",
+        "Co-led architectural decisions across the frontend codebase and implemented a significant portion of the dynamically configurable dashboard system.",
+        "Drove introduction of E2E testing with Cypress, improving deployment confidence and reducing release-time human error.",
+        "Beyond engineering: chaired the Bristol charity committee. Ran a pro-bono engagement with LifeCycle — a charity left dry by multiple high-cost agencies — running a one-day discovery workshop and orchestrating the migration of their database and supporting infrastructure onto Airtable. Successfully pushed for an expansion of company-sponsored charity days and helped colleagues find opportunities.",
+      ],
+      pessimistic: [
+        "Owned frontend architectural decisions on a React and TypeScript dashboard handling sensitive multi-tenant data — the kind where a single cross-tenant leak would have been existential. Most of those decisions held up; a couple I'd unwind given another shot at them, particularly around how we handled tenant-scoped state in the early shared components.",
+        "Led 5 engineers on frontend feature delivery; we were the highest-performing team on UI work, which sounds tidy but lived alongside the usual difficult trade-offs about who got the interesting tickets and who picked up the maintenance.",
+        "Co-led architectural decisions and built a significant share of the dynamically configurable dashboard system. The flexibility we built was real; the cost was a configuration surface that newer engineers found genuinely hard to reason about.",
+        "Drove introduction of Cypress E2E testing. Deployment confidence improved; the suite also got slow enough at one point that engineers started mentally discounting failures, which is the failure mode that exists right next to \"we have tests now.\"",
+        "Outside core engineering: chaired the Bristol charity committee, ran a pro-bono engagement with LifeCycle to migrate their infrastructure onto Airtable. Useful work; the discovery workshop was rougher than I'd run it now, and Airtable has limits I hadn't fully internalised when I picked it.",
+      ],
+      absurd: [
+        "Owned frontend architectural decisions on a React and TypeScript dashboard where cross-tenant data leakage would have been existential to the business — a sentence I would type onto my CV with one hand while a small voice inside me whispered \"please, no.\" None of it leaked. None of it.",
+        "Led a team of 5 engineers focused on frontend feature delivery. Consistently the highest-performing team on UI work, which is the kind of compliment you put on a CV and pretend was just a normal Tuesday outcome.",
+        "Co-led architectural decisions across the frontend codebase and personally implemented a significant portion of the dynamically configurable dashboard system, the operative word being \"dynamically.\" There are still meetings somewhere in which someone is trying to configure it.",
+        "Drove introduction of E2E testing with Cypress, improving deployment confidence and reducing release-time human error — a polite way of saying I tried to make it harder for any of us to accidentally show pension data to the wrong investment consultant on a Friday afternoon.",
+        "Outside engineering: chaired the Bristol charity committee, ran a pro-bono engagement for LifeCycle that involved migrating their entire database to Airtable in approximately one weekend and a strong cup of tea. Successfully lobbied for more charity days, which I consider, on balance, my most morally defensible commit.",
+      ],
+    },
+    tech: "React, TypeScript, MUI, Cypress, Jest, AWS, .NET (C#), PostgreSQL.",
+  },
+];
+
+const EDUCATION = {
+  degree: "BA Philosophy 2:1",
+  school: "Leeds University",
+  period: "September 2014 – June 2017",
+  notes: [
+    "Specialised in Philosophy of Technology",
+    "Developed the critical thinking, rhetoric, and ability to sit with difficult and ambiguous problems that still shapes how I approach engineering today",
+  ],
+};
+
+const SKILLS = [
+  { title: "Primary Stack", items: ["React", "Next.js", "TypeScript", "Node.js", "Python", "PostgreSQL", "AWS"] },
+  { title: "AI / LLM (currently focused)", asList: true, items: [
+    "Daily user of Claude Code and Cursor for the last 3+ months",
+    "Building 3 production-leaning side projects with LLMs",
+    "Developing a custom Claude Code setup with agents, skills, and telemetry",
+    "Maintaining a learnings catalogue via a session retrospective workflow",
+    "Currently training in: OWASP AI Top 10, prompt injection and jailbreaks, agent orchestration patterns, harness design",
+  ]},
+  { title: "Frontend", items: ["React","Next.js","TypeScript","Cypress","Jest","MUI","Chakra","TailwindCSS","Ant Design","Mantine","Redux","React Query","React Hook Form","Kotlin (Android)"] },
+  { title: "Backend", items: ["Python (FastAPI, Dagster, pandas, Plotly Dash)","Node.js","C# / .NET","Kotlin (Spring Boot)","PostgreSQL","MartenDB","Kuzu","Airflow"] },
+  { title: "Infrastructure & DevOps", items: ["AWS (S3, EKS, EC2, SNS, SQS, Lambda, IAM, RDS, CloudWatch)","Terraform","some Azure","Vercel","Supabase","GitHub Actions","Octopus Deploy / TeamCity","CircleCI"] },
+  { title: "Leadership", asList: true, items: [
+    "Led a 5-person frontend team at Redington",
+    "Completed external senior-IC / principal-engineer leadership training",
+    "Ran external consulting engagement (LifeCycle) end-to-end",
+    "Agile delivery",
+  ]},
+];
+
+const PROJECTS = [
+  { title: "Language Learning App", stack: "Next.js · Supabase", desc: "Personal project exploring LLM-driven language acquisition." },
+  { title: "Habit-Forming App", stack: "Flutter (Dart)", desc: "Cross-platform mobile, focused on behaviour change loops." },
+  { title: "Movement-Focused Consumer App", stack: "React Native", desc: "Consumer-facing project around physical movement." },
+  { title: "Personal Claude Code Setup", stack: "Custom agents · skills · telemetry", desc: "Custom agents, skills, and telemetry layer over Claude CLI. Retrospective-driven learning catalogue captured after every working session." },
+];
+
+const AVOCATIONS = [
+  "Food, cooking, and the conversations around both",
+  "Travelling", "Reading", "Chess", "Running",
+];
+
+// ─── TONE TOGGLE ──────────────────────────────────────────────────────────
+const TONES = [
+  { id: "pessimistic", name: "Pessimistic", desc: "Self-aware",
+    thumbClass: "pessimistic-thumb", thumbFg: "#f4eee0", thumbFgMuted: "rgba(244,238,224,0.55)" },
+  { id: "honest",      name: "Honest",      desc: "As written",
+    thumbClass: "honest-thumb", thumbFg: "#1c1915", thumbFgMuted: "#7a746c" },
+  { id: "absurd",      name: "Absurd",      desc: "Satire",
+    thumbClass: "absurd-thumb", thumbFg: "#1c1915", thumbFgMuted: "rgba(28,25,21,0.65)" },
+];
+
+function ToneToggle({ tone, onChange }) {
+  const idx = TONES.findIndex((t) => t.id === tone);
+  const current = TONES[idx];
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 16 }}>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
+          <span style={{
+            fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.22em",
+            textTransform: "uppercase", color: "var(--muted)",
+          }}>03 / Tone</span>
+          <h3 style={{
+            fontFamily: "var(--font-display)", fontSize: "1.6rem",
+            fontWeight: 600, letterSpacing: "-0.015em", margin: 0, lineHeight: 1,
+          }}>How would you like the bullets framed?</h3>
+        </div>
+      </div>
+
+      <div className="tone-toggle"
+           style={{ "--thumb-fg": current.thumbFg, "--thumb-fg-muted": current.thumbFgMuted }}>
+        <div
+          className={`tone-thumb ${current.thumbClass}`}
+          style={{
+            left: `calc(6px + ${idx} * (100% - 12px) / 3)`,
+            width: `calc((100% - 12px) / 3)`,
+          }}
+        />
+        {TONES.map((t) => {
+          const selected = t.id === tone;
+          return (
+            <button
+              key={t.id}
+              role="tab"
+              aria-selected={selected}
+              className="tone-btn"
+              onClick={() => onChange(t.id)}
+              style={{ color: selected ? current.thumbFg : "var(--fg)" }}
+            >
+              <span className="tone-name" style={selected ? { color: current.thumbFg } : {}}>
+                {t.name}
+              </span>
+              <span className="tone-desc" style={selected ? { color: current.thumbFgMuted } : {}}>
+                {t.desc}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── SATIRE BADGE ─────────────────────────────────────────────────────────
+function SatireBadge({ visible }) {
+  if (!visible) return null;
+  const repeat = "Satire mode active — these bullets are deliberately ridiculous · ";
+  return (
+    <div className="badge-anim" style={{
+      position: "sticky", top: 0, left: 0, right: 0, zIndex: 50,
+      background: "linear-gradient(135deg, #ffe27a 0%, #ff9a4d 100%)",
+      borderBottom: "1px solid rgba(28,25,21,0.18)",
+      color: "#1c1915",
+      overflow: "hidden",
+    }}>
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        padding: "10px 18px",
+        fontFamily: "var(--font-mono)",
+        fontSize: 11,
+        letterSpacing: "0.18em",
+        textTransform: "uppercase",
+      }}>
+        <span style={{
+          background: "#1c1915", color: "#ffe27a",
+          padding: "3px 7px", borderRadius: 3, fontWeight: 700, letterSpacing: "0.22em",
+        }}>SATIRE</span>
+        <div style={{ flex: 1, overflow: "hidden", whiteSpace: "nowrap" }}>
+          <div className="ticker-track" style={{ display: "inline-block", whiteSpace: "nowrap" }}>
+            <span>{repeat.repeat(6)}</span>
+            <span>{repeat.repeat(6)}</span>
+          </div>
+        </div>
+        <span style={{ opacity: 0.7 }}>switch tone to dismiss</span>
+      </div>
+    </div>
+  );
+}
+
+// ─── CROSSFADE TEXT ───────────────────────────────────────────────────────
+function CrossfadeText({ value, as = "span", style }) {
+  const [shown, setShown] = useState(value);
+  const [out, setOut] = useState(false);
+  const tRef = useRef(null);
+  useEffect(() => {
+    if (value === shown) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) { setShown(value); return; }
+    setOut(true);
+    clearTimeout(tRef.current);
+    tRef.current = setTimeout(() => {
+      setShown(value);
+      // Force reflow then fade in
+      requestAnimationFrame(() => setOut(false));
+    }, 280);
+    return () => clearTimeout(tRef.current);
+  }, [value]);
+  const Comp = as;
+  return <Comp className={`crossfade ${out ? "is-out" : ""}`} style={style}>{shown}</Comp>;
+}
+
+// ─── CV SECTIONS ──────────────────────────────────────────────────────────
+function Section({ num, title, children }) {
+  return (
+    <section style={{ marginTop: "4.5rem" }}>
+      <header style={{
+        display: "grid", gridTemplateColumns: "auto 1fr", gap: "1rem",
+        alignItems: "baseline", paddingBottom: "0.85rem",
+        borderBottom: "1px solid var(--rule)", marginBottom: "1.75rem",
+      }}>
+        <span style={{
+          fontFamily: "var(--font-mono)", fontSize: "0.78rem",
+          letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--muted)",
+          fontVariantNumeric: "tabular-nums",
+        }}>{num}</span>
+        <h2 style={{
+          fontFamily: "var(--font-display)", fontSize: "clamp(1.5rem, 3vw, 2rem)",
+          fontWeight: 500, letterSpacing: "-0.01em", margin: 0, lineHeight: 1.05,
+        }}>{title}</h2>
+      </header>
+      {children}
+    </section>
+  );
+}
+
+function Bullet({ text }) {
+  return (
+    <li style={{
+      paddingLeft: "1.4rem", position: "relative",
+      lineHeight: "var(--line)", maxWidth: "72ch", textWrap: "pretty",
+    }}>
+      <span style={{
+        position: "absolute", left: 0, top: "calc(var(--line) * 0.5em)",
+        width: "0.55rem", height: "1px", background: "var(--fg)",
+        transform: "translateY(-50%)",
+      }} />
+      <CrossfadeText value={text} />
+    </li>
+  );
+}
+
+function Role({ entry, idx, tone }) {
+  const blurb = entry.blurb[tone];
+  const bullets = entry.bullets[tone];
+  return (
+    <article style={{
+      marginTop: idx === 0 ? 0 : "2rem",
+      paddingTop: idx === 0 ? 0 : "2rem",
+      borderTop: idx === 0 ? "none" : "1px dashed var(--card-border)",
+    }}>
+      <div style={{
+        display: "flex", flexWrap: "wrap", alignItems: "baseline",
+        justifyContent: "space-between", gap: "0.5rem 1.5rem", marginBottom: "0.65rem",
+      }}>
+        <h3 style={{
+          fontFamily: "var(--font-display)", fontSize: "1.2rem",
+          fontWeight: 600, color: "var(--fg)", margin: 0, lineHeight: 1.2,
+        }}>
+          {entry.role}<span style={{ color: "var(--muted)", fontWeight: 400 }}> — {entry.org}</span>
+        </h3>
+        <span style={{
+          fontFamily: "var(--font-mono)", fontSize: "0.78rem",
+          letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--muted)",
+          whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums",
+        }}>{entry.period}</span>
+      </div>
+
+      <p style={{ maxWidth: "72ch", marginBottom: "0.85rem", textWrap: "pretty" }}>
+        <CrossfadeText value={blurb} />
+      </p>
+
+      <ul style={{
+        listStyle: "none", margin: 0, padding: 0,
+        display: "flex", flexDirection: "column", gap: "0.85rem",
+      }}>
+        {bullets.map((b, i) => <Bullet key={`${tone}-${i}`} text={b} />)}
+      </ul>
+
+      <div style={{
+        marginTop: "1rem", paddingLeft: "1.4rem",
+        fontFamily: "var(--font-mono)", fontSize: "0.78rem",
+        letterSpacing: "0.06em", color: "var(--muted)",
+      }}>
+        <span style={{ color: "var(--fg)", marginRight: "0.5rem", textTransform: "uppercase", letterSpacing: "0.2em" }}>Stack /</span>
+        {entry.tech}
+      </div>
+    </article>
+  );
+}
+
+// Simplified slider deck — context, not the focus
+function MiniDeck() {
+  return (
+    <div style={{
+      background: "#16140f",
+      color: "#f4f1ea",
+      borderRadius: 12,
+      padding: "12px 14px",
+      fontFamily: "'Space Grotesk', sans-serif",
+      display: "flex", flexDirection: "column", gap: 10,
+      boxShadow: "0 18px 40px -16px rgba(0,0,0,0.4)",
+    }}>
+      <div style={{
+        display: "flex", justifyContent: "space-between", alignItems: "center",
+        fontFamily: "var(--font-mono)", fontSize: 9, letterSpacing: "0.28em",
+        textTransform: "uppercase", color: "rgba(244,241,234,0.5)",
+      }}>
+        <span>CV / RETHEME</span>
+        <span style={{ color: "#d4ff3a" }}>● BALANCED</span>
+      </div>
+      {[
+        ["DENSITY", "sparse", "dense", 0.5, "#d4ff3a"],
+        ["POLISH", "brutalist", "refined", 0.55, "#ff7a59"],
+        ["HIERARCHY", "flat", "dramatic", 0.55, "#7ad7ff"],
+        ["MOTION", "static", "kinetic", 0.5, "#ffd166"],
+      ].map(([name, l, r, v, accent]) => (
+        <div key={name}>
+          <div style={{
+            display: "flex", justifyContent: "space-between", alignItems: "baseline",
+            fontFamily: "var(--font-mono)", fontSize: 9, color: "rgba(244,241,234,0.45)",
+            letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 3,
+          }}>
+            <span style={{ color: "#f4f1ea", fontWeight: 700, letterSpacing: "0.1em" }}>{name}</span>
+            <span style={{ fontVariantNumeric: "tabular-nums", color: accent }}>{v.toFixed(2)}</span>
+          </div>
+          <div style={{ position: "relative", height: 12 }}>
+            <div style={{
+              position: "absolute", inset: "3px 0",
+              background: "rgba(0,0,0,0.5)", borderRadius: 2,
+            }} />
+            <div style={{
+              position: "absolute", left: 0, top: 3, bottom: 3,
+              width: `${v * 100}%`,
+              background: accent, borderRadius: "2px 0 0 2px",
+              boxShadow: `0 0 8px ${accent}66`,
+            }} />
+            <div style={{
+              position: "absolute", left: `${v * 100}%`, top: 0, bottom: 0,
+              width: 6, transform: "translateX(-50%)",
+              background: "linear-gradient(180deg, #f8f5ed, #b8b3a6)",
+              border: "1px solid rgba(0,0,0,0.5)", borderRadius: 1,
+            }} />
+          </div>
+          <div style={{
+            display: "flex", justifyContent: "space-between",
+            fontFamily: "var(--font-mono)", fontSize: 8, marginTop: 2,
+            color: "rgba(244,241,234,0.35)", letterSpacing: "0.16em", textTransform: "uppercase",
+          }}>
+            <span>{l}</span><span>{r}</span>
+          </div>
+        </div>
+      ))}
+      <div style={{
+        fontFamily: "var(--font-mono)", fontSize: 8, letterSpacing: "0.2em",
+        textTransform: "uppercase", color: "rgba(244,241,234,0.4)",
+        marginTop: 4, paddingTop: 8, borderTop: "1px solid rgba(255,255,255,0.06)",
+      }}>
+        Live in artifact 1 →
+      </div>
+    </div>
+  );
+}
+
+// ─── APP ──────────────────────────────────────────────────────────────────
+function App() {
+  const [tone, setTone] = useState("honest");
+  const isAbsurd = tone === "absurd";
+
+  return (
+    <div>
+      <SatireBadge visible={isAbsurd} />
+
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "minmax(0, 1fr) 320px",
+        gap: "clamp(1.5rem, 3vw, 3rem)",
+        maxWidth: 1320,
+        margin: "0 auto",
+        padding: "clamp(1.5rem, 3vw, 2.5rem) clamp(1.25rem, 3vw, 2.5rem) 4rem",
+        alignItems: "start",
+      }}>
+        <main style={{ minWidth: 0 }}>
+          {/* Header */}
+          <header style={{ paddingBottom: "1.5rem", borderBottom: "1px solid var(--rule)" }}>
+            <div style={{
+              display: "flex", flexWrap: "wrap", gap: "0.75rem 1.25rem",
+              fontFamily: "var(--font-mono)", fontSize: "0.78rem",
+              letterSpacing: "0.22em", textTransform: "uppercase",
+              color: "var(--muted)", marginBottom: "0.85rem",
+            }}>
+              <span>CV / 2026</span><span>—</span><span>{CV.location}</span>
+              <span>—</span><span>Available for senior IC roles</span>
+            </div>
+            <h1 style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "clamp(2.4rem, 6vw, 4.2rem)",
+              fontWeight: 500, letterSpacing: "-0.025em", lineHeight: 0.95,
+              margin: 0, textWrap: "balance",
+            }}>{CV.name}</h1>
+            <p style={{
+              marginTop: "1.25rem", fontSize: "1.2rem", maxWidth: "60ch",
+              textWrap: "pretty",
+            }}>{CV.tagline}</p>
+            <div style={{
+              marginTop: "1.25rem", display: "flex", flexWrap: "wrap", gap: "0.5rem 2rem",
+              fontFamily: "var(--font-mono)", fontSize: "0.78rem", letterSpacing: "0.06em",
+            }}>
+              <span><span style={{ color: "var(--muted)" }}>email </span>{CV.email}</span>
+              <span><span style={{ color: "var(--muted)" }}>tel </span>{CV.phone}</span>
+            </div>
+          </header>
+
+          {/* Bio */}
+          <Section num="01" title="Personal">
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem", maxWidth: "68ch" }}>
+              {CV.bio.map((p, i) => (
+                <p key={i} style={{
+                  textWrap: "pretty",
+                  fontStyle: i === 0 ? "italic" : "normal",
+                  fontWeight: i === 0 ? 400 : 400,
+                }}>{p}</p>
+              ))}
+            </div>
+          </Section>
+
+          {/* Overview */}
+          <Section num="02" title="Experience overview">
+            <p style={{ maxWidth: "72ch", textWrap: "pretty" }}>{CV.overview}</p>
+          </Section>
+
+          {/* Tone toggle — featured above experience */}
+          <div style={{ marginTop: "4.5rem" }}>
+            <ToneToggle tone={tone} onChange={setTone} />
+          </div>
+
+          {/* Experience */}
+          <Section num="04" title="Experience">
+            {ROLES.map((e, i) => <Role key={i} idx={i} entry={e} tone={tone} />)}
+          </Section>
+
+          {/* Education */}
+          <Section num="05" title="Education">
+            <div style={{
+              display: "flex", flexWrap: "wrap", alignItems: "baseline",
+              justifyContent: "space-between", gap: "0.5rem 1.5rem", marginBottom: "0.85rem",
+            }}>
+              <h3 style={{
+                fontFamily: "var(--font-display)", fontSize: "1.2rem",
+                fontWeight: 600, margin: 0,
+              }}>{EDUCATION.degree}<span style={{ color: "var(--muted)", fontWeight: 400 }}> — {EDUCATION.school}</span></h3>
+              <span style={{
+                fontFamily: "var(--font-mono)", fontSize: "0.78rem",
+                letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--muted)",
+              }}>{EDUCATION.period}</span>
+            </div>
+            <ul style={{
+              listStyle: "none", margin: 0, padding: 0,
+              display: "flex", flexDirection: "column", gap: "0.85rem",
+            }}>
+              {EDUCATION.notes.map((n, i) => (
+                <li key={i} style={{ paddingLeft: "1.4rem", position: "relative", maxWidth: "72ch" }}>
+                  <span style={{
+                    position: "absolute", left: 0, top: "calc(var(--line) * 0.5em)",
+                    width: "0.55rem", height: "1px", background: "var(--fg)",
+                    transform: "translateY(-50%)",
+                  }} />{n}
+                </li>
+              ))}
+            </ul>
+          </Section>
+
+          {/* Skills */}
+          <Section num="06" title="Skills">
+            <div style={{
+              display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+              gap: "1.5rem 3rem",
+            }}>
+              {SKILLS.map((b, i) => (
+                <div key={i} style={{
+                  paddingTop: "0.85rem", paddingBottom: "0.85rem",
+                  borderTop: "1px solid var(--card-border)",
+                }}>
+                  <h4 style={{
+                    fontFamily: "var(--font-mono)", fontSize: "0.78rem",
+                    letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--muted)",
+                    margin: 0, marginBottom: "0.55rem", fontWeight: 500,
+                  }}>{b.title}</h4>
+                  {b.asList ? (
+                    <ul style={{ listStyle: "none", margin: 0, padding: 0,
+                      display: "flex", flexDirection: "column", gap: "0.45rem" }}>
+                      {b.items.map((it, j) => (
+                        <li key={j} style={{ paddingLeft: "1.1rem", position: "relative" }}>
+                          <span style={{
+                            position: "absolute", left: 0, top: "calc(var(--line) * 0.5em)",
+                            width: "0.5rem", height: "1px", background: "var(--fg)",
+                            transform: "translateY(-50%)",
+                          }} />{it}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div>
+                      {b.items.map((it, j) => (
+                        <span key={j}>
+                          {it}
+                          {j < b.items.length - 1 && <span style={{ color: "var(--muted)", margin: "0 0.5rem" }}>·</span>}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </Section>
+
+          {/* Projects */}
+          <Section num="07" title="Projects">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "1.25rem" }}>
+              {PROJECTS.map((p, i) => (
+                <article key={i} style={{
+                  background: "var(--card-bg)",
+                  border: "1px solid var(--card-border)",
+                  borderRadius: 6, padding: "1.5rem",
+                  display: "flex", flexDirection: "column", gap: "0.45rem",
+                  boxShadow: "0 1px 2px rgba(28,25,21,0.04)",
+                }}>
+                  <div style={{
+                    fontFamily: "var(--font-mono)", fontSize: "0.78rem",
+                    letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--muted)",
+                  }}>{String(i + 1).padStart(2, "0")} / project</div>
+                  <h3 style={{
+                    fontFamily: "var(--font-display)", fontSize: "1.2rem",
+                    fontWeight: 600, margin: 0, lineHeight: 1.2,
+                  }}>{p.title}</h3>
+                  <div style={{
+                    fontFamily: "var(--font-mono)", fontSize: "0.78rem", color: "var(--muted)",
+                  }}>{p.stack}</div>
+                  <p style={{ margin: 0, textWrap: "pretty" }}>{p.desc}</p>
+                </article>
+              ))}
+            </div>
+          </Section>
+
+          {/* Avocations */}
+          <Section num="08" title="Outside work">
+            <ul style={{
+              listStyle: "none", margin: 0, padding: 0,
+              display: "flex", flexWrap: "wrap", gap: "0.6rem 0.8rem",
+            }}>
+              {AVOCATIONS.map((a, i) => (
+                <li key={i} style={{
+                  fontFamily: "var(--font-display)", fontSize: "1.1rem",
+                  fontWeight: 500, padding: "0.4rem 0.9rem",
+                  border: "1px solid var(--rule)", borderRadius: 999,
+                  fontStyle: "italic",
+                }}>{a}</li>
+              ))}
+            </ul>
+          </Section>
+
+          <footer style={{
+            marginTop: "5rem", paddingTop: "2rem",
+            borderTop: "1px solid var(--rule)",
+            display: "flex", flexWrap: "wrap", gap: "0.75rem 2rem",
+            justifyContent: "space-between",
+            fontFamily: "var(--font-mono)", fontSize: "0.78rem",
+            letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--muted)",
+          }}>
+            <span>© {CV.name}</span>
+            <span>last revised — May 2026</span>
+            <span>tone: {tone}</span>
+          </footer>
+        </main>
+
+        {/* Right rail — context deck (sticky) */}
+        <aside style={{ position: "sticky", top: isAbsurd ? 60 : 24, alignSelf: "start" }}>
+          <MiniDeck />
+        </aside>
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+</script>
+</body>
+</html>

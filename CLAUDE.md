@@ -23,9 +23,12 @@ The build process is itself a feature: ADRs are public, the build page tells the
 
 ## Stack
 
-**Next.js 15 App Router** + TypeScript (strict) + Tailwind + Biome + Vitest + Playwright +
-Vercel + Anthropic API (server-side only, via Route Handlers and Server Actions).
-Zod for runtime schemas. nuqs for URL state.
+**Next.js 16 App Router** + TypeScript (strict, `noUncheckedIndexedAccess`) + Tailwind v4 +
+Biome + Vitest + Playwright (Phase 1+) + Vercel + Anthropic API (server-side only, via Route
+Handlers and Server Actions). Zod for runtime schemas. nuqs for URL state.
+
+**Package manager: Bun** (`bun install`, `bun run <script>`). The phase specs were drafted
+assuming pnpm; treat that as superseded.
 Three fonts: Fraunces (display), Inter (body), JetBrains Mono (kickers, terminal) — loaded
 via `next/font/google`.
 
@@ -79,13 +82,13 @@ pattern, slider deck visual treatment, etc.).
 
 ## Commands
 
-- `pnpm dev` — local dev (Next.js)
-- `pnpm build` — production build (run before declaring a phase done)
-- `pnpm test` — Vitest unit tests
-- `pnpm test:e2e` — Playwright (Phase 1+, when slider tests exist)
-- `pnpm typecheck` — `tsc --noEmit`
-- `pnpm lint` — Biome
-- `pnpm content:validate` — Zod-validate all content/*.json
+- `bun run dev` — local dev (Next.js)
+- `bun run build` — production build (run before declaring a phase done)
+- `bun run test` — Vitest unit tests
+- `bun run test:e2e` — Playwright (Phase 1+, when slider tests exist)
+- `bun run typecheck` — `tsc --noEmit`
+- `bun run lint` — Biome (`bun run lint:fix` to autofix)
+- `bun run content:validate` — Zod-validate `content/cv.json`
 
 ## Coding conventions
 
@@ -123,7 +126,7 @@ These exist because the site makes claims about Oliver's experience. Don't relax
 
 `content/cv.json` is the source of truth for all CV data. The markdown in
 `source/oliver_cv_draft.md` is a human-readable version for editing — when it changes,
-regenerate `cv.json` and re-run `pnpm content:validate`.
+regenerate `cv.json` and re-run `bun run content:validate`.
 
 ## Useful pointers
 

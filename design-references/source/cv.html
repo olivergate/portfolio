@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Oliver Kaikane Gate — CV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  :root {
+    /* Slider state */
+    --density: 0.5;
+    --polish: 0.5;
+    --hierarchy: 0.5;
+    --motion: 0.5;
+
+    /* Derived — JS sets these. Defaults here are the lovely midpoint. */
+    --bg: #f4f0e8;
+    --fg: #1c1915;
+    --muted: #756f66;
+    --rule: #1c1915;
+    --rule-weight: 1px;
+    --card-bg: #fbf8f1;
+    --card-border: rgba(28,25,21,0.10);
+    --card-border-width: 1px;
+    --accent: #c0532b;
+    --inverse-bg: #1c1915;
+    --inverse-fg: #f4f0e8;
+
+    --gap-section: 5rem;
+    --gap-block: 2rem;
+    --gap-item: 0.85rem;
+    --pad-card: 2rem;
+    --line: 1.55;
+
+    --radius: 4px;
+    --radius-chip: 2px;
+    --shadow: none;
+
+    --size-h1: clamp(2.4rem, 6vw, 4.2rem);
+    --size-h2: 1.6rem;
+    --size-h3: 1.1rem;
+    --size-body: 1rem;
+    --size-meta: 0.78rem;
+    --size-tagline: 1.15rem;
+    --weight-display: 500;
+    --weight-h2: 500;
+    --weight-h3: 500;
+    --weight-body: 400;
+    --tracking-h1: -0.015em;
+    --tracking-h2: -0.005em;
+
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --case-display: none;
+    --case-h2: none;
+    --case-h3: none;
+    --case-meta: uppercase;
+
+    --col-count: 1;
+    --proj-cols: 2;
+    --bullet-cap: 4;
+
+    --motion-fast: 140ms;
+    --motion-base: 240ms;
+    --motion-slow: 400ms;
+    --motion-display: 320ms;
+    --stagger: 40ms;
+
+    --bullet-marker: dash; /* dash | square | dot */
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --motion-fast: 0ms !important;
+      --motion-base: 0ms !important;
+      --motion-slow: 0ms !important;
+      --motion-display: 0ms !important;
+      --stagger: 0ms !important;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    background: var(--bg);
+    color: var(--fg);
+    margin: 0;
+  }
+  body {
+    font-family: var(--font-body);
+    font-size: var(--size-body);
+    font-weight: var(--weight-body);
+    line-height: var(--line);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    transition:
+      background-color var(--motion-base) cubic-bezier(.2,.7,.2,1),
+      color var(--motion-base) cubic-bezier(.2,.7,.2,1);
+  }
+
+  /* Themable surface — every CV element transitions on theme change */
+  .cv-surface,
+  .cv-surface * {
+    transition:
+      background-color var(--motion-base) cubic-bezier(.2,.7,.2,1),
+      border-color var(--motion-base) cubic-bezier(.2,.7,.2,1),
+      color var(--motion-base) cubic-bezier(.2,.7,.2,1),
+      box-shadow var(--motion-base) cubic-bezier(.2,.7,.2,1),
+      letter-spacing var(--motion-display) cubic-bezier(.2,.7,.2,1),
+      font-size var(--motion-display) cubic-bezier(.2,.7,.2,1),
+      font-weight var(--motion-base) cubic-bezier(.2,.7,.2,1),
+      padding var(--motion-base) cubic-bezier(.2,.7,.2,1),
+      margin var(--motion-base) cubic-bezier(.2,.7,.2,1),
+      gap var(--motion-base) cubic-bezier(.2,.7,.2,1),
+      border-radius var(--motion-base) cubic-bezier(.2,.7,.2,1),
+      transform var(--motion-base) cubic-bezier(.2,.7,.2,1);
+  }
+
+  /* Slider deck — DOES NOT retheme. Hardcoded design. */
+  .deck-shell {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    color: #f4f1ea;
+    background:
+      radial-gradient(120% 60% at 50% 0%, #2a2825 0%, #16140f 70%);
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      inset 0 -1px 0 rgba(0,0,0,0.6),
+      0 30px 80px -20px rgba(0,0,0,0.65);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .deck-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-feature-settings: "tnum" 1; }
+  .deck-grotesk { font-family: 'Space Grotesk', 'Inter', sans-serif; }
+
+  /* Native input — invisible; we draw our own track + thumb */
+  .raw-range {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: grab;
+    width: 100%;
+    height: 64px;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+  }
+  .raw-range:active { cursor: grabbing; }
+  .raw-range::-webkit-slider-runnable-track { height: 64px; background: transparent; }
+  .raw-range::-moz-range-track { height: 64px; background: transparent; }
+  .raw-range::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 36px; height: 64px; background: transparent; border: none; cursor: grab;
+  }
+  .raw-range::-moz-range-thumb {
+    width: 36px; height: 64px; background: transparent; border: none; cursor: grab;
+  }
+  .raw-range:focus-visible { outline: none; }
+
+  /* Slider row dim-on-other-active */
+  .slider-row {
+    transition: opacity 220ms cubic-bezier(.2,.7,.2,1), filter 220ms;
+  }
+  .deck-active .slider-row:not(.is-active) { opacity: 0.32; filter: blur(0.2px); }
+  .deck-active .slider-row.is-active { opacity: 1; }
+
+  /* Bullet enter/exit */
+  .bullet-row {
+    overflow: hidden;
+    transition:
+      max-height var(--motion-base) cubic-bezier(.2,.7,.2,1),
+      opacity var(--motion-base) cubic-bezier(.2,.7,.2,1),
+      margin var(--motion-base) cubic-bezier(.2,.7,.2,1),
+      padding var(--motion-base) cubic-bezier(.2,.7,.2,1);
+    max-height: 16rem;
+    opacity: 1;
+  }
+  .bullet-row.is-hidden {
+    max-height: 0 !important;
+    opacity: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    pointer-events: none;
+  }
+  .bullet-row.is-peek {
+    max-height: 16rem;
+    opacity: 0.7;
+  }
+
+  /* Reveal-on-scroll for kinetic motion (only active when --motion > 0.4) */
+  .cv-surface[data-kinetic="true"] [data-reveal] {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity var(--motion-slow) cubic-bezier(.2,.7,.2,1),
+                transform var(--motion-slow) cubic-bezier(.2,.7,.2,1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  .cv-surface[data-kinetic="true"] [data-reveal].is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  /* Display type gets letter-spacing settle, no movement */
+  .cv-surface[data-kinetic="true"] [data-reveal-display] {
+    letter-spacing: 0.05em !important;
+    opacity: 0;
+    transition: opacity var(--motion-slow) cubic-bezier(.2,.7,.2,1),
+                letter-spacing var(--motion-slow) cubic-bezier(.2,.7,.2,1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  .cv-surface[data-kinetic="true"] [data-reveal-display].is-revealed {
+    opacity: 1;
+    letter-spacing: var(--tracking-h1) !important;
+  }
+
+  /* Card hover — transform, not shadow */
+  .cv-card { transform: translateY(0); }
+  .cv-surface[data-kinetic="true"] .cv-card:hover {
+    transform: translateY(-3px);
+  }
+
+  /* Brutalist intensifiers */
+  .cv-surface[data-brutalist="true"] {
+    --shadow: none !important;
+  }
+
+  /* Subtle scrollbar */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.18); border-radius: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+
+  /* Toast */
+  @keyframes toast-in {
+    from { transform: translate(-50%, 18px); opacity: 0; }
+    to { transform: translate(-50%, 0); opacity: 1; }
+  }
+
+  /* Layout: asymmetric two column on desktop */
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(320px, 380px) minmax(0, 1fr);
+    gap: clamp(1.5rem, 3vw, 3rem);
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: clamp(1rem, 2.5vw, 2rem) clamp(1rem, 3vw, 2.5rem);
+    align-items: start;
+  }
+  @media (max-width: 1024px) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .deck-col { position: static !important; max-height: none !important; }
+  }
+  .deck-col {
+    position: sticky;
+    top: clamp(1rem, 2.5vw, 2rem);
+    align-self: start;
+    z-index: 30;
+  }
+
+  /* Print: hide deck, simplify */
+  @media print {
+    .deck-col { display: none; }
+    .layout { display: block; padding: 0; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="cv-data.jsx"></script>
+<script type="text/babel" src="cv-deck.jsx"></script>
+<script type="text/babel" src="cv-content.jsx"></script>
+<script type="text/babel" src="cv-app.jsx"></script>
+</body>
+</html>

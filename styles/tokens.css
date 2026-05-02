@@ -1,0 +1,191 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   DESIGN TOKENS — Oliver Kaikane Gate CV site
+   ───────────────────────────────────────────────────────────────────────
+   This file consolidates the shared design tokens used across all five
+   pages in the CV site. The original HTML files declare these tokens
+   inline in <style> blocks; collected here for reference.
+
+   The main page (cv.html) is unique — it uses these tokens as a *baseline*
+   that gets dynamically overridden by 4 sliders (density / polish /
+   hierarchy / motion). The other 4 pages use a static subset.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ─── COLOR ─────────────────────────────────────────────────────────── */
+  /* Warm cream/parchment palette. Earthy, editorial. NOT a pure white. */
+
+  --bg:               #faf7f2;   /* page background — warm cream */
+  --bg-tint:          #f3eee3;   /* slightly darker cream for subtle bands */
+  --fg:               #1c1915;   /* near-black, warm tone */
+  --fg-soft:          #3a3530;   /* body copy, slightly muted */
+  --muted:            #7a746c;   /* secondary text, mono kickers */
+  --muted-2:          #a39c91;   /* tertiary / disabled */
+  --rule:             #c4b9a8;   /* default hairline color */
+  --rule-soft:        rgba(28,25,21,0.10);
+  --card-bg:          #fbf8f1;
+  --card-border:      rgba(28,25,21,0.10);
+  --inverse-bg:       #1c1915;
+  --inverse-fg:       #f4f0e8;
+
+  /* Accents — burnt rust/orange. Used sparingly. */
+  --accent:           #a04a26;   /* primary accent — links, CTAs, italics */
+  --accent-alt:       #c0532b;   /* slightly brighter alt */
+  --accent-soft:      #f5e8d8;   /* warm wash for highlight pulses */
+
+  /* Semantic for chip-grid (cv-jd.html) */
+  --hit:              #5a7a45;   /* sage green — requirement met */
+  --stretch:          #b8842c;   /* warm amber — requirement plausible */
+  --miss:             #8a8278;   /* warm grey — honest gap */
+
+  /* Terminal palette (cv-game.html, cv-lab.html demo) */
+  --terminal:         #0f0e0b;
+  --terminal-fg:      #e8e2d0;
+  --terminal-amber:   #ffb84d;
+  --terminal-green:   #7ad77a;
+  --terminal-red:     #e26d5a;
+
+  /* ─── TYPOGRAPHY ────────────────────────────────────────────────────── */
+  /* Three families. NEVER mix in others. */
+
+  --font-display:     'Fraunces', Georgia, serif;          /* headlines, italics */
+  --font-body:        'Inter', system-ui, sans-serif;      /* body copy, UI */
+  --font-mono:        'JetBrains Mono', ui-monospace, monospace; /* kickers, metadata, code */
+
+  /* Type scale — fluid clamps */
+  --size-h1:          clamp(2.4rem, 6vw, 4.2rem);
+  --size-h2:          clamp(1.5rem, 3vw, 2rem);
+  --size-h3:          1.1rem;
+  --size-body:        1rem;
+  --size-tagline:     1.15rem;
+  --size-meta:        0.78rem;          /* mono kickers */
+  --size-meta-sm:     0.66rem;          /* tiny mono labels (L-01 etc) */
+
+  --weight-display:   500;
+  --weight-h2:        500;
+  --weight-h3:        600;
+  --weight-body:      400;
+
+  --tracking-h1:      -0.025em;
+  --tracking-h2:      -0.015em;
+  --tracking-meta:    0.22em;           /* CRITICAL — all uppercase mono */
+  --tracking-meta-sm: 0.18em;
+
+  --line:             1.6;              /* body line-height */
+  --line-tight:       1.05;              /* headlines */
+  --line-pretty:      1.45;             /* card copy */
+
+  /* ─── SPACING ───────────────────────────────────────────────────────── */
+  --gap-section:      5rem;             /* between major sections */
+  --gap-block:        2rem;             /* between blocks within a section */
+  --gap-item:         0.85rem;          /* between rows in a list */
+  --pad-card:         1.5rem;
+  --pad-card-lg:      2rem;
+
+  /* ─── BORDERS / SHAPES ──────────────────────────────────────────────── */
+  --radius:           4px;              /* default radius — minimal */
+  --radius-chip:      2px;
+  --radius-pill:      999px;
+  --rule-weight:      1px;
+  --rule-weight-bold: 2px;              /* card bottom border, header rule */
+
+  /* ─── MOTION ────────────────────────────────────────────────────────── */
+  --motion-fast:      140ms;
+  --motion-base:      240ms;
+  --motion-slow:      400ms;
+  --motion-display:   320ms;            /* type/layout shifts */
+  --stagger:          40ms;              /* per-item stagger delay */
+  --ease-out:         cubic-bezier(.2,.7,.2,1);
+
+  /* ─── ELEVATION ─────────────────────────────────────────────────────── */
+  --shadow:           none;             /* default — minimal aesthetic */
+  --shadow-soft:      0 1px 2px rgba(28,25,21,0.04), 0 4px 12px rgba(28,25,21,0.04);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: 0ms !important;
+    --motion-base: 0ms !important;
+    --motion-slow: 0ms !important;
+    --motion-display: 0ms !important;
+    --stagger: 0ms !important;
+  }
+}
+
+/* ─── BASE ─────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: var(--size-body);
+  font-weight: var(--weight-body);
+  line-height: var(--line);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: var(--accent-soft); color: var(--fg); }
+
+/* Subtle scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.18); border-radius: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ─── TYPOGRAPHIC PATTERNS ─────────────────────────────────────────────── */
+
+/* Mono kicker — appears above titles, in headers, on meta rows.
+   ALWAYS uppercase, wide tracking, muted color. Very Swiss-press. */
+.kicker {
+  font-family: var(--font-mono);
+  font-size: var(--size-meta);
+  letter-spacing: var(--tracking-meta);
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+/* Section title pattern — kicker + title + (optional) right-aligned kicker,
+   separated by a hairline rule. Used as the rhythm device on every page. */
+.section-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1rem;
+  align-items: baseline;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 1.75rem;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: var(--size-h2);
+  font-weight: 500;
+  letter-spacing: var(--tracking-h2);
+  margin: 0;
+  line-height: var(--line-tight);
+}
+
+/* Page hero headline — Fraunces, very large, tight tracking.
+   Often uses an italic accent word in --accent. */
+.hero {
+  font-family: var(--font-display);
+  font-size: var(--size-h1);
+  font-weight: 500;
+  letter-spacing: var(--tracking-h1);
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+.hero em {
+  color: var(--accent);
+  font-style: italic;
+}
+
+/* Accent rule — burnt-orange hairline, used to underline/separate rarely. */
+.accent-rule {
+  height: 1px;
+  background: var(--accent);
+  border: 0;
+  margin: 0;
+}

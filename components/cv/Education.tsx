@@ -1,0 +1,114 @@
+import { SectionHeader } from "@/components/cv/SectionHeader";
+import type { CV } from "@/lib/schemas";
+
+const MONTH_NAMES = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
+function formatMonth(value: string): string {
+  const [yearStr, monthStr] = value.split("-");
+  if (!yearStr) return value;
+  if (!monthStr) return yearStr;
+  const monthIndex = Number(monthStr) - 1;
+  const monthName = MONTH_NAMES[monthIndex];
+  return monthName ? `${monthName} ${yearStr}` : value;
+}
+
+type Props = { education: CV["education"] };
+
+export function Education({ education }: Props) {
+  return (
+    <section id="education" style={{ marginTop: "var(--gap-section)" }}>
+      <SectionHeader number="04" title="Education" />
+      {education.map((entry) => (
+        <article key={entry.id} style={{ marginBottom: "var(--gap-block)" }}>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "baseline",
+              justifyContent: "space-between",
+              gap: "0.4rem 1.5rem",
+              marginBottom: "var(--gap-item)",
+            }}
+          >
+            <h3
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "var(--size-h3)",
+                fontWeight: "var(--weight-h3)",
+                color: "var(--fg)",
+                margin: 0,
+              }}
+            >
+              {entry.degree}
+              <span style={{ color: "var(--muted)", fontWeight: 400 }}> — {entry.school}</span>
+            </h3>
+            <span
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "var(--size-meta)",
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: "var(--muted)",
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
+              {formatMonth(entry.start)} – {formatMonth(entry.end)}
+            </span>
+          </div>
+          <ul
+            style={{
+              listStyle: "none",
+              margin: 0,
+              padding: 0,
+              display: "flex",
+              flexDirection: "column",
+              gap: "var(--gap-item)",
+            }}
+          >
+            {entry.notes.map((note, i) => (
+              <li
+                // biome-ignore lint/suspicious/noArrayIndexKey: notes are static prose, no stable id
+                key={i}
+                style={{
+                  fontSize: "var(--size-body)",
+                  lineHeight: "var(--line)",
+                  color: "var(--fg)",
+                  paddingLeft: "1.4rem",
+                  position: "relative",
+                  maxWidth: "72ch",
+                }}
+              >
+                <span
+                  aria-hidden="true"
+                  style={{
+                    position: "absolute",
+                    left: 0,
+                    top: "calc(var(--line) * 0.5em)",
+                    transform: "translateY(-50%)",
+                    width: "0.55rem",
+                    height: "1px",
+                    background: "var(--fg)",
+                  }}
+                />
+                {note}
+              </li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </section>
+  );
+}

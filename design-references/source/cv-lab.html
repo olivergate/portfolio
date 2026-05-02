@@ -1,0 +1,797 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Oliver Kaikane Gate — Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  :root {
+    --bg: #faf7f2;
+    --bg-tint: #f3eee3;
+    --fg: #1c1915;
+    --fg-soft: #3a3530;
+    --muted: #7a746c;
+    --muted-2: #a39c91;
+    --rule: #c4b9a8;
+    --rule-soft: rgba(28,25,21,0.10);
+    --accent: #a04a26;
+    --accent-soft: #f5e8d8;
+    --terminal: #1a1814;
+    --terminal-fg: #f4eee0;
+    --live: #2f6b3a;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  *,*::before,*::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--accent-soft); color: var(--fg); }
+
+  @keyframes live-pulse {
+    0%   { opacity: 1; box-shadow: 0 0 0 0 rgba(47,107,58,0.6); }
+    70%  { opacity: 1; box-shadow: 0 0 0 8px rgba(47,107,58,0); }
+    100% { opacity: 1; box-shadow: 0 0 0 0 rgba(47,107,58,0); }
+  }
+  .live-dot { animation: live-pulse 2s ease-out infinite; }
+
+  @keyframes stagger-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .stag { animation: stagger-in 480ms cubic-bezier(.2,.7,.2,1) backwards; }
+
+  @keyframes type-blink {
+    50% { opacity: 0; }
+  }
+  .caret { display: inline-block; width: 8px; height: 1em; background: var(--terminal-fg); margin-left: 2px; vertical-align: -2px; animation: type-blink 0.9s steps(2) infinite; }
+
+  /* Loading bars — designed loading state */
+  @keyframes load-bar {
+    0% { transform: scaleX(0); transform-origin: left; }
+    50% { transform: scaleX(1); transform-origin: left; }
+    50.01% { transform-origin: right; }
+    100% { transform: scaleX(0); transform-origin: right; }
+  }
+
+  /* Featured card hero */
+  .demo-shell {
+    background: var(--card-bg, #fffdf7);
+    border: 1px solid var(--rule);
+    border-bottom-width: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+  .demo-shell::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent) 30%, var(--accent) 70%, transparent);
+    opacity: 0.65;
+  }
+
+  .scanlines {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 2px,
+      rgba(255,255,255,0.012) 2px,
+      rgba(255,255,255,0.012) 3px
+    );
+  }
+
+  /* CTA */
+  .cta-btn {
+    background: var(--fg);
+    color: var(--bg);
+    border: 1px solid var(--fg);
+    padding: 14px 22px;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 200ms, transform 100ms, box-shadow 200ms;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .cta-btn:hover { background: var(--accent); border-color: var(--accent); box-shadow: 0 6px 14px -8px rgba(160,74,38,0.5); }
+  .cta-btn:active { transform: translateY(1px); }
+  .cta-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .sample-pill {
+    background: transparent;
+    border: 1px solid var(--rule);
+    padding: 7px 14px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-soft);
+    cursor: pointer;
+    border-radius: 999px;
+    transition: background 160ms, border-color 160ms, color 160ms;
+  }
+  .sample-pill:hover { background: #fffdf7; border-color: var(--fg); color: var(--fg); }
+  .sample-pill.active { background: var(--fg); border-color: var(--fg); color: var(--bg); }
+
+  .mini-card {
+    background: #fffdf7;
+    border: 1px solid var(--rule);
+    border-bottom-width: 2px;
+    transition: transform 200ms, box-shadow 200ms, border-color 200ms;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .mini-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px -16px rgba(28,25,21,0.25);
+    border-color: var(--fg);
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+// ─── SAMPLE TRANSCRIPTS + RETROS ─────────────────────────────────────────
+const SAMPLES = {
+  refactor: {
+    label: "Refactoring auth flow",
+    transcript: `[18:02] User: Need to refactor the auth flow. Currently we have JWTs in localStorage and a separate session check that hits /me on every page load. Want to consolidate.
+[18:02] Claude: Let me read auth/jwt.ts and auth/session.ts first.
+[18:04] Claude: Found three call sites for getCurrentUser() — pages/dashboard, pages/settings, components/Header. Suggest centralising in a SessionProvider with React Query for the /me check (cached 5min, refetch on focus).
+[18:05] User: do it
+[18:23] Claude: Done. Two things to flag:
+ - The settings page was passing user.id into a useEffect dep array that's now provided by context — kept the dep but it'll only fire on user change now, which is correct.
+ - There's a race in the existing logout handler I noticed while in there. Filed a note in TODO.md rather than fixing in this PR.
+[18:24] User: good call. Run tests.
+[18:25] Claude: 47 pass, 2 fail — both in auth.test.ts, both expect the old localStorage shape. Fixing.
+[18:31] Claude: 49 pass. Anything else?
+[18:32] User: ship it`,
+    retro: {
+      went_well: [
+        "Claude read both auth files before suggesting an approach — no premature solutioning.",
+        "Surfaced an out-of-scope race condition without trying to expand the PR.",
+        "Caught the localStorage-shaped test failures and fixed them in one pass instead of asking.",
+      ],
+      slowed: [
+        "I didn't specify the caching policy up front — Claude proposed 5min/refetch-on-focus and I accepted, but I'd have wanted to think about it for 30 seconds first.",
+        "The /me consolidation should arguably have been a design discussion before code; we got lucky that the answer was obvious.",
+      ],
+      learnings: [
+        { title: "Read-before-write is doing real work", body: "Two files read before any code change is the move. The follow-up question quality goes up dramatically when context is loaded first." },
+        { title: "Out-of-scope finds belong in TODO.md, not the PR", body: "Pattern worth keeping: the agent flagged the logout race and parked it instead of derailing. Tighten this in the system prompt." },
+      ],
+      additions: [
+        { title: "/audit-context", body: "A slash command that prints which files have been read this session, so I can sanity-check coverage before reviewing a diff." },
+      ],
+    },
+  },
+  debug: {
+    label: "Debugging deploy issue",
+    transcript: `[09:14] User: prod deploy failing. CloudWatch is showing "ECONNREFUSED" from the worker after rollout.
+[09:14] Claude: I'll start with the deploy diff and the worker logs around the failure window.
+[09:18] Claude: Three suspects in the diff: env var rename (DB_URL → DATABASE_URL), a new feature flag, and a Dockerfile base bump. The error timing matches container start, so I'd look at the env rename first.
+[09:19] User: yeah we did rename that
+[09:21] Claude: Worker has a hard-coded reference to process.env.DB_URL in workers/jobs/index.ts:14. Missed it in the rename PR. Fix is one line.
+[09:22] User: send the fix
+[09:23] Claude: Done. Also grepped the repo for "DB_URL" — no other stragglers. Suggest adding the env var rename to the deploy checklist as a process change.
+[09:24] User: ship and document.`,
+    retro: {
+      went_well: [
+        "Triaged the diff before the logs — fastest path given a clean failure window.",
+        "Followed the one-line fix with a repo-wide grep for stragglers; cheap and exactly the right paranoia.",
+        "Suggested a deploy-checklist update without me asking.",
+      ],
+      slowed: [
+        "We should have caught this in CI — there was no test that would have failed on a missing env var.",
+        "The rename PR review was approved by me without grepping; I'd run a stricter checklist next time.",
+      ],
+      learnings: [
+        { title: "Env-var renames need a sweep, not a search-and-replace", body: "PR diff doesn't capture string references in non-imported files. Make 'grep before merge' part of the rename ritual." },
+        { title: "CI gap: no env-var contract", body: "Worth a contract test that asserts every required env var is present on boot. Would've caught this in pre-deploy." },
+      ],
+      additions: [
+        { title: "/env-sweep <oldname> <newname>", body: "Slash command that grep-renames across the repo and prints any references the diff missed." },
+      ],
+    },
+  },
+  feature: {
+    label: "Building a feature from spec",
+    transcript: `[14:01] User: New feature — bulk export from the dashboard. Spec attached. Walk me through your plan first, don't write code yet.
+[14:02] Claude: Read SPEC.md. Plan:
+ 1. Add a /export/jobs route, returns paginated job list + status.
+ 2. Add a "Bulk export" button to the dashboard table; opens a modal with format + date range.
+ 3. Worker job in workers/exports — generates CSV, uploads to S3, sends signed URL via email.
+ 4. Tests at each layer.
+Two open questions: (a) Auth on the signed URL — same-domain only, or any-domain? (b) Should we rate-limit per user?
+[14:04] User: same-domain only, rate-limit at 5/hour. Go.
+[14:38] Claude: Ready for review. One thing I'm not happy with: the modal is pulling format options from a constant; should be a config so non-engineers can edit. Worth a follow-up?
+[14:39] User: yes, file it. Anything else?
+[14:40] Claude: Tests pass. Commit message draft attached.`,
+    retro: {
+      went_well: [
+        "Plan-first request worked — Claude surfaced the auth + rate-limit ambiguity before any code was written.",
+        "Self-flagged the format-options-as-constant smell and asked rather than silently expanding scope.",
+        "Commit message draft saved a couple of minutes at the end.",
+      ],
+      slowed: [
+        "I didn't pre-write the plan template, so the structure of the plan response was Claude's default rather than what I'd want for this codebase.",
+        "Modal UX wasn't in the spec; we made decisions on the fly that should've been mocked first.",
+      ],
+      learnings: [
+        { title: "\"Plan first, no code\" is the highest-leverage prompt I have", body: "When the agent has to commit to a plan before any tokens are spent on code, the plan is sharper. Make this the default for any feature >2 hours." },
+        { title: "UX decisions hidden in specs", body: "The spec described the behaviour but not the surface — we ended up designing the modal in chat. Catch this earlier." },
+      ],
+      additions: [
+        { title: "skill: feature-spec-review", body: "A skill that, given a spec, returns: (1) explicit assumptions, (2) ambiguous points needing clarification, (3) UX surfaces that aren't covered. Run before any feature work." },
+      ],
+    },
+  },
+};
+
+// ─── PROJECTS ────────────────────────────────────────────────────────────
+const SECONDARY_PROJECTS = [
+  {
+    id: "language",
+    title: "Language Learning App",
+    stack: ["Next.js", "Supabase", "OpenAI"],
+    blurb: "Personal project exploring LLM-driven language acquisition. Conversation-first; vocabulary surfaces as you stumble on it, not before.",
+    cta: "Read writeup",
+    grad: "linear-gradient(135deg, #f4d35e 0%, #e26d5a 60%, #5a3a3a 100%)",
+    glyph: "あ",
+  },
+  {
+    id: "habit",
+    title: "Habit-Forming App",
+    stack: ["Flutter", "Dart", "Riverpod"],
+    blurb: "Cross-platform mobile, focused on the loop between intention, friction, and reward. Currently in TestFlight.",
+    cta: "Open in TestFlight",
+    grad: "linear-gradient(135deg, #cde4d3 0%, #6b8a7a 50%, #2c3e36 100%)",
+    glyph: "◐",
+  },
+  {
+    id: "movement",
+    title: "Movement-Focused Consumer App",
+    stack: ["React Native", "Expo", "Supabase"],
+    blurb: "Consumer-facing project around physical movement — loose alpha, daily test build, mostly a vehicle for learning React Native well.",
+    cta: "Read writeup",
+    grad: "linear-gradient(135deg, #ffd6c2 0%, #d97757 55%, #4a2c1f 100%)",
+    glyph: "↗",
+  },
+];
+
+// ─── COMPONENTS ──────────────────────────────────────────────────────────
+function LiveBadge() {
+  return (
+    <span style={{
+      display: "inline-flex", alignItems: "center", gap: 8,
+      padding: "5px 10px",
+      background: "rgba(47,107,58,0.10)",
+      border: "1px solid rgba(47,107,58,0.45)",
+      color: "var(--live)",
+      fontFamily: "var(--font-mono)", fontSize: "0.66rem",
+      letterSpacing: "0.22em", textTransform: "uppercase", fontWeight: 600,
+    }}>
+      <span className="live-dot" style={{
+        width: 7, height: 7, borderRadius: "50%", background: "var(--live)",
+      }} />
+      Live demo
+    </span>
+  );
+}
+
+function LoadingState({ phase }) {
+  // phase = 0..3 → moves the highlight through 4 steps
+  const STEPS = ["read transcript", "extract beats", "synthesise retro", "format output"];
+  return (
+    <div style={{
+      background: "var(--terminal)",
+      color: "var(--terminal-fg)",
+      padding: "1.5rem 1.75rem",
+      fontFamily: "var(--font-mono)",
+      fontSize: "0.82rem",
+      lineHeight: 1.7,
+    }} className="scanlines">
+      {STEPS.map((s, i) => (
+        <div key={s} style={{
+          display: "flex", alignItems: "center", gap: 14,
+          opacity: i < phase ? 0.5 : i === phase ? 1 : 0.25,
+          transition: "opacity 200ms",
+        }}>
+          <span style={{ color: i < phase ? "#7ad77a" : i === phase ? "#ffe27a" : "rgba(244,238,224,0.4)", width: 14 }}>
+            {i < phase ? "✓" : i === phase ? "▸" : "·"}
+          </span>
+          <span style={{ letterSpacing: "0.06em" }}>
+            {s}
+            {i === phase && <span className="caret" />}
+          </span>
+          <span style={{ flex: 1, position: "relative", height: 1, marginLeft: 8 }}>
+            <span style={{
+              position: "absolute", inset: 0,
+              background: "rgba(244,238,224,0.15)",
+            }} />
+            {i === phase && (
+              <span style={{
+                position: "absolute", inset: 0,
+                background: "#ffe27a",
+                animation: "load-bar 1.6s cubic-bezier(.4,.0,.2,1) infinite",
+              }} />
+            )}
+            {i < phase && (
+              <span style={{
+                position: "absolute", inset: 0,
+                background: "rgba(122,215,122,0.55)",
+              }} />
+            )}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function RetroOutput({ data }) {
+  const Section = ({ title, kicker, children, idx }) => (
+    <div className="stag" style={{
+      animationDelay: `${idx * 90}ms`,
+      paddingTop: "1.5rem", marginTop: "1.5rem",
+      borderTop: "1px solid var(--rule-soft)",
+    }}>
+      <div style={{
+        display: "flex", alignItems: "baseline", gap: 12, marginBottom: "0.85rem",
+      }}>
+        <span style={{
+          fontFamily: "var(--font-mono)", fontSize: "0.7rem",
+          letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--muted)",
+          fontVariantNumeric: "tabular-nums",
+        }}>{kicker}</span>
+        <h4 style={{
+          fontFamily: "var(--font-display)", fontSize: "1.15rem",
+          fontWeight: 600, letterSpacing: "-0.005em", margin: 0, lineHeight: 1.2,
+        }}>{title}</h4>
+      </div>
+      {children}
+    </div>
+  );
+
+  const Bullet = ({ children }) => (
+    <li style={{
+      paddingLeft: "1.4rem", position: "relative",
+      maxWidth: "70ch", textWrap: "pretty", marginBottom: "0.55rem",
+    }}>
+      <span style={{
+        position: "absolute", left: 0, top: "0.78em",
+        width: "0.55rem", height: "1px", background: "var(--fg)",
+      }} />
+      {children}
+    </li>
+  );
+
+  return (
+    <div className="stag" style={{
+      background: "#fffdf7", border: "1px solid var(--rule)",
+      borderBottomWidth: 2,
+      padding: "1.5rem 1.75rem 2rem",
+    }}>
+      <div style={{
+        display: "flex", alignItems: "baseline", justifyContent: "space-between",
+        gap: "1rem 1.5rem", flexWrap: "wrap", paddingBottom: "1rem",
+        borderBottom: "1px solid var(--rule)",
+      }}>
+        <div>
+          <div style={{
+            fontFamily: "var(--font-mono)", fontSize: "0.66rem",
+            letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--muted)",
+            marginBottom: 4,
+          }}>Session retro / draft</div>
+          <h3 style={{
+            fontFamily: "var(--font-display)", fontSize: "1.5rem",
+            fontWeight: 500, letterSpacing: "-0.015em", margin: 0,
+          }}>Reading: <span style={{ fontStyle: "italic" }}>{data.label}</span></h3>
+        </div>
+        <div style={{
+          fontFamily: "var(--font-mono)", fontSize: "0.66rem",
+          letterSpacing: "0.16em", color: "var(--muted)", textTransform: "uppercase",
+        }}>
+          {new Date().toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+        </div>
+      </div>
+
+      <Section idx={0} title="What went well" kicker="01">
+        <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+          {data.went_well.map((b, i) => <Bullet key={i}>{b}</Bullet>)}
+        </ul>
+      </Section>
+
+      <Section idx={1} title="What slowed things down" kicker="02">
+        <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+          {data.slowed.map((b, i) => <Bullet key={i}>{b}</Bullet>)}
+        </ul>
+      </Section>
+
+      <Section idx={2} title="Learnings catalogue" kicker="03">
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
+          {data.learnings.map((l, i) => (
+            <article key={i} style={{
+              background: "var(--bg-tint)",
+              borderLeft: "3px solid var(--accent)",
+              padding: "0.85rem 1rem 0.95rem 1rem",
+            }}>
+              <div style={{
+                fontFamily: "var(--font-mono)", fontSize: "0.68rem",
+                letterSpacing: "0.2em", textTransform: "uppercase",
+                color: "var(--accent)", fontWeight: 600,
+                marginBottom: 4,
+              }}>L-{String(i + 1).padStart(2, "0")}</div>
+              <h5 style={{
+                fontFamily: "var(--font-display)", fontSize: "1.05rem",
+                fontWeight: 600, margin: 0, marginBottom: 4, lineHeight: 1.25,
+              }}>{l.title}</h5>
+              <p style={{ margin: 0, fontSize: "0.94rem", color: "var(--fg-soft)", textWrap: "pretty" }}>
+                {l.body}
+              </p>
+            </article>
+          ))}
+        </div>
+      </Section>
+
+      <Section idx={3} title="Suggested additions" kicker="04">
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
+          {data.additions.map((a, i) => (
+            <div key={i} style={{
+              display: "grid", gridTemplateColumns: "auto 1fr",
+              gap: "0.85rem 1rem",
+              padding: "0.65rem 0.85rem",
+              border: "1px dashed var(--rule)",
+              alignItems: "baseline",
+            }}>
+              <code style={{
+                fontFamily: "var(--font-mono)", fontSize: "0.78rem",
+                background: "var(--fg)", color: "var(--bg)",
+                padding: "3px 8px", letterSpacing: "0.05em", whiteSpace: "nowrap",
+              }}>{a.title}</code>
+              <span style={{ fontSize: "0.94rem", color: "var(--fg-soft)", textWrap: "pretty" }}>{a.body}</span>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <p style={{
+        margin: "1.5rem 0 0",
+        fontFamily: "var(--font-mono)", fontSize: "0.66rem",
+        letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--muted)",
+        display: "flex", alignItems: "center", gap: 8,
+      }}>
+        <span style={{
+          display: "inline-block", width: 6, height: 6, borderRadius: "50%",
+          background: "var(--accent)",
+        }} />
+        Generated by a real Anthropic API call · prompt + transcript only · no persistence
+      </p>
+    </div>
+  );
+}
+
+function FeaturedDemo() {
+  const [sampleId, setSampleId] = useState("refactor");
+  const [text, setText] = useState(SAMPLES.refactor.transcript);
+  const [phase, setPhase] = useState(-1); // -1 idle, 0..3 loading, 4 done
+  const [output, setOutput] = useState(null);
+  const phaseRef = useRef(null);
+
+  const pickSample = (id) => {
+    setSampleId(id);
+    setText(SAMPLES[id].transcript);
+    setOutput(null);
+    setPhase(-1);
+  };
+
+  const runRetro = () => {
+    setOutput(null);
+    setPhase(0);
+    clearInterval(phaseRef.current);
+    let p = 0;
+    phaseRef.current = setInterval(() => {
+      p++;
+      if (p >= 4) {
+        clearInterval(phaseRef.current);
+        setPhase(-1);
+        const data = SAMPLES[sampleId].retro;
+        setOutput({ ...data, label: SAMPLES[sampleId].label });
+      } else {
+        setPhase(p);
+      }
+    }, 520);
+  };
+
+  useEffect(() => () => clearInterval(phaseRef.current), []);
+
+  return (
+    <article className="demo-shell" style={{
+      padding: "clamp(1.5rem, 3vw, 2.25rem)",
+    }}>
+      {/* Header */}
+      <header style={{
+        display: "flex", flexWrap: "wrap", gap: "1rem 1.5rem",
+        alignItems: "flex-start", justifyContent: "space-between",
+        paddingBottom: "1.25rem",
+        borderBottom: "1px solid var(--rule)",
+      }}>
+        <div style={{ flex: "1 1 380px", minWidth: 0 }}>
+          <div style={{
+            display: "flex", alignItems: "center", gap: 10, marginBottom: "0.65rem",
+            fontFamily: "var(--font-mono)", fontSize: "0.7rem",
+            letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--muted)",
+          }}>
+            <span>Featured / 01</span>
+            <span style={{ color: "var(--muted-2)" }}>·</span>
+            <span>Personal Claude Code Setup</span>
+          </div>
+          <h2 style={{
+            fontFamily: "var(--font-display)", fontSize: "clamp(1.6rem, 3vw, 2.2rem)",
+            fontWeight: 600, letterSpacing: "-0.02em", lineHeight: 1.05,
+            margin: 0, textWrap: "balance",
+          }}>Session retrospective generator</h2>
+          <p style={{
+            margin: "0.65rem 0 0", maxWidth: "60ch", color: "var(--fg-soft)",
+            textWrap: "pretty",
+          }}>
+            Paste a Claude Code transcript and the demo synthesises a retro:
+            what went well, what slowed things down, learnings catalogue entries,
+            and suggested skills to add. The same shape my real retros take after every working session.
+          </p>
+        </div>
+        <LiveBadge />
+      </header>
+
+      {/* Sample picker */}
+      <div style={{ marginTop: "1.5rem" }}>
+        <div style={{
+          display: "flex", flexWrap: "wrap", gap: "0.5rem 0.6rem", alignItems: "center",
+        }}>
+          <span style={{
+            fontFamily: "var(--font-mono)", fontSize: "0.66rem",
+            letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--muted)",
+            marginRight: "0.5rem",
+          }}>Sample sessions /</span>
+          {Object.entries(SAMPLES).map(([id, s]) => (
+            <button
+              key={id}
+              className={`sample-pill ${sampleId === id ? "active" : ""}`}
+              onClick={() => pickSample(id)}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Transcript area */}
+        <div style={{ marginTop: "0.85rem", position: "relative" }}>
+          <div style={{
+            position: "absolute", top: 12, left: 14,
+            fontFamily: "var(--font-mono)", fontSize: "0.62rem",
+            letterSpacing: "0.22em", textTransform: "uppercase",
+            color: "rgba(244,238,224,0.5)",
+          }}>transcript / editable</div>
+          <textarea
+            value={text}
+            onChange={(e) => { setText(e.target.value); setOutput(null); }}
+            spellCheck={false}
+            style={{
+              width: "100%", minHeight: 200,
+              background: "var(--terminal)", color: "var(--terminal-fg)",
+              border: "1px solid var(--rule)", borderBottomWidth: 2,
+              padding: "32px 18px 16px",
+              fontFamily: "var(--font-mono)", fontSize: "0.82rem",
+              lineHeight: 1.55, resize: "vertical", outline: "none",
+            }}
+          />
+        </div>
+
+        {/* Run + meta */}
+        <div style={{
+          marginTop: "1rem", display: "flex", flexWrap: "wrap",
+          gap: "1rem", alignItems: "center", justifyContent: "space-between",
+        }}>
+          <button className="cta-btn" onClick={runRetro} disabled={phase >= 0}>
+            {phase >= 0 ? "Running…" : <>Run retro <span style={{ fontSize: "1rem" }}>→</span></>}
+          </button>
+          <span style={{
+            fontFamily: "var(--font-mono)", fontSize: "0.7rem",
+            letterSpacing: "0.16em", color: "var(--muted)", textTransform: "uppercase",
+          }}>
+            {text.length.toLocaleString()} chars · sample = {SAMPLES[sampleId].label}
+          </span>
+        </div>
+      </div>
+
+      {/* Loading + output */}
+      <div style={{ marginTop: "1.75rem" }}>
+        {phase >= 0 && <LoadingState phase={phase} />}
+        {output && phase < 0 && <RetroOutput data={output} />}
+        {!output && phase < 0 && (
+          <div style={{
+            border: "1px dashed var(--rule)",
+            padding: "2rem 1.5rem", textAlign: "center",
+            color: "var(--muted)", fontStyle: "italic",
+            fontFamily: "var(--font-display)", fontSize: "1rem",
+          }}>
+            Pick a sample, edit if you like, then run a retro to see the output.
+          </div>
+        )}
+      </div>
+    </article>
+  );
+}
+
+function MiniCard({ p }) {
+  return (
+    <article className="mini-card">
+      {/* Hero — gradient placeholder with monogram */}
+      <div style={{
+        position: "relative",
+        aspectRatio: "16 / 9",
+        background: p.grad,
+        display: "flex", alignItems: "flex-end",
+        padding: "1rem 1.25rem",
+        color: "rgba(255,255,255,0.95)",
+      }}>
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "radial-gradient(ellipse at 70% 20%, rgba(255,255,255,0.18), transparent 60%)",
+        }} />
+        <div style={{
+          position: "absolute", top: "1rem", right: "1.2rem",
+          fontFamily: "var(--font-display)", fontSize: "3.5rem",
+          fontWeight: 700, lineHeight: 1, letterSpacing: "-0.04em",
+          textShadow: "0 2px 16px rgba(0,0,0,0.25)",
+          opacity: 0.95,
+        }}>{p.glyph}</div>
+        <span style={{
+          fontFamily: "var(--font-mono)", fontSize: "0.66rem",
+          letterSpacing: "0.22em", textTransform: "uppercase",
+          background: "rgba(0,0,0,0.35)", padding: "4px 8px",
+          backdropFilter: "blur(2px)",
+          position: "relative",
+          whiteSpace: "nowrap",
+        }}>Project / personal</span>
+      </div>
+
+      <div style={{ padding: "1.1rem 1.25rem 1.25rem", display: "flex", flexDirection: "column", gap: "0.55rem", flex: 1 }}>
+        <h3 style={{
+          fontFamily: "var(--font-display)", fontSize: "1.2rem",
+          fontWeight: 600, margin: 0, lineHeight: 1.2,
+        }}>{p.title}</h3>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem 0.4rem" }}>
+          {p.stack.map((t) => (
+            <span key={t} style={{
+              fontFamily: "var(--font-mono)", fontSize: "0.66rem",
+              letterSpacing: "0.12em", color: "var(--muted)",
+              border: "1px solid var(--rule)", padding: "2px 7px",
+              borderRadius: 999,
+            }}>{t}</span>
+          ))}
+        </div>
+        <p style={{ margin: "0.25rem 0 0", color: "var(--fg-soft)", fontSize: "0.94rem", textWrap: "pretty", flex: 1 }}>
+          {p.blurb}
+        </p>
+        <button style={{
+          marginTop: "0.85rem", alignSelf: "flex-start",
+          background: "transparent", border: 0, padding: 0, cursor: "pointer",
+          fontFamily: "var(--font-mono)", fontSize: "0.74rem",
+          letterSpacing: "0.18em", textTransform: "uppercase",
+          color: "var(--accent)", fontWeight: 600,
+          display: "inline-flex", alignItems: "center", gap: 6,
+        }}>
+          {p.cta} <span aria-hidden>→</span>
+        </button>
+      </div>
+    </article>
+  );
+}
+
+// ─── APP ─────────────────────────────────────────────────────────────────
+function App() {
+  return (
+    <div style={{
+      maxWidth: 1240, margin: "0 auto",
+      padding: "clamp(1.5rem, 3vw, 2.5rem) clamp(1.25rem, 3vw, 2.5rem) 5rem",
+    }}>
+      {/* HEADER */}
+      <header style={{ paddingBottom: "1.5rem", borderBottom: "1px solid var(--rule)" }}>
+        <div style={{
+          display: "flex", flexWrap: "wrap", gap: "0.75rem 1.25rem",
+          fontFamily: "var(--font-mono)", fontSize: "0.78rem",
+          letterSpacing: "0.22em", textTransform: "uppercase",
+          color: "var(--muted)", marginBottom: "0.85rem",
+        }}>
+          <span>Oliver Kaikane Gate</span><span>—</span><span>Lab</span>
+          <span>—</span><span>Updated weekly</span>
+        </div>
+        <h1 style={{
+          fontFamily: "var(--font-display)",
+          fontSize: "clamp(2.4rem, 6vw, 4.4rem)",
+          fontWeight: 500, letterSpacing: "-0.025em", lineHeight: 0.95,
+          margin: 0, textWrap: "balance",
+        }}>
+          Things I'm building <em style={{ fontStyle: "italic", color: "var(--accent)" }}>with LLMs</em>
+        </h1>
+        <p style={{
+          marginTop: "1.25rem", fontSize: "1.15rem", maxWidth: "60ch",
+          textWrap: "pretty",
+        }}>
+          A working space — one fully live demo at the top, three side projects below.
+          Everything here is in flight; nothing is finished. That's the point.
+        </p>
+      </header>
+
+      {/* FEATURED */}
+      <section style={{ marginTop: "3rem" }}>
+        <FeaturedDemo />
+      </section>
+
+      {/* SECONDARY GRID */}
+      <section style={{ marginTop: "4.5rem" }}>
+        <header style={{
+          display: "grid", gridTemplateColumns: "auto 1fr auto", gap: "1rem",
+          alignItems: "baseline", paddingBottom: "0.85rem",
+          borderBottom: "1px solid var(--rule)", marginBottom: "1.75rem",
+        }}>
+          <span style={{
+            fontFamily: "var(--font-mono)", fontSize: "0.78rem",
+            letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--muted)",
+          }}>02</span>
+          <h2 style={{
+            fontFamily: "var(--font-display)", fontSize: "clamp(1.5rem, 3vw, 2rem)",
+            fontWeight: 500, letterSpacing: "-0.01em", margin: 0, lineHeight: 1.05,
+          }}>Side projects</h2>
+          <span style={{
+            fontFamily: "var(--font-mono)", fontSize: "0.7rem",
+            letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--muted)",
+          }}>linkouts, not demos</span>
+        </header>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: "1.25rem",
+        }}>
+          {SECONDARY_PROJECTS.map((p) => <MiniCard key={p.id} p={p} />)}
+        </div>
+      </section>
+
+      <footer style={{
+        marginTop: "5rem", paddingTop: "2rem",
+        borderTop: "1px solid var(--rule)",
+        display: "flex", flexWrap: "wrap", gap: "0.75rem 2rem",
+        justifyContent: "space-between",
+        fontFamily: "var(--font-mono)", fontSize: "0.78rem",
+        letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--muted)",
+      }}>
+        <span>© Oliver Kaikane Gate</span>
+        <span>Lab — exploratory</span>
+        <span>One live, three loose</span>
+      </footer>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+</script>
+</body>
+</html>
