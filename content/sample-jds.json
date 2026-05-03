@@ -1,0 +1,285 @@
+[
+  {
+    "key": "sustainability",
+    "label": "Tech Lead, Sustainability Tech",
+    "text": "Tech Lead — Sustainability Tech (Remote, Europe)\n\nWe are an early-stage climate-tech company building tooling for supply chain transparency in agricultural commodities. We work with global FMCG brands and producer cooperatives to verify ethical sourcing and trace product provenance from farm to shelf.\n\nWe're hiring our first technical lead to take ownership of our data platform and customer-facing analytics. You'll set technical direction, mentor a small engineering team, and partner closely with our domain experts and customer-success leads.\n\nResponsibilities:\n• Lead architecture for our data ingestion and analytics stack — Python, Postgres, modern orchestration (Dagster or similar)\n• Own the customer-facing analytics dashboard end-to-end — React/TypeScript\n• Establish data quality and observability practices across messy, real-world supply chain data\n• Mentor a team of 3–6 engineers; set hiring bar\n• Work directly with non-technical stakeholders to translate domain requirements into systems\n• Set us up for AI/ML feature work over the next 12 months\n\nRequirements:\n• 6+ years building production software, full-stack preferred\n• Deep React + TypeScript experience\n• Strong Python; bonus for Dagster, Airflow, dbt, or similar\n• Comfortable making architectural decisions in ambiguity\n• Experience with multi-tenant SaaS or B2B platforms\n• Track record mentoring or leading engineers\n• Background in supply chain, sustainability, agritech, or fintech a plus\n• Prior experience with graph databases or anomaly-detection systems welcome\n• Familiarity with on-chain provenance / Ethereum a nice-to-have\n• EU-based or willing to overlap with European hours\n\nWhat we offer competitive equity, mission-led work, async culture, four-day discovery sprints quarterly.",
+    "chips": [
+      {
+        "id": "r1",
+        "text": "6+ years full-stack production experience",
+        "baseStatus": "hit",
+        "cite": ["role:opensc-sole-frontend", "role:redington-frontend-arch"],
+        "reasoning": "7+ years across OpenSC and Redington, both production systems with paying customers."
+      },
+      {
+        "id": "r2",
+        "text": "React + TypeScript, dashboard-grade",
+        "baseStatus": "hit",
+        "cite": [
+          "role:opensc-sole-frontend",
+          "role:redington-frontend-arch",
+          "role:redington-config-dashboards"
+        ],
+        "reasoning": "Sole frontend on the OpenSC analytics dashboard; owned architectural decisions on the Redington multi-tenant TS dashboard."
+      },
+      {
+        "id": "r3",
+        "text": "Python, Dagster orchestration",
+        "baseStatus": "hit",
+        "cite": ["role:opensc-dagster-yaml"],
+        "reasoning": "Re-architected OpenSC supply-chain onboarding in Dagster with a YAML-configured, data-contract-driven layer."
+      },
+      {
+        "id": "r4",
+        "text": "Messy real-world supply chain data",
+        "baseStatus": "hit",
+        "cite": ["role:opensc-nespresso-payments", "role:opensc-anomaly-graph"],
+        "reasoning": "Built EPCIS standardisation for first-three-miles farm data; surfaced infiltration / exfiltration / untraced origins for Nespresso and Austral Fisheries."
+      },
+      {
+        "id": "r5",
+        "text": "Data quality + observability practices",
+        "baseStatus": "hit",
+        "cite": ["role:opensc-data-quality-monitoring"],
+        "reasoning": "Built monitoring for data quality, ingestion accuracy, and frequency across all supply chain feeds."
+      },
+      {
+        "id": "r6",
+        "text": "Multi-tenant SaaS / B2B platform",
+        "baseStatus": "hit",
+        "cite": ["role:redington-frontend-arch"],
+        "reasoning": "Owned architecture on a multi-tenant research platform used by thousands of consultants across 7+ tenants — cross-tenant leakage would have been existential."
+      },
+      {
+        "id": "r7",
+        "text": "Graph DB / anomaly detection",
+        "baseStatus": "hit",
+        "cite": ["role:opensc-anomaly-graph"],
+        "reasoning": "Surfaced supply chain anomalies through graph-based analysis powered by Kuzu — direct match."
+      },
+      {
+        "id": "r8",
+        "text": "Mentor / lead a small engineering team",
+        "baseStatus": "stretch",
+        "strictStatus": "stretch",
+        "generousStatus": "hit",
+        "cite": ["role:redington-team-lead"],
+        "reasoning": "Led a 5-person frontend team at Redington and ran the LifeCycle pro-bono engagement end-to-end. Title was team-lead rather than tech-lead, so generosity matters here."
+      },
+      {
+        "id": "r9",
+        "text": "Set technical direction in ambiguity",
+        "baseStatus": "stretch",
+        "strictStatus": "stretch",
+        "generousStatus": "hit",
+        "cite": ["role:opensc-sole-frontend", "role:redington-config-dashboards"],
+        "reasoning": "Sole frontend engineer at OpenSC + co-led architectural decisions at Redington both involved direction-setting under ambiguity, but neither role formally carried 'set technical direction for the company'."
+      },
+      {
+        "id": "r10",
+        "text": "On-chain provenance / Ethereum",
+        "baseStatus": "stretch",
+        "strictStatus": "miss",
+        "generousStatus": "hit",
+        "cite": ["role:opensc-sole-frontend"],
+        "reasoning": "OpenSC stack listed Ethereum, but the CV doesn't claim primary ownership of the on-chain layer. Strict reading would call this a miss; generous would credit production exposure.",
+        "gapFraming": "Worked alongside an Ethereum-touching stack at OpenSC but didn't own the on-chain layer myself. Happy to talk about exposure vs ownership if that distinction matters here."
+      },
+      {
+        "id": "r11",
+        "text": "Set hiring bar / formal hiring authority",
+        "baseStatus": "miss",
+        "strictStatus": "miss",
+        "generousStatus": "stretch",
+        "cite": [],
+        "reasoning": "Team-lead at Redington implies interview involvement, but the CV doesn't claim ownership of a hiring bar. Honest gap; generous reading credits adjacent experience.",
+        "gapFraming": "I led a 5-engineer team but the CV doesn't speak to setting a hiring bar — happy to talk about the interviews I ran and how I'd approach this if it's load-bearing for the role."
+      },
+      {
+        "id": "r12",
+        "text": "Direct work with non-technical stakeholders",
+        "baseStatus": "stretch",
+        "strictStatus": "stretch",
+        "generousStatus": "hit",
+        "cite": ["role:opensc-nespresso-payments", "role:redington-charity"],
+        "reasoning": "Nespresso/Austral integration work and the LifeCycle charity engagement were stakeholder-heavy, but the CV foregrounds the engineering rather than the relationship-management."
+      }
+    ]
+  },
+  {
+    "key": "ai",
+    "label": "Senior Full-Stack at AI startup",
+    "text": "Senior Full-Stack Engineer — Series A AI Startup\n\nWe're building agent-native developer tooling. Looking for a senior full-stack engineer who's been hands-on with LLMs in production and has strong opinions about agent harness design, prompt security, and what good orchestration looks like.\n\nYou'll work directly with the founders. Small team, fast cycles, async, equity-heavy.\n\nRequirements:\n• 5+ years full-stack (React/TS + Python or Node)\n• Hands-on production LLM work — agents, tool-use, RAG, evals\n• Familiar with prompt injection, jailbreaks, OWASP AI Top 10\n• Comfortable with ambiguity; can hold the whole stack in your head\n• Bonus: open-source agent harnesses, custom Claude/Cursor setups, MCP servers\n• Bonus: developer-tool background",
+    "chips": [
+      {
+        "id": "a1",
+        "text": "5+ years full-stack",
+        "baseStatus": "hit",
+        "cite": ["role:opensc-sole-frontend", "role:redington-frontend-arch"],
+        "reasoning": "7+ years across OpenSC + Redington."
+      },
+      {
+        "id": "a2",
+        "text": "React/TS + Python",
+        "baseStatus": "hit",
+        "cite": ["role:opensc-sole-frontend"],
+        "reasoning": "Primary stack across both roles."
+      },
+      {
+        "id": "a3",
+        "text": "OWASP AI Top 10, prompt security",
+        "baseStatus": "stretch",
+        "strictStatus": "stretch",
+        "generousStatus": "hit",
+        "cite": [],
+        "reasoning": "Currently training in OWASP AI Top 10 and prompt injection; not yet shipped to production."
+      },
+      {
+        "id": "a4",
+        "text": "Production LLM work — agents, tool-use",
+        "baseStatus": "stretch",
+        "strictStatus": "miss",
+        "generousStatus": "hit",
+        "cite": [],
+        "reasoning": "Three side projects in flight using LLMs; no production agent system shipped at scale.",
+        "gapFraming": "Side-project LLM work in flight; nothing production-grade at scale yet. The work I'd describe as production was the Claude Code setup and tooling — happy to walk through it."
+      },
+      {
+        "id": "a5",
+        "text": "Custom Claude Code setup",
+        "baseStatus": "hit",
+        "cite": ["project:claude-code-setup"],
+        "reasoning": "Custom Claude CLI setup with agents, skills, and telemetry — exactly the bonus call-out."
+      },
+      {
+        "id": "a6",
+        "text": "Evals",
+        "baseStatus": "miss",
+        "strictStatus": "miss",
+        "generousStatus": "stretch",
+        "cite": [],
+        "reasoning": "No production evals on the CV.",
+        "gapFraming": "Reading + experimenting with eval frameworks; nothing production-grade yet. Honest gap."
+      },
+      {
+        "id": "a7",
+        "text": "Agent harness design",
+        "baseStatus": "stretch",
+        "cite": ["project:claude-code-setup"],
+        "reasoning": "Currently going deep on agentic systems and harness design as a stated focus area; the personal Claude Code setup is the closest thing to shipped harness work."
+      },
+      {
+        "id": "a8",
+        "text": "MCP servers",
+        "baseStatus": "miss",
+        "strictStatus": "miss",
+        "generousStatus": "stretch",
+        "cite": [],
+        "reasoning": "Not on the CV.",
+        "gapFraming": "Have read the spec, haven't built one. Could spike a working server in a day or two if it'd help the conversation."
+      },
+      {
+        "id": "a9",
+        "text": "Hold whole stack in your head",
+        "baseStatus": "hit",
+        "cite": ["role:opensc-sole-frontend"],
+        "reasoning": "Sole frontend on OpenSC analytics; full E2E ownership."
+      },
+      {
+        "id": "a10",
+        "text": "Developer tooling background",
+        "baseStatus": "miss",
+        "strictStatus": "miss",
+        "generousStatus": "stretch",
+        "cite": [],
+        "reasoning": "No dev-tool company on the CV.",
+        "gapFraming": "Personal Claude Code setup is dev-tooling-shaped, but I haven't been paid to build dev tools."
+      }
+    ]
+  },
+  {
+    "key": "fintech",
+    "label": "Frontend Lead, Fintech",
+    "text": "Frontend Lead — Fintech (London / hybrid)\n\nEstablished UK fintech (Series C) hiring a frontend lead to own the architecture of our customer-facing platform and lead a team of 6.\n\nRequirements:\n• 6+ years frontend, deep React + TypeScript\n• Multi-tenant or sensitive-data experience\n• Has led a frontend team\n• Strong testing culture (Cypress / Playwright)\n• Financial services background a strong plus\n• London or willing to relocate / hybrid 2 days/week",
+    "chips": [
+      {
+        "id": "f1",
+        "text": "6+ years frontend",
+        "baseStatus": "hit",
+        "cite": ["role:opensc-sole-frontend", "role:redington-frontend-arch"],
+        "reasoning": "7+ years frontend leadership across OpenSC + Redington."
+      },
+      {
+        "id": "f2",
+        "text": "Deep React + TypeScript",
+        "baseStatus": "hit",
+        "cite": ["role:redington-frontend-arch", "role:opensc-sole-frontend"],
+        "reasoning": "Primary stack on every role."
+      },
+      {
+        "id": "f3",
+        "text": "Multi-tenant / sensitive data",
+        "baseStatus": "hit",
+        "cite": ["role:redington-frontend-arch"],
+        "reasoning": "Owned architecture on Redington's multi-tenant platform with cross-tenant-existential risk."
+      },
+      {
+        "id": "f4",
+        "text": "Led a frontend team",
+        "baseStatus": "hit",
+        "cite": ["role:redington-team-lead"],
+        "reasoning": "Led 5-engineer frontend team at Redington — direct match."
+      },
+      {
+        "id": "f5",
+        "text": "Cypress / E2E testing culture",
+        "baseStatus": "hit",
+        "cite": ["role:redington-cypress"],
+        "reasoning": "Drove Cypress E2E adoption at Redington."
+      },
+      {
+        "id": "f6",
+        "text": "Financial services background",
+        "baseStatus": "hit",
+        "cite": ["role:redington-frontend-arch"],
+        "reasoning": "Three years at Redington, a UK investment consultancy — direct match."
+      },
+      {
+        "id": "f7",
+        "text": "Architecture ownership",
+        "baseStatus": "hit",
+        "cite": ["role:redington-frontend-arch", "role:redington-config-dashboards"],
+        "reasoning": "Owned + co-led architectural decisions on the Redington frontend."
+      },
+      {
+        "id": "f8",
+        "text": "Lead a team of 6",
+        "baseStatus": "stretch",
+        "strictStatus": "stretch",
+        "generousStatus": "hit",
+        "cite": ["role:redington-team-lead"],
+        "reasoning": "Led 5; one short of stated 6. Stretch under strict reading."
+      },
+      {
+        "id": "f9",
+        "text": "London / hybrid 2 days/week",
+        "baseStatus": "miss",
+        "strictStatus": "miss",
+        "generousStatus": "stretch",
+        "cite": [],
+        "reasoning": "Currently Valencia-based, remote.",
+        "gapFraming": "Valencia-based and remote-first. Open to fly-in cadence — happy to discuss what would actually work."
+      },
+      {
+        "id": "f10",
+        "text": "Playwright",
+        "baseStatus": "miss",
+        "strictStatus": "miss",
+        "generousStatus": "stretch",
+        "cite": [],
+        "reasoning": "Cypress on the CV, not Playwright.",
+        "gapFraming": "Cypress experience reads across; haven't shipped Playwright but would be a quick ramp."
+      }
+    ]
+  }
+]

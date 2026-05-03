@@ -13,6 +13,33 @@ phase specs once they harden.
   - Surfaced: 2026-05-03, Phase 2 planning
   - Owner: Oliver
 
+## Phase 3 follow-ups
+
+- **JD pipeline cold-path latency (~8s) exceeds the spec's <5s target.** Phase 3
+  spec criterion 2 calls for "<5s for paste-to-chip-grid". Measured cold path on
+  a short JD: 3.4s parser + 5.3s matcher = 8.7s. Cached subsequent calls are
+  instant; sample JDs (the demo flow) bypass the API entirely. The cost is on
+  the cold-paste path only. Options to consider in a polish pass:
+  - Switch matcher to Haiku-4.5 (faster + cheaper, but pressure-test honesty
+    first — Sonnet's conservative-bias adherence may not transfer 1:1).
+  - Stream the matcher tool-use response (chips render progressively as the
+    model emits each match). More work; bigger UX win.
+  - Pre-warm cache for the most common JD shapes after deploy.
+  - Accept it and rephrase the loading state ("scoring against your CV…")
+    so the wait reads as deliberate rather than slow.
+  - Surfaced: 2026-05-03, Phase 3 review (criterion 2 ⚠️ Partial)
+  - Owner: TBD; not blocking Phase 3 commit. Pick up in Phase 7 polish or
+    earlier if it bites in real use.
+
+- **Vercel CLI `vercel env add … preview` blocked across 51.8.0 and 53.1.0.**
+  Both versions reject the command from `main` with `git_branch_required`,
+  even when the suggested next-step command is run verbatim. Workaround: set
+  `ANTHROPIC_MONTHLY_LIMIT_USD=30` for preview env via the Vercel dashboard.
+  Production env was set in Phase 2.5. Could file upstream once we confirm
+  it isn't user error.
+  - Surfaced: 2026-05-03, Phase 3 setup
+  - Owner: Oliver, ad-hoc
+
 ## Phase 2.5 — follow-up work before Phase 2 is marked Done
 
 - **3-voice live tone toggle (Pessimistic / Honest / Absurd) on `/`** —

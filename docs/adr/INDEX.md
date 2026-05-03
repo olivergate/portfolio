@@ -58,6 +58,11 @@ Rule of thumb: if the edit would change what a reader believes we chose or why, 
 | [0012](./0012-adr-editability-tiers.md) | ADR editability tiers | Accepted | 2026-05-03 | — | — |
 | [0013](./0013-pre-written-tone-toggle.md) | The `/` tone toggle is pre-written, not live API | Accepted | 2026-05-03 | — | — |
 | [0014](./0014-anthropic-key-redis-provisioning.md) | Anthropic key + Upstash Redis provisioning model | Accepted | 2026-05-03 | — | — |
+| [0015](./0015-jd-two-stage-pipeline.md) | JD adapter uses a two-stage parse-then-match pipeline | Accepted | 2026-05-03 | — | — |
+| [0016](./0016-jd-matcher-conservative-bias.md) | JD matcher prompt is conservative-biased | Accepted | 2026-05-03 | — | — |
+| [0017](./0017-stretch-slider-semantics.md) | Stretch slider adjusts only the Hit/Stretch boundary; API receives a discrete level | Accepted | 2026-05-03 | — | — |
+| [0018](./0018-no-top-line-match-percentage.md) | No top-line match percentage on `/jd` | Accepted | 2026-05-03 | — | — |
+| [0019](./0019-bullet-reorder-opt-in.md) | Bullet reorder on `/jd` is opt-in; original CV order is the truth | Accepted | 2026-05-03 | — | — |
 
 <!--
   Add one row per ADR as you author them. Format:

@@ -1,0 +1,250 @@
+import type Anthropic from "@anthropic-ai/sdk";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+
+// ─── Stub Anthropic SDK ────────────────────────────────────────────────────
+// Tests drive the matcher route by injecting different model responses to
+// verify the server-side honesty validator (ADR-0016) and the schema layer.
+
+let mockMessageCreate: (() => Promise<Anthropic.Message>) | null = null;
+
+vi.mock("@/lib/anthropic", () => ({
+  getAnthropicClient: () => ({
+    messages: {
+      create: vi.fn(async () => {
+        if (!mockMessageCreate) throw new Error("mockMessageCreate not set");
+        return mockMessageCreate();
+      }),
+    },
+  }),
+}));
+
+// Stub the cost-ceiling check + cost log so we don't hit Redis.
+vi.mock("@/lib/check-cost-ceiling", () => ({
+  checkCostCeiling: async () => ({ ok: true, current: 0, limit: 30 }),
+}));
+
+vi.mock("@/lib/cost-log", () => ({
+  logCost: async () => {},
+}));
+
+// Stub KV cache so each test sees a fresh route.
+const cacheStore = new Map<string, unknown>();
+vi.mock("@/lib/kv-cache", () => ({
+  makeCacheKey: (parts: { endpoint: string; promptVersion: string; input: unknown }) =>
+    `cache:${parts.endpoint}:${parts.promptVersion}:${JSON.stringify(parts.input).length}`,
+  cacheGet: async (k: string) => cacheStore.get(k) ?? null,
+  cacheSet: async (k: string, v: unknown) => {
+    cacheStore.set(k, v);
+  },
+}));
+
+beforeEach(() => {
+  cacheStore.clear();
+  mockMessageCreate = null;
+});
+
+afterEach(() => {
+  vi.clearAllMocks();
+});
+
+// ─── Helpers ───────────────────────────────────────────────────────────────
+
+function buildMatcherResponse(matches: unknown): Anthropic.Message {
+  return {
+    id: "msg_test",
+    type: "message",
+    role: "assistant",
+    model: "claude-sonnet-4-6",
+    content: [
+      {
+        type: "tool_use",
+        id: "toolu_test",
+        name: "submit_matches",
+        input: { matches },
+      } as Anthropic.ToolUseBlock,
+    ],
+    stop_reason: "tool_use",
+    stop_sequence: null,
+    usage: {
+      input_tokens: 100,
+      output_tokens: 50,
+      cache_creation_input_tokens: 0,
+      cache_read_input_tokens: 0,
+      server_tool_use: null,
+      service_tier: null,
+    },
+  } as unknown as Anthropic.Message;
+}
+
+async function callMatcher(stretchLevel: "strict" | "balanced" | "generous") {
+  // Import lazily so vi.mock has installed by the time the route loads.
+  const { POST } = await import("@/app/api/jd-match/route");
+  const req = new Request("http://test/api/jd-match", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      jdHash: "abc123",
+      stretchLevel,
+      requirements: [
+        { id: "r1", text: "React + TypeScript", category: "hard", weight: 1 },
+        { id: "r2", text: "MCP servers", category: "nice", weight: 0.3 },
+      ],
+    }),
+  });
+  return await POST(req);
+}
+
+// ─── Tests ─────────────────────────────────────────────────────────────────
+
+describe("matcher route — schema validation", () => {
+  test("returns 400 when stretchLevel is missing", async () => {
+    const { POST } = await import("@/app/api/jd-match/route");
+    const req = new Request("http://test/api/jd-match", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ jdHash: "x", requirements: [] }),
+    });
+    const resp = await POST(req);
+    expect(resp.status).toBe(400);
+  });
+
+  test("rejects malformed match input from the model", async () => {
+    mockMessageCreate = async () =>
+      buildMatcherResponse([
+        // missing reasoning + invalid status
+        { requirementId: "r1", status: "yes", cite: [] },
+        { requirementId: "r2", status: "miss", cite: [], reasoning: "n/a" },
+      ]);
+    const resp = await callMatcher("balanced");
+    expect(resp.status).toBe(502);
+    const json = (await resp.json()) as { ok: boolean; stage?: string };
+    expect(json.ok).toBe(false);
+    expect(json.stage).toBe("schema-validate");
+  });
+});
+
+describe("matcher route — honesty validator (ADR-0016)", () => {
+  test("rejects a Hit with empty cite", async () => {
+    mockMessageCreate = async () =>
+      buildMatcherResponse([
+        { requirementId: "r1", status: "hit", cite: [], reasoning: "I just feel it." },
+        { requirementId: "r2", status: "miss", cite: [], reasoning: "n/a", gapFraming: "honest." },
+      ]);
+    const resp = await callMatcher("balanced");
+    expect(resp.status).toBe(502);
+    const json = (await resp.json()) as { ok: boolean; stage?: string; detail?: string };
+    expect(json.ok).toBe(false);
+    expect(json.stage).toBe("honesty-validate");
+    expect(json.detail).toContain("Hit without cite");
+  });
+
+  test("rejects a Miss without gapFraming", async () => {
+    mockMessageCreate = async () =>
+      buildMatcherResponse([
+        {
+          requirementId: "r1",
+          status: "hit",
+          cite: ["role:opensc-sole-frontend"],
+          reasoning: "yes.",
+        },
+        { requirementId: "r2", status: "miss", cite: [], reasoning: "no MCP." },
+      ]);
+    const resp = await callMatcher("balanced");
+    expect(resp.status).toBe(502);
+    const json = (await resp.json()) as { ok: boolean; stage?: string; detail?: string };
+    expect(json.ok).toBe(false);
+    expect(json.stage).toBe("honesty-validate");
+    expect(json.detail).toContain("Miss without gapFraming");
+  });
+
+  test("rejects a Hit citing a non-existent role bullet", async () => {
+    mockMessageCreate = async () =>
+      buildMatcherResponse([
+        {
+          requirementId: "r1",
+          status: "hit",
+          cite: ["role:totally-fake-bullet"],
+          reasoning: "made up.",
+        },
+        { requirementId: "r2", status: "miss", cite: [], reasoning: "n/a", gapFraming: "honest." },
+      ]);
+    const resp = await callMatcher("balanced");
+    expect(resp.status).toBe(502);
+    const json = (await resp.json()) as { ok: boolean; stage?: string; detail?: string };
+    expect(json.ok).toBe(false);
+    expect(json.stage).toBe("honesty-validate");
+    expect(json.detail).toContain("unknown role bullet cite");
+  });
+
+  test("rejects a missing match for a requirement", async () => {
+    mockMessageCreate = async () =>
+      buildMatcherResponse([
+        // r2 omitted
+        {
+          requirementId: "r1",
+          status: "hit",
+          cite: ["role:opensc-sole-frontend"],
+          reasoning: "yes.",
+        },
+      ]);
+    const resp = await callMatcher("balanced");
+    expect(resp.status).toBe(502);
+    const json = (await resp.json()) as { ok: boolean; stage?: string; detail?: string };
+    expect(json.ok).toBe(false);
+    expect(json.stage).toBe("honesty-validate");
+    expect(json.detail).toContain("missing match");
+  });
+
+  test("accepts a valid response and caches it", async () => {
+    mockMessageCreate = async () =>
+      buildMatcherResponse([
+        {
+          requirementId: "r1",
+          status: "hit",
+          cite: ["role:opensc-sole-frontend"],
+          reasoning: "Sole frontend on the OpenSC dashboard.",
+        },
+        {
+          requirementId: "r2",
+          status: "miss",
+          cite: [],
+          reasoning: "no MCP work.",
+          gapFraming: "Have read the spec, haven't built one.",
+        },
+      ]);
+    const resp = await callMatcher("balanced");
+    expect(resp.status).toBe(200);
+    const json = (await resp.json()) as { ok: boolean; matches: unknown[]; cached: boolean };
+    expect(json.ok).toBe(true);
+    expect(json.cached).toBe(false);
+    expect(json.matches).toHaveLength(2);
+
+    // Second call same args → cache hit.
+    const resp2 = await callMatcher("balanced");
+    const json2 = (await resp2.json()) as { ok: boolean; cached: boolean };
+    expect(json2.cached).toBe(true);
+  });
+
+  test("accepts project-prefixed cite for Hits (H2 fix verification)", async () => {
+    mockMessageCreate = async () =>
+      buildMatcherResponse([
+        {
+          requirementId: "r1",
+          status: "hit",
+          cite: ["project:claude-code-setup"],
+          reasoning: "Personal Claude Code setup with agents and telemetry.",
+        },
+        {
+          requirementId: "r2",
+          status: "miss",
+          cite: [],
+          reasoning: "no MCP.",
+          gapFraming: "Read the spec, haven't built one.",
+        },
+      ]);
+    const resp = await callMatcher("balanced");
+    expect(resp.status).toBe(200);
+    const json = (await resp.json()) as { ok: boolean };
+    expect(json.ok).toBe(true);
+  });
+});
