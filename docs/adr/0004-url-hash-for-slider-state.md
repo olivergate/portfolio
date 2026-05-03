@@ -4,6 +4,13 @@
 - **Date:** 2026-05-02
 - **Deciders:** Oliver Kaikane Gate
 
+> **Later change (2026-05-03):** the URL-hash-as-share-URL mechanism described
+> below — the `Share this look` button and the writable hash — was retired in
+> Phase 3. See ADR-0020. The persistence intent (a returning visitor sees the
+> look they left on) survives, now backed by `localStorage` rather than the
+> hash. The Decision / Rationale / Alternatives below remain the historical
+> record of the original choice.
+
 ## Context
 
 Phase 1 introduces four sliders that retheme the CV (density / polish / hierarchy /
@@ -80,7 +87,10 @@ Specifically:
 
 ## References
 
-- `lib/hash-state.ts` — implementation
+- `lib/hash-state.ts` — implementation (deleted in Phase 3 per ADR-0020;
+  replaced by `lib/local-storage-state.ts`)
 - `lib/bootstrap-script.ts` — pre-hydration apply
 - `docs/specs/phase-1.md` § "State management + URL hash sync"
 - `design-references/source/cv-app.jsx` — the alternative `#look=base64` form
+- ADR-0020 — retires the share-URL mechanism while preserving the
+  persistence intent via `localStorage`
