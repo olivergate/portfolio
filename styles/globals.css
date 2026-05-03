@@ -81,6 +81,15 @@
   align-items: start;
 }
 
+/* Solo content variant — used on /jd, /tone, /lab, /game where the slider
+   deck isn't mounted. No grid, no left-rail aside; just a centered column.
+   See components/layout/SiteShell.tsx. */
+.site-content--solo {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: clamp(1rem, 2.5vw, 2rem) clamp(1rem, 3vw, 2.5rem);
+}
+
 .site-shell > .deck-slot {
   position: sticky;
   top: clamp(1rem, 2.5vw, 2rem);

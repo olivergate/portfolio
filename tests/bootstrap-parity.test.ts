@@ -13,8 +13,8 @@ import { type StyleState, stateToTokens } from "@/lib/style-tokens";
 
 function evalBootstrap(state: StyleState): Record<string, string> {
   const recorded: Record<string, string> = {};
-  // Sandbox the bootstrap script: stub document.documentElement.style and
-  // location.hash; let it write into `recorded` via setProperty.
+  // Sandbox the bootstrap script: stub document.documentElement.style + the
+  // localStorage read; let it write into `recorded` via setProperty.
   const sandbox = {
     document: {
       documentElement: {
@@ -26,9 +26,19 @@ function evalBootstrap(state: StyleState): Record<string, string> {
       },
     },
     location: {
-      hash: `#d=${state.density}&p=${state.polish}&h=${state.hierarchy}&m=${state.motion}`,
+      // The bootstrap script bails when pathname !== "/" (the slider deck only
+      // applies on the home page); the parity test exercises the apply path,
+      // so we pin pathname to "/".
+      pathname: "/",
     },
-    URLSearchParams,
+    window: {
+      localStorage: {
+        getItem(key: string): string | null {
+          return key === "olg-cv-style-v1" ? JSON.stringify(state) : null;
+        },
+      },
+    },
+    JSON,
     Math,
     parseInt,
     parseFloat,

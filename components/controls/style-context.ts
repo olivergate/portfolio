@@ -8,7 +8,6 @@ export type StyleContextValue = {
   setAxis: (axis: keyof StyleState, value: number) => void;
   setState: React.Dispatch<React.SetStateAction<StyleState>>;
   reset: () => void;
-  share: () => Promise<void>;
   activeKey: keyof StyleState | null;
   setActiveKey: (key: keyof StyleState | null) => void;
 };
@@ -18,7 +17,6 @@ export const StyleContext = createContext<StyleContextValue>({
   setAxis: () => {},
   setState: () => {},
   reset: () => {},
-  share: async () => {},
   activeKey: null,
   setActiveKey: () => {},
 });
@@ -27,8 +25,3 @@ export function useStyleContext(): StyleContextValue {
   return useContext(StyleContext);
 }
 
-export type ToastListener = (message: string | null) => void;
-export const ToastContext = createContext<ToastListener>(() => {});
-export function useToast(): ToastListener {
-  return useContext(ToastContext);
-}

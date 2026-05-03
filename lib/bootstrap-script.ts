@@ -1,8 +1,17 @@
 /**
  * Inline bootstrap script — runs synchronously in <head> before React hydrates.
- * Reads the URL hash, computes the same tokens stateToTokens would produce, and
- * writes them onto <html>'s style. Without this, sharing a non-default URL
- * causes a brief flash of the default theme before hydration takes over.
+ * Reads localStorage, computes the same tokens stateToTokens would produce,
+ * and writes them onto <html>'s style. Without this, returning to "/" with a
+ * non-default cached look causes a brief flash of the default theme before
+ * hydration takes over.
+ *
+ * Scoped to "/" only. The slider deck and persisted styling exist for the
+ * main CV page; on /jd, /tone, /lab, /game the script bails so the server
+ * and client render with identical default tokens (no hydration mismatch
+ * and no leaked styling from the cached `/` look).
+ *
+ * Storage key + value shape must match `lib/local-storage-state.ts`. Tested
+ * by `tests/bootstrap-parity.test.ts`.
  *
  * Kept tiny by inlining a stripped-down stateToTokens. The full implementation
  * still lives in lib/style-tokens.ts and runs on every subsequent slider move.
@@ -94,16 +103,26 @@ const STATE_TO_TOKENS_SOURCE = `
     t["--density"]=String(d);t["--polish"]=String(p);t["--hierarchy"]=String(h);t["--motion"]=String(m);
     return t;
   }
-  function parseHash(h){
-    h=(h||"").replace(/^#/,"");if(!h)return null;
-    var p=new URLSearchParams(h),k=["d","p","h","m"],o={},names=["density","polish","hierarchy","motion"];
-    for(var i=0;i<4;i++){var v=p.get(k[i]);if(v==null)return null;var n=parseFloat(v);if(!isFinite(n))return null;o[names[i]]=clamp(n,0,1);}
-    return o;
+  function readStored(){
+    try{
+      var raw=window.localStorage.getItem("olg-cv-style-v1");
+      if(raw==null)return null;
+      var p=JSON.parse(raw);
+      if(!p||typeof p!=="object")return null;
+      var keys=["density","polish","hierarchy","motion"],o={};
+      for(var i=0;i<4;i++){
+        var v=p[keys[i]];
+        if(typeof v!=="number"||!isFinite(v))return null;
+        o[keys[i]]=clamp(v,0,1);
+      }
+      return o;
+    }catch(e){return null;}
   }
+  if(location.pathname!=="/")return;
   var defaults={density:0.5,polish:0.55,hierarchy:0.55,motion:0.5};
-  var s=parseHash(location.hash)||defaults;
+  var s=readStored()||defaults;
   var t=tok(s),r=document.documentElement.style;
   for(var k in t)r.setProperty(k,t[k]);
 `;
 
-export const BOOTSTRAP_SCRIPT = `(function(){try{${STATE_TO_TOKENS_SOURCE}}catch(e){}})();`;
+export const BOOTSTRAP_SCRIPT = `(function(){try{(function(){${STATE_TO_TOKENS_SOURCE}})();}catch(e){}})();`;

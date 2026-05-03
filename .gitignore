@@ -45,3 +45,5 @@ next-env.d.ts
 /test-results/
 /playwright-report/
 .env*.local
+/jd-*.png
+/.claude/doc-runs/

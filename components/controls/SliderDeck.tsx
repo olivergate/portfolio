@@ -12,7 +12,7 @@ const ACCENTS = {
 } as const;
 
 export function SliderDeck() {
-  const { state, setAxis, reset, share, activeKey, setActiveKey } = useStyleContext();
+  const { state, setAxis, reset, activeKey, setActiveKey } = useStyleContext();
   const preset = getPresetName(state);
   const deckActiveClass = activeKey ? "deck-active" : "";
 
@@ -74,15 +74,6 @@ export function SliderDeck() {
         <div className="deck-actions">
           <button type="button" className="deck-mono deck-button-reset" onClick={reset}>
             ↺ RESET
-          </button>
-          <button
-            type="button"
-            className="deck-mono deck-button-share"
-            onClick={() => {
-              void share();
-            }}
-          >
-            SHARE THIS LOOK →
           </button>
         </div>
       </div>

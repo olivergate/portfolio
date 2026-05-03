@@ -1,14 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { MobileSheet } from "@/components/controls/MobileSheet";
 import { RevealObserver } from "@/components/controls/RevealObserver";
-import { ShareToast } from "@/components/controls/ShareToast";
 import { SliderDeck } from "@/components/controls/SliderDeck";
 import { StyleApplier } from "@/components/controls/StyleApplier";
 import { StyleContext } from "@/components/controls/style-context";
-import { shareUrl, useHashState } from "@/lib/hash-state";
+import { useLocalStorageState } from "@/lib/local-storage-state";
 import { DEFAULT_STYLE, type StyleState } from "@/lib/style-tokens";
 import { useMediaQuery } from "@/lib/use-media-query";
 
@@ -16,22 +16,33 @@ type Props = { children: React.ReactNode };
 
 const DESKTOP_QUERY = "(min-width: 1025px)";
 
+/**
+ * The slider deck retunes the main CV (`/`) — it has no purpose on /jd, /tone,
+ * /lab, /game. On those routes we render children plain: no deck UI, no
+ * StyleApplier (so the URL hash from a stale `/` link doesn't bleed styles
+ * onto a different page), no mobile sheet, no hidden hydration cost.
+ *
+ * Kept inside DeckProvider rather than scoping in the layout because the
+ * layout is a server component and pathname-conditioning is cleanest as a
+ * client-side bail.
+ */
+function isHomeRoute(pathname: string | null): boolean {
+  return pathname === "/";
+}
+
 export function DeckProvider({ children }: Props) {
-  const [state, setState] = useHashState();
+  const pathname = usePathname();
+  if (!isHomeRoute(pathname)) {
+    return <>{children}</>;
+  }
+  return <DeckProviderInner>{children}</DeckProviderInner>;
+}
+
+function DeckProviderInner({ children }: Props) {
+  const [state, setState] = useLocalStorageState();
   const [activeKey, setActiveKey] = useState<keyof StyleState | null>(null);
-  const [toast, setToast] = useState<string | null>(null);
   const [deckSlot, setDeckSlot] = useState<HTMLElement | null>(null);
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
-  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Clear any pending toast timer on unmount so we don't setState on an
-  // unmounted provider.
-  useEffect(
-    () => () => {
-      if (toastTimer.current !== null) clearTimeout(toastTimer.current);
-    },
-    [],
-  );
 
   // Locate the desktop deck-slot rendered by the server layout.
   useEffect(() => {
@@ -47,26 +58,6 @@ export function DeckProvider({ children }: Props) {
 
   const reset = useCallback(() => setState(DEFAULT_STYLE), [setState]);
 
-  const share = useCallback(async () => {
-    const url = shareUrl(state);
-    try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(url);
-        setToast("link copied — paste anywhere");
-      } else {
-        window.location.hash = url.split("#")[1] ?? "";
-        setToast("URL updated — copy from address bar");
-      }
-    } catch {
-      window.location.hash = url.split("#")[1] ?? "";
-      setToast("URL updated — copy from address bar");
-    }
-    // Clear any prior dismiss timer so back-to-back shares don't race
-    // (the second share's toast would otherwise vanish on the first timer).
-    if (toastTimer.current !== null) clearTimeout(toastTimer.current);
-    toastTimer.current = setTimeout(() => setToast(null), 2400);
-  }, [state]);
-
   // Mount the SliderDeck in exactly one place. While `isDesktop` is null
   // (pre-mount / SSR), we render nothing — the desktop slot is a tiny visual
   // gap until JS settles, which is fine.
@@ -74,15 +65,12 @@ export function DeckProvider({ children }: Props) {
   const showMobileDeck = isDesktop === false;
 
   return (
-    <StyleContext.Provider
-      value={{ state, setState, setAxis, reset, share, activeKey, setActiveKey }}
-    >
+    <StyleContext.Provider value={{ state, setState, setAxis, reset, activeKey, setActiveKey }}>
       <StyleApplier />
       <RevealObserver />
       {children}
       {showDesktopDeck && deckSlot ? createPortal(<SliderDeck />, deckSlot) : null}
       {showMobileDeck ? <MobileSheet /> : null}
-      <ShareToast message={toast} />
     </StyleContext.Provider>
   );
 }
