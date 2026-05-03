@@ -40,6 +40,43 @@ phase specs once they harden.
   - Surfaced: 2026-05-03, Phase 3 setup
   - Owner: Oliver, ad-hoc
 
+- **`stretchThreshold: number` in spec became `stretchLevel: "strict" | "balanced" | "generous"` in the route.**
+  `docs/specs/phase-3.md` lines 113, 136, 143 describe a continuous `0..1`
+  threshold passed to `/api/jd-match`. The shipped handler at
+  `app/api/jd-match/route.ts` accepts a discrete three-value enum instead.
+  Rationale lives in ADR-0017 (cache cardinality cap at three matcher entries
+  per JD; semantic clarity matching the `⊢ ⊨ ⊣` quick-snap labels). Spec text
+  left as-is per `feedback_specs_lower_order_than_adrs.md`; the running
+  implementation + ADR-0017 are the source of truth.
+  - Surfaced: 2026-05-03, Phase 3 review
+  - Owner: n/a (decision settled in ADR-0017)
+
+- **Phase 3 ADRs renumbered from spec's pre-allocated 0011–0015 to 0015–0020.**
+  `docs/specs/phase-3.md` § "ADRs to write this phase" pre-allocated
+  ADR-0011 through ADR-0015. Those numbers were taken by the Phase 1 / 2 / 2.5
+  ADRs that landed first (0011 tone-as-manifesto, 0012 ADR-editability tiers,
+  0013 pre-written tone toggle, 0014 Anthropic-key + Redis provisioning).
+  Phase 3 shipped as 0015 (two-stage pipeline), 0016 (matcher conservative
+  bias), 0017 (stretch slider semantics), 0018 (no top-line percentage),
+  0019 (bullet reorder opt-in), plus 0020 (localStorage replaces URL-hash
+  share) added during Phase 3 fix-up batches. Same pattern as the Phase 2
+  spec-drift entry below; specs are advisory, ADRs are first-class.
+  - Surfaced: 2026-05-03, Phase 3 review
+  - Owner: n/a (numbering settled)
+
+- **Spec task 9's `/api/rewrite` endpoint for gap framings was never built — folded into the matcher response.**
+  `docs/specs/phase-3.md` line 215 names a separate `/api/rewrite` endpoint
+  (described as "Phase 2 infrastructure, first real use here") for tone-aware
+  Miss framings. No such endpoint exists in `app/api/`. The matcher at
+  `app/api/jd-match/route.ts` returns gap framings inline on every Miss in the
+  same response. Rationale in ADR-0015 § Decision and § Alternatives considered
+  ("Three calls"): the matcher already has CV + requirement + Miss context
+  loaded, so a third round-trip + third cache key would be pure overhead. Flagged
+  here so a future reader doesn't go looking for a route that was deliberately
+  never built.
+  - Surfaced: 2026-05-03, Phase 3 review
+  - Owner: n/a (decision settled in ADR-0015)
+
 ## Phase 2.5 — follow-up work before Phase 2 is marked Done
 
 - **3-voice live tone toggle (Pessimistic / Honest / Absurd) on `/`** —
@@ -143,3 +180,12 @@ don't get lost between sessions.
 
 - ~~Vercel auto-deploy on push wired but unverified~~ — confirmed working
   on push of `a5d1128` (Phase 1). Closed 2026-05-03.
+
+- ~~Phase 3 spec task 12 — snapshot test of worked-example matcher outputs~~ —
+  `docs/specs/phase-3.md` line 248 required a snapshot test on the matcher
+  prompt's worked examples to catch drift. Phase 3 initial ship missed it; fix-up
+  batch 3 landed `tests/jd-matcher-snapshot.test.ts`, which locks
+  `MATCHER_PROMPT_VERSION`'s `jd-matcher@vN` shape, the seven worked-example
+  headings in canonical order, and a full-text snapshot of `MATCHER_SYSTEM`.
+  Any prompt edit must bump the version (per ADR-0009) and update the snapshot.
+  Closed 2026-05-03.
