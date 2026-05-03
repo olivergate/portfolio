@@ -1,5 +1,7 @@
 import { BulletMarker } from "@/components/cv/BulletMarker";
 import { SectionHeader } from "@/components/cv/SectionHeader";
+import { TonedText } from "@/components/cv/TonedText";
+import { ToneToggle } from "@/components/cv/ToneToggle";
 import type { CV, CVRole } from "@/lib/schemas";
 
 const MONTH_NAMES = [
@@ -92,7 +94,7 @@ function Role({ role, isFirst }: { role: CVRole; isFirst: boolean }) {
           fontStyle: "var(--blurb-style, normal)",
         }}
       >
-        {role.summary.honest}
+        <TonedText value={role.summary} />
       </p>
 
       <ul
@@ -123,7 +125,7 @@ function Role({ role, isFirst }: { role: CVRole; isFirst: boolean }) {
             }}
           >
             <BulletMarker />
-            {bullet.text.honest}
+            <TonedText value={bullet.text} />
           </li>
         ))}
       </ul>
@@ -176,8 +178,10 @@ export function Experience({ roles, overview }: Props) {
         </p>
       </section>
 
+      <ToneToggle />
+
       <section id="experience" style={{ marginTop: "var(--gap-section)" }}>
-        <SectionHeader number="03" title="Experience" />
+        <SectionHeader number="04" title="Experience" />
         <div>
           {roles.map((role, i) => (
             <Role key={role.id} role={role} isFirst={i === 0} />

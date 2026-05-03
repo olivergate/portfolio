@@ -6,7 +6,7 @@ type Props = { projects: CV["projects"] };
 export function Projects({ projects }: Props) {
   return (
     <section id="projects" style={{ marginTop: "var(--gap-section)" }}>
-      <SectionHeader number="06" title="Projects" />
+      <SectionHeader number="07" title="Projects" />
       <div
         style={{
           display: "grid",

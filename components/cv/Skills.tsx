@@ -123,7 +123,7 @@ export function Skills({ skills }: Props) {
   const blocks = buildBlocks(skills);
   return (
     <section id="skills" style={{ marginTop: "var(--gap-section)" }}>
-      <SectionHeader number="05" title="Skills" />
+      <SectionHeader number="06" title="Skills" />
       <div
         style={{
           display: "grid",

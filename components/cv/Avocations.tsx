@@ -6,7 +6,7 @@ type Props = { avocations: CV["avocations"] };
 export function Avocations({ avocations }: Props) {
   return (
     <section id="avocations" style={{ marginTop: "var(--gap-section)" }}>
-      <SectionHeader number="07" title="Outside work" />
+      <SectionHeader number="08" title="Outside work" />
       <ul
         style={{
           listStyle: "none",
