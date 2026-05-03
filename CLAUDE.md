@@ -88,6 +88,14 @@ pattern, slider deck visual treatment, etc.).
   scaffold. ADRs are public and part of the deliverable.
 - **Plan mode for non-trivial work.** Shift+Tab twice, agree the plan, then execute.
 - **Fresh sessions are cheap; degraded context is expensive.** Start a new session per phase.
+- **Session-size discipline.** One phase per session is the default. When the user adds
+  scope mid-session (a refactor, a UI fix, a doc-sync run, a related-but-distinct task),
+  do not silently absorb it. Offer the deferral: *"This is mid-stream scope addition —
+  want to commit what's here and start a fresh session, or fold it in?"* The cost of
+  asking is one short message. Phase 3 (turn 6) ran 285 minutes with three undeferred
+  scope additions and was rated 2/5 specifically because of session size, not output
+  quality. Especially for sessions running >120 minutes or after >2 distinct sub-agent
+  dispatch waves: the bias should be deferral, not absorption.
 - **Don't fight the linter.** Biome auto-fixes. Fix the code, not the rule.
 - **Visual diffs against screenshots.** Before declaring a phase done, compare the running
   site to `design-references/screenshots/` for that page. Note any intentional deviation

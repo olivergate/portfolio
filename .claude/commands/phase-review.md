@@ -94,6 +94,41 @@ ADR that exists for this phase, confirm its status is `Accepted` (not
 If a non-trivial decision was made this phase that isn't covered by an ADR,
 flag it. Either scaffold the ADR now or note in `docs/TODO.md`.
 
+#### 6a. ADR claims vs. same-session data
+
+**Cross-check every load-bearing factual claim in each phase ADR against the
+session's own measurements.** ADRs are the project's highest-class citizen
+(per ADR-0012); a confidently-stated false claim in an Accepted ADR is worse
+than no claim at all.
+
+Specific checks:
+
+- **Latency / performance claims** ("under N seconds", "within budget", "fast
+  enough") — grep for `docs/test-runs/*.md` and any pressure-test results;
+  confirm the claim matches the data.
+- **Cost claims** ("approximately $X per call", "free on cache hit") — check
+  the cost-log entries against the claim.
+- **Capability claims** ("the matcher catches X", "the validator rejects Y")
+  — find the test that proves it; if no test exists, the claim is unverified.
+- **"This is unchanged" / "This stays the same"** — diff against the prior
+  version; confirm.
+
+Phase 3 surfaced this as obs_003: ADR-0015 claimed "Within the spec's <5s
+budget" while the same session's pressure-test doc recorded 8.7s. The reviewer
+caught it; the agent had been confident enough to ship a self-contradicted
+ADR. Cross-checking before commit prevents repetition.
+
+When a claim disagrees with the data: amend in place per ADR-0012's editable-
+in-place tier (current-state enumerations, factual corrections), commit as
+`docs(adr): amend ADR-NNNN <what>`. For larger amendments touching multiple
+ADRs or wanting steward/reviewer audit, invoke the **`doc-sync`** skill —
+hand it the named set of ADRs + the drift signal + which sections are
+amendable, and let the steward propose, reviewer verify, applier commit.
+
+If an ADR's frozen sections (Decision, Rationale, Alternatives, Date stamp)
+disagree with the data, that's a supersession trigger, not an amendment —
+write a new ADR superseding the old one.
+
 ### 7. Final report
 
 End with a single section titled `## Phase $ARGUMENTS — Review verdict`:
