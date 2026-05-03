@@ -70,6 +70,36 @@ phase specs once they harden.
   already locks the contract.
   - Surfaced: 2026-05-03, end of Phase 2
 
+## AI infra — to verify on first real exercise (Phase 3)
+
+These were scaffolded in Phase 2 but never exercised end-to-end. Each is a
+small concern that should be checked the moment `ANTHROPIC_API_KEY` is
+configured and `/api/smoke` is hit for the first time. Listed here so they
+don't get lost between sessions.
+
+- **`lib/cost-log.ts:34` — `kv.scan` cursor + `kv.mget` generic untested
+  against `@vercel/kv@3.0.0`'s actual signature.** The code passes a
+  `number` cursor; many KV libs want a string. The `kv.mget<CostEntry[]>`
+  generic may not match the SDK's actual shape. Likely fine, but unverified.
+  When the smoke endpoint runs for the first time, watch for runtime type
+  errors on the second invocation (cache-hit path bypasses `kv.scan`; only
+  `getMonthSpend()` exercises it).
+  - Surfaced: 2026-05-03, end-of-Phase-2 review
+  - Resolves: when smoke endpoint completes a write + a subsequent
+    `getMonthSpend()` call without runtime errors
+
+- **`lib/pricing.ts` + `app/api/smoke/route.ts:103` — model-ID lookup may
+  fail on dated model IDs.** `calculateCostUSD(resp.model, ...)` does an
+  exact `PRICING[resp.model]` lookup. Anthropic's API may return
+  `claude-sonnet-4-6-20251201` (dated suffix) where `PRICING` only has
+  `claude-sonnet-4-6` (alias). If so, the function throws **after the paid
+  API call but before `logCost`** — so the call is billed but never
+  recorded. Cost leakage. Fix on first exercise: add a prefix-tolerant
+  lookup, or normalise `resp.model` before lookup.
+  - Surfaced: 2026-05-03, end-of-Phase-2 review
+  - Resolves: when first real Anthropic call returns and `costUSD` is
+    written to the log
+
 ## Spec drift (Phase 2)
 
 - **`docs/specs/phase-2.md` § 12 references `app/api/_smoke/route.ts`** — the

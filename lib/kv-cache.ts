@@ -1,6 +1,7 @@
 import "server-only";
 import { createHash } from "node:crypto";
 import { kv } from "@vercel/kv";
+import { stableStringify } from "@/lib/stable-stringify";
 
 export type CacheKeyParts = {
   endpoint: string;
@@ -9,7 +10,7 @@ export type CacheKeyParts = {
 };
 
 export function makeCacheKey(parts: CacheKeyParts): string {
-  const canonical = JSON.stringify(parts, Object.keys(parts).sort());
+  const canonical = stableStringify(parts);
   const digest = createHash("sha256").update(canonical).digest("hex");
   return `cache:${parts.endpoint}:${parts.promptVersion}:${digest}`;
 }

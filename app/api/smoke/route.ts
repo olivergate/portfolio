@@ -23,12 +23,12 @@ type SmokeResult = {
 };
 
 export async function GET(): Promise<NextResponse<SmokeResult>> {
-  const ceiling = await checkCostCeiling().catch((err: unknown) => {
-    return { ok: false, current: 0, limit: 0, _err: err };
-  });
-  if ("_err" in ceiling) {
+  let ceiling: Awaited<ReturnType<typeof checkCostCeiling>>;
+  try {
+    ceiling = await checkCostCeiling();
+  } catch (err) {
     return NextResponse.json(
-      { ok: false, stage: "ceiling-check", detail: String(ceiling._err) },
+      { ok: false, stage: "ceiling-check", detail: String(err) },
       { status: 500 },
     );
   }
