@@ -12,11 +12,13 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "content:validate": "bun scripts/validate-content.ts"
+    "content:validate": "bun scripts/validate-content.ts",
+    "doc-lint": "tsx tools/doc-lint/doc-lint.ts",
+    "doc-lint:changed": "tsx tools/doc-lint/doc-lint.ts --changed"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.92.0",
-    "@vercel/kv": "^3.0.0",
+    "@upstash/redis": "^1.37.0",
     "nanoid": "^5.1.11",
     "next": "16.2.4",
     "react": "19.2.4",

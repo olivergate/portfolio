@@ -1,6 +1,8 @@
 import "server-only";
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 import { nanoid } from "nanoid";
+
+const redis = Redis.fromEnv();
 
 export type CostEntry = {
   id: string;
@@ -24,22 +26,25 @@ export async function logCost(entry: Omit<CostEntry, "id" | "ts">): Promise<void
   const id = nanoid(12);
   const full: CostEntry = { ...entry, id, ts };
   const key = `cost:${monthKey(new Date(ts))}:${id}`;
-  await kv.set(key, full);
+  await redis.set(key, full);
 }
 
 export async function getMonthSpend(date = new Date()): Promise<number> {
   const pattern = `cost:${monthKey(date)}:*`;
-  let cursor = 0;
+  let cursor: string = "0";
   let total = 0;
   do {
-    const [next, keys] = await kv.scan(cursor, { match: pattern, count: 100 });
-    cursor = Number(next);
+    const [next, keys]: [string, string[]] = await redis.scan(cursor, {
+      match: pattern,
+      count: 100,
+    });
+    cursor = next;
     if (keys.length > 0) {
-      const entries = await kv.mget<CostEntry[]>(...keys);
+      const entries = await redis.mget<CostEntry[]>(...keys);
       for (const e of entries) {
         if (e?.costUSD) total += e.costUSD;
       }
     }
-  } while (cursor !== 0);
+  } while (cursor !== "0");
   return total;
 }

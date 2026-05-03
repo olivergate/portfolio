@@ -40,8 +40,26 @@ export const PRICING: Record<string, PricingEntry> = {
 
 export const DEFAULT_MODEL = "claude-sonnet-4-6";
 
+/**
+ * Resolve a model ID to a pricing entry. Anthropic returns dated model IDs
+ * (e.g. "claude-sonnet-4-6-20251201") in `resp.model`, but PRICING keys are
+ * the bare alias ("claude-sonnet-4-6"). Match by longest prefix so a dated
+ * suffix doesn't blow up after a paid call.
+ */
+export function resolvePricing(model: string): PricingEntry | undefined {
+  const exact = PRICING[model];
+  if (exact) return exact;
+  let best: { key: string; entry: PricingEntry } | null = null;
+  for (const [key, entry] of Object.entries(PRICING)) {
+    if (model.startsWith(key) && (!best || key.length > best.key.length)) {
+      best = { key, entry };
+    }
+  }
+  return best?.entry;
+}
+
 export function calculateCostUSD(model: string, inputTokens: number, outputTokens: number): number {
-  const pricing = PRICING[model];
+  const pricing = resolvePricing(model);
   if (!pricing) {
     throw new Error(`No pricing configured for model "${model}". Update lib/pricing.ts.`);
   }
