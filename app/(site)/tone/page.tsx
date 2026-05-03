@@ -1,19 +1,140 @@
 import type { Metadata } from "next";
 import { SectionHeader } from "@/components/cv/SectionHeader";
+import { Tenet } from "@/components/tone/Tenet";
+import { VoiceToggle } from "@/components/tone/VoiceToggle";
+import { getTone } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Tone",
-  description: "Voice and values manifesto — coming in Phase 2.",
+  description:
+    "Voice and values manifesto: 14 tenets in two voices side-by-side — formal vs. how I actually think.",
 };
 
 export default function TonePage() {
+  const tone = getTone();
+  const total = tone.tenets.length;
+
   return (
-    <main>
-      <SectionHeader number="TN-01" title="Tone manifesto" meta="Phase 2" />
-      <p style={{ maxWidth: "62ch", color: "var(--fg)" }}>
-        14 numbered tenets in two voices side-by-side — formal vs. how Oliver actually thinks.
-        Coming in Phase 2.
-      </p>
+    <main className="cv-surface">
+      <header
+        style={{
+          paddingTop: "clamp(0.5rem, 2vw, 1.5rem)",
+          paddingBottom: "var(--gap-block)",
+          borderBottom: "var(--rule-weight) solid var(--rule)",
+        }}
+      >
+        <div
+          data-reveal
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: "var(--size-meta)",
+            letterSpacing: "var(--tracking-meta)",
+            textTransform: "uppercase",
+            color: "var(--muted)",
+            marginBottom: "0.85rem",
+            display: "flex",
+            gap: "0.75rem 1.25rem",
+            flexWrap: "wrap",
+          }}
+        >
+          <span>CV / 2026</span>
+          <span aria-hidden="true">—</span>
+          <span>Tone manifesto</span>
+          <span aria-hidden="true">—</span>
+          <span>{total} tenets</span>
+        </div>
+
+        <h1
+          data-reveal-display
+          style={{
+            fontFamily: "var(--font-display)",
+            fontWeight: "var(--weight-display)",
+            fontSize: "var(--size-h1)",
+            letterSpacing: "var(--tracking-h1)",
+            lineHeight: 0.98,
+            color: "var(--fg)",
+            textTransform: "var(--case-display)",
+            textWrap: "balance",
+            margin: 0,
+          }}
+        >
+          Voice &amp; <em style={{ color: "var(--accent)", fontStyle: "italic" }}>values</em>
+        </h1>
+      </header>
+
+      <section
+        id="tone-intro"
+        style={{
+          marginTop: "var(--gap-section)",
+          maxWidth: "62ch",
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+      >
+        {tone.intro.paragraphs.map((paragraph, i) => (
+          <p
+            // biome-ignore lint/suspicious/noArrayIndexKey: paragraphs are static, ordered prose
+            key={i}
+            data-reveal
+            style={{
+              fontSize: "var(--size-body)",
+              lineHeight: "var(--line)",
+              color: "var(--fg)",
+              textWrap: "pretty",
+              margin: 0,
+              marginBottom: i === tone.intro.paragraphs.length - 1 ? 0 : "var(--gap-item)",
+              fontStyle: i === 0 ? "var(--lede-style, normal)" : "normal",
+            }}
+          >
+            {paragraph}
+          </p>
+        ))}
+      </section>
+
+      <section
+        id="tone-toggle"
+        style={{
+          marginTop: "var(--gap-section)",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <VoiceToggle />
+      </section>
+
+      <section id="tone-manifesto" style={{ marginTop: "var(--gap-section)" }}>
+        <SectionHeader number="TN-01" title="Manifesto" meta={`${total} tenets`} />
+        <div className="tone-manifesto" data-voice="both">
+          {tone.tenets.map((tenet) => (
+            <Tenet key={tenet.number} tenet={tenet} total={total} />
+          ))}
+        </div>
+      </section>
+
+      <section
+        id="tone-signature"
+        style={{
+          marginTop: "var(--gap-section)",
+          paddingTop: "var(--gap-block)",
+          borderTop: "var(--rule-weight) solid var(--rule)",
+          textAlign: "center",
+        }}
+      >
+        <p
+          data-reveal
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "var(--size-h3)",
+            fontStyle: "italic",
+            fontWeight: 400,
+            color: "var(--fg)",
+            margin: 0,
+            textWrap: "balance",
+          }}
+        >
+          {tone.signature.text}
+        </p>
+      </section>
     </main>
   );
 }

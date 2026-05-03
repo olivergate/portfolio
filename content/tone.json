@@ -1,0 +1,96 @@
+{
+  "intro": {
+    "paragraphs": [
+      "Most CVs are a list of what you did. This is fourteen positions on how I do it — the principles that show up in the code I write, the teams I run, and the bugs I cause. Each is written in two voices side-by-side: the formal version a recruiter expects to read, and the way I'd actually say it to a friend over coffee."
+    ]
+  },
+  "tenets": [
+    {
+      "number": 1,
+      "title": "Question the framing first",
+      "formal": "Eight years on from a philosophy degree, the most useful habit I retained is interrogating the question before the answer. Most engineering trouble is a well-executed solution to a misframed problem.",
+      "personal": "Philosophy taught me to be obnoxious about definitions. Most \"we need to build X\" conversations turn out to be \"we don't know what X is yet\" once you push gently. I will push gently."
+    },
+    {
+      "number": 2,
+      "title": "Honesty over polish",
+      "formal": "I would rather a CV bullet, an ADR, or a status update read truthfully than impressively. Polished claims that don't survive a follow-up question are worse than honest claims that do.",
+      "personal": "This site has a JD-matcher that's deliberately tuned to call my own gaps \"honest gaps\" instead of inventing matches. The ADRs include one that says \"I made the cream slightly darker because the design was below WCAG AA, which is awkward and I want it written down.\" I sleep better this way."
+    },
+    {
+      "number": 3,
+      "title": "End-to-end before division of labour",
+      "formal": "I've spent stretches as the only frontend engineer on the system, and stretches running a team of five. The lesson from both is that someone has to hold the whole shape in their head, and it pays to be that person early on.",
+      "personal": "I was the sole frontend engineer on a sustainability dashboard for nearly four years. There is a Slack channel somewhere named after one of my Plotly Dash callbacks. End-to-end ownership is great when you're shipping fast and lonely at 11pm when something subtle breaks."
+    },
+    {
+      "number": 4,
+      "title": "Configuration over engineering effort",
+      "formal": "The most leveraged work I've done is turning bespoke per-customer engineering into configuration. The OpenSC supply-chain onboarding moved from quarter-long custom builds to an afternoon of YAML once the data-contract layer was in.",
+      "personal": "Onboarding a new supply chain went from \"a quarter\" to \"an afternoon and a moderately serious lunch.\" The migration period — old system live, new system being trusted — needed more babysitting than I'd planned. That's the part nobody puts on the after-photo."
+    },
+    {
+      "number": 5,
+      "title": "Take the existential bug seriously",
+      "formal": "On a multi-tenant research platform handling sensitive investment data, cross-tenant leakage would have been existential. Most decisions I made there came back to that one constraint, including a few I'd unwind given another go at the early shared components.",
+      "personal": "\"Cross-tenant data leakage would have been existential to the business\" is a sentence I type onto a CV with one hand while a small voice inside whispers please, no. None of it leaked. None of it."
+    },
+    {
+      "number": 6,
+      "title": "Build with the new tools, not around them",
+      "formal": "I'm spending most of my current bandwidth building with LLMs across multiple side projects, learning agentic patterns, and developing a custom Claude Code setup with its own agents and telemetry. The point is to be opinionated about how this stuff works, not just fluent in the syntax.",
+      "personal": "Daily Claude Code user, three side projects in flight, and a slowly-thickening folder of session retrospectives. I'd rather have shipped one weird thing than have read every paper about a thing that hasn't been shipped yet."
+    },
+    {
+      "number": 7,
+      "title": "Sit with the ambiguity longer than feels comfortable",
+      "formal": "Philosophy of Technology trained me to hold contradictory framings open while gathering signal. The temptation in engineering is to collapse to a decision early because decisions feel productive; the discipline is to wait until the constraints have actually shown themselves.",
+      "personal": "I am fine spending a week not knowing the right answer if it means I avoid spending a quarter on the wrong one. This is not always a popular trait at standup."
+    },
+    {
+      "number": 8,
+      "title": "The domain is the design",
+      "formal": "I've shipped against the idiosyncrasies of coffee supply chains, fisheries provenance, pension fund consultants, and farmer-payment validation. The interface comes second; the part that matters is whether the model of the domain is right.",
+      "personal": "I now know more about the personal life of a toothfish than any human reasonably should. The London robusta price index and I are on a first-name basis. Every domain I've worked has had its own dignified weirdness; the dashboards work because someone respected it."
+    },
+    {
+      "number": 9,
+      "title": "Test the contract, not the implementation",
+      "formal": "When two pieces of code have to agree — a bootstrap script and a runtime, a server and a client, a prompt and its cache key — the thing worth testing is the contract between them, not either side alone.",
+      "personal": "Phase 1 of this site has a parity test that runs the inline pre-hydration script in a Node sandbox and asserts byte-identical CSS-token output against the runtime. I wrote it because I'd already been bitten once. Locks the lesson into the test suite instead of into my head."
+    },
+    {
+      "number": 10,
+      "title": "Lead by removing friction, not by adding rituals",
+      "formal": "I led a five-person frontend team at Redington and ran an external consulting engagement end-to-end. The pattern that consistently worked was clearing the path for engineers to do good work, not stacking process on top of it.",
+      "personal": "The team I led was consistently the highest-performing on UI work, which is the kind of compliment you put on a CV and pretend was just a normal Tuesday outcome. The actual job was mostly making sure the right person had the right context at the right time, which doesn't sound like much until you don't have it."
+    },
+    {
+      "number": 11,
+      "title": "Take the pro-bono job seriously",
+      "formal": "I chaired the Bristol charity committee at Redington and ran a pro-bono engagement with LifeCycle — a small charity that had been left dry by multiple high-cost agencies — running a one-day discovery workshop and migrating their database and supporting infrastructure onto Airtable.",
+      "personal": "Discovery workshop was rougher than I'd run it now. Airtable has limits I hadn't fully internalised when I picked it. Still: a charity that had been chewed up by three previous agencies got a stack they could actually run themselves, and I count that engagement as one of the more morally defensible things I've shipped."
+    },
+    {
+      "number": 12,
+      "title": "Write things down so future-me can argue with them",
+      "formal": "Decisions worth making are decisions worth recording. I keep an ADR log on every project of meaningful size, including this one — the format is public and the deviations from canonical references are documented in their own files.",
+      "personal": "Future-me is a different person and frequently disagrees with present-me. ADRs are the diplomatic correspondence between the two. The first ADR on this site explains why I picked Next.js over the design's recommended Astro; the seventh apologises for darkening one of the cream tones to clear WCAG AA. Both will outlive any memory I have of writing them."
+    },
+    {
+      "number": 13,
+      "title": "Run a retrospective on yourself",
+      "formal": "The strongest delta in my output over the last six months has come from a personal retrospective workflow — capturing what surprised me at the end of every working session, then clustering observations into rules and tools over time.",
+      "personal": "I run a retrospective on myself after most working sessions with Claude. The catalogue gets messy fast and most observations don't survive contact with the next session. The ones that do become slash commands, which is how this site got its /phase-review workflow guarantee — a pattern that started as me being annoyed with myself."
+    },
+    {
+      "number": 14,
+      "title": "The non-engineering hours are part of the job",
+      "formal": "Food, cooking, books, chess, travel, and running are not what I do instead of engineering — they're the inputs. The best framing-corrections I get tend to arrive on long runs, and the best collaboration patterns I've internalised came from watching people cook together.",
+      "personal": "I have caused more good architectural decisions on a 10km run than in any meeting. If you see me looking at a menu like it's a system diagram, that's because it is one."
+    }
+  ],
+  "signature": {
+    "text": "Oliver Kaikane Gate — Valencia, May 2026"
+  }
+}

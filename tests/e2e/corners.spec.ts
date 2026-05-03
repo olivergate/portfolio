@@ -22,30 +22,37 @@ function labelFor(c: Corner): string {
   return AXES.map((axis, i) => `${axis}=${c[i as keyof Corner]}`).join("|");
 }
 
-test.describe("CV at every corner of the slider hypercube", () => {
-  for (const c of corners()) {
-    const label = labelFor(c);
-    const slug = label.replace(/[^a-z0-9]/gi, "-");
+const ROUTES = [
+  { path: "/", label: "cv" },
+  { path: "/tone", label: "tone" },
+] as const;
 
-    test(`renders without horizontal overflow — ${label}`, async ({ page }) => {
-      await page.goto(`/${hashFor(c)}`);
-      // Wait for the bootstrap script + StyleApplier to settle.
-      await page.waitForFunction(() => document.querySelector(".cv-surface") !== null);
-      await page.waitForTimeout(200);
+for (const route of ROUTES) {
+  test.describe(`${route.label} (${route.path}) at every corner of the slider hypercube`, () => {
+    for (const c of corners()) {
+      const label = labelFor(c);
+      const slug = `${route.label}-${label.replace(/[^a-z0-9]/gi, "-")}`;
 
-      const overflow = await page.evaluate(() => {
-        const docW = document.documentElement.scrollWidth;
-        const winW = document.documentElement.clientWidth;
-        return { docW, winW };
+      test(`renders without horizontal overflow — ${route.label} | ${label}`, async ({ page }) => {
+        await page.goto(`${route.path}${hashFor(c)}`);
+        // Wait for the bootstrap script + StyleApplier to settle.
+        await page.waitForFunction(() => document.querySelector(".cv-surface") !== null);
+        await page.waitForTimeout(200);
+
+        const overflow = await page.evaluate(() => {
+          const docW = document.documentElement.scrollWidth;
+          const winW = document.documentElement.clientWidth;
+          return { docW, winW };
+        });
+        expect(overflow.docW, `horizontal overflow at ${route.label} ${label}`).toBeLessThanOrEqual(
+          overflow.winW + 1,
+        );
+
+        await page.screenshot({
+          path: `tests/e2e/screenshots/corner-${slug}.png`,
+          fullPage: true,
+        });
       });
-      expect(overflow.docW, `horizontal overflow at ${label}`).toBeLessThanOrEqual(
-        overflow.winW + 1,
-      );
-
-      await page.screenshot({
-        path: `tests/e2e/screenshots/corner-${slug}.png`,
-        fullPage: true,
-      });
-    });
-  }
-});
+    }
+  });
+}
