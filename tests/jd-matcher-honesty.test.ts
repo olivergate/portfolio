@@ -6,12 +6,16 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 // verify the server-side honesty validator (ADR-0016) and the schema layer.
 
 let mockMessageCreate: (() => Promise<Anthropic.Message>) | null = null;
+// F3.1: track real Anthropic call count so we can assert cache-hit avoids
+// a second hit. Incremented inside the SDK stub below; reset in beforeEach.
+let anthropicCallCount = 0;
 
 vi.mock("@/lib/anthropic", () => ({
   getAnthropicClient: () => ({
     messages: {
       create: vi.fn(async () => {
         if (!mockMessageCreate) throw new Error("mockMessageCreate not set");
+        anthropicCallCount += 1;
         return mockMessageCreate();
       }),
     },
@@ -19,6 +23,8 @@ vi.mock("@/lib/anthropic", () => ({
 }));
 
 // Stub the cost-ceiling check + cost log so we don't hit Redis.
+// F3.2: this is the *default* mock — a per-test override lives below using
+// vi.doMock to exercise the ceiling-blocked (429) path.
 vi.mock("@/lib/check-cost-ceiling", () => ({
   checkCostCeiling: async () => ({ ok: true, current: 0, limit: 30 }),
 }));
@@ -41,10 +47,12 @@ vi.mock("@/lib/kv-cache", () => ({
 beforeEach(() => {
   cacheStore.clear();
   mockMessageCreate = null;
+  anthropicCallCount = 0;
 });
 
 afterEach(() => {
   vi.clearAllMocks();
+  vi.resetModules();
 });
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
@@ -218,11 +226,38 @@ describe("matcher route — honesty validator (ADR-0016)", () => {
     expect(json.ok).toBe(true);
     expect(json.cached).toBe(false);
     expect(json.matches).toHaveLength(2);
+    expect(anthropicCallCount).toBe(1);
 
     // Second call same args → cache hit.
     const resp2 = await callMatcher("balanced");
     const json2 = (await resp2.json()) as { ok: boolean; cached: boolean };
     expect(json2.cached).toBe(true);
+    // F3.1: cache hit must NOT recall Anthropic. A regression where the route
+    // re-hits the API on every request would otherwise pass the cached:true
+    // check (because the route still sets cached=true for stale-on-error
+    // paths). Lock the call count.
+    expect(anthropicCallCount).toBe(1);
+  });
+
+  test("rejects a Hit citing a non-existent project (H2 fix mirrors role)", async () => {
+    // F3.3: project: cites must be validated like role: cites. We already
+    // test the role-bullet rejection above; mirror it for unknown projects.
+    mockMessageCreate = async () =>
+      buildMatcherResponse([
+        {
+          requirementId: "r1",
+          status: "hit",
+          cite: ["project:totally-fake-project"],
+          reasoning: "made up project.",
+        },
+        { requirementId: "r2", status: "miss", cite: [], reasoning: "n/a", gapFraming: "honest." },
+      ]);
+    const resp = await callMatcher("balanced");
+    expect(resp.status).toBe(502);
+    const json = (await resp.json()) as { ok: boolean; stage?: string; detail?: string };
+    expect(json.ok).toBe(false);
+    expect(json.stage).toBe("honesty-validate");
+    expect(json.detail).toContain("unknown project cite");
   });
 
   test("accepts project-prefixed cite for Hits (H2 fix verification)", async () => {
@@ -246,5 +281,53 @@ describe("matcher route — honesty validator (ADR-0016)", () => {
     expect(resp.status).toBe(200);
     const json = (await resp.json()) as { ok: boolean };
     expect(json.ok).toBe(true);
+  });
+});
+
+describe("matcher route — cost ceiling (ADR-0010)", () => {
+  // F3.2: this suite uses vi.doMock + vi.resetModules to override the
+  // ceiling check per-test (the file-level vi.mock is hoisted and locks the
+  // default to ok:true). Each test re-mocks the module and dynamically imports
+  // the route AFTER the override is registered.
+  test("returns 429 with stage='ceiling-blocked' when over budget; never calls Anthropic", async () => {
+    vi.resetModules();
+    vi.doMock("@/lib/check-cost-ceiling", () => ({
+      checkCostCeiling: async () => ({ ok: false, current: 31, limit: 30 }),
+    }));
+    // Re-register the SDK + cost + cache stubs against the *new* module graph
+    // produced by resetModules — vi.mock is hoisted only for the first import.
+    vi.doMock("@/lib/anthropic", () => ({
+      getAnthropicClient: () => ({
+        messages: {
+          create: vi.fn(async () => {
+            anthropicCallCount += 1;
+            return buildMatcherResponse([]);
+          }),
+        },
+      }),
+    }));
+    vi.doMock("@/lib/cost-log", () => ({ logCost: async () => {} }));
+    vi.doMock("@/lib/kv-cache", () => ({
+      makeCacheKey: () => "ceiling-test",
+      cacheGet: async () => null,
+      cacheSet: async () => {},
+    }));
+
+    const { POST } = await import("@/app/api/jd-match/route");
+    const req = new Request("http://test/api/jd-match", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        jdHash: "abc",
+        stretchLevel: "balanced",
+        requirements: [{ id: "r1", text: "X", category: "hard", weight: 1 }],
+      }),
+    });
+    const resp = await POST(req);
+    expect(resp.status).toBe(429);
+    const json = (await resp.json()) as { ok: boolean; stage?: string };
+    expect(json.ok).toBe(false);
+    expect(json.stage).toBe("ceiling-blocked");
+    expect(anthropicCallCount).toBe(0);
   });
 });

@@ -52,6 +52,15 @@ export function StretchSlider({ value, onChange }: Props) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8, minWidth: 280, flex: 1 }}>
+      {/*
+        Top row mirrors the design source verbatim (cv-jd.html lines 466-474):
+        "Strict — {active level} — Generous", with the active level rendered
+        in --accent + bold. When level === "strict" or "generous" this reads
+        "Strict — strict — Generous" / "Strict — generous — Generous" — that
+        intentional duplication is the design's affordance: the centered
+        accent word IS the current value, the flanking words are the axis
+        labels. Don't be tempted to dedupe.
+      */}
       <div
         style={{
           display: "flex",

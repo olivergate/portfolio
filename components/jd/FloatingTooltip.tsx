@@ -80,6 +80,13 @@ export function FloatingTooltip({ data }: Props) {
             letterSpacing: "0.1em",
           }}
         >
+          {/*
+            Design source (cv-jd.html line 656) reads "supporting bullet".
+            We say "evidence" because, per ADR-0016 H2, cites can now resolve
+            to either a role bullet (role:<id>) or a project (project:<id>).
+            "Bullet" would mislead for project-cited Hits like the Claude Code
+            setup example. "Evidence" covers both. Intentional deviation.
+          */}
           ↳ click to view supporting evidence
         </div>
       )}

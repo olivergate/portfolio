@@ -32,9 +32,12 @@
   --accent-alt:       #c0532b;   /* slightly brighter alt */
   --accent-soft:      #f5e8d8;   /* warm wash for highlight pulses */
 
-  /* Semantic for chip-grid (cv-jd.html) */
-  --hit:              #5a7a45;   /* sage green — requirement met */
-  --stretch:          #b8842c;   /* warm amber — requirement plausible */
+  /* Semantic for chip-grid (cv-jd.html) — values match design-references/source/cv-jd.html
+     :root verbatim. ADR-0007 covers --muted only; --hit and --stretch are NOT covered
+     by that ADR, so they stay at the design source values. Earlier desaturated values
+     (#5a7a45 / #b8842c) were reverted in fix-up batch 3 to match the design as ground truth. */
+  --hit:              #2f6b3a;   /* deep green — requirement met */
+  --stretch:          #8a5a16;   /* deep amber — requirement plausible */
   --miss:             #8a8278;   /* warm grey — honest gap */
 
   /* Terminal palette (cv-game.html, cv-lab.html demo) */

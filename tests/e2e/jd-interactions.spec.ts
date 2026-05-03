@@ -37,14 +37,18 @@ test.describe("JD adapter — sample JD interactions", () => {
     const beforeY = await page.evaluate(() => window.scrollY);
     expect(beforeY).toBe(0);
 
+    // F3.5: assert the RIGHT bullet pulses, not just any bullet. The default
+    // Sustainability sample's r1 chip's first cite is `role:opensc-sole-frontend`
+    // (see content/sample-jds.json) — the JD adapter scrolls/pulses that bullet
+    // on click. A regression where any bullet pulsed (or the wrong one did)
+    // would otherwise pass.
     const firstHit = page.locator('button.chip[aria-label^="Hit:"]').first();
     await firstHit.click();
 
     await page.waitForFunction(() => window.scrollY > 100);
-    const pulsing = await page.locator(".bullet-pulse").first();
+    const pulsing = page.locator(".bullet-pulse").first();
     await expect(pulsing).toBeVisible();
-    const pulsedId = await pulsing.getAttribute("data-bullet-id");
-    expect(pulsedId).toBeTruthy();
+    await expect(pulsing).toHaveAttribute("data-bullet-id", "opensc-sole-frontend");
   });
 
   test("clicking a Miss chip expands an italic Fraunces framing inline", async ({ page }) => {
