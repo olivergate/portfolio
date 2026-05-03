@@ -66,8 +66,12 @@ both calls are skipped and chips render from `content/sample-jds.json`.
   competing for tokens with chip-scoring examples).
 
 **Costs:**
-- Two API calls per pasted JD instead of one. Both are Sonnet-4.6 calls; total
-  is ~2–3 seconds on first run, instant on cache hit. Within the spec's <5s budget.
+- Two API calls per pasted JD instead of one. Both are Sonnet-4.6 calls; cold
+  path measured at 3.4s parser + 5.3s matcher = ~8.7s end-to-end (see
+  `docs/test-runs/jd-pressure-tests.md`), which exceeds the Phase 3 spec's
+  <5s budget — criterion 2 was marked ⚠️ Partial in the phase review. Cache
+  hits are instant; sample JDs bypass the API entirely. Tracked as a follow-up
+  under `docs/TODO.md` "Phase 3 follow-ups".
 - Two prompt-version strings to manage. Tracked in the cost log per endpoint.
 - Two route handlers to error-boundary, ceiling-check, and cost-log.
 
