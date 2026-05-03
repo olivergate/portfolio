@@ -123,23 +123,45 @@ describe("ParsedRequirement bounds", () => {
 
 describe("Sample-JDs content file is schema-clean and honest (ADR-0016)", () => {
   // This test re-validates the live content/sample-jds.json against the schema
-  // and the structural honesty rule (Hits cite something).
-  test("content/sample-jds.json passes schema and Hit-must-cite", async () => {
+  // and the structural honesty rule (Hits cite something) — across all three
+  // stretch levels, since pre-baked chips bypass the runtime validator.
+  test("content/sample-jds.json passes schema and Hit-must-cite at every level", async () => {
     const fs = await import("node:fs");
     const path = await import("node:path");
     const raw = fs.readFileSync(path.join(process.cwd(), "content", "sample-jds.json"), "utf8");
     const parsed = SampleJDsSchema.safeParse(JSON.parse(raw));
     expect(parsed.success).toBe(true);
     if (!parsed.success) return;
+    const levels: StretchLevel[] = ["strict", "balanced", "generous"];
     for (const jd of parsed.data) {
       for (const chip of jd.chips) {
-        if (chip.baseStatus === "hit") {
-          expect(
-            chip.cite.length,
-            `${jd.key} chip ${chip.id} (Hit) must cite supporting evidence`,
-          ).toBeGreaterThan(0);
+        for (const level of levels) {
+          if (statusAtLevel(chip, level) === "hit") {
+            expect(
+              chip.cite.length,
+              `${jd.key} chip ${chip.id} resolves to Hit at "${level}" but has no cite`,
+            ).toBeGreaterThan(0);
+          }
         }
       }
     }
+  });
+
+  test("F1.1 regression — a3, a4, r10 must not resolve to Hit at generous", async () => {
+    const fs = await import("node:fs");
+    const path = await import("node:path");
+    const raw = fs.readFileSync(path.join(process.cwd(), "content", "sample-jds.json"), "utf8");
+    const parsed = SampleJDsSchema.safeParse(JSON.parse(raw));
+    expect(parsed.success).toBe(true);
+    if (!parsed.success) return;
+    const allChips = parsed.data.flatMap((jd) => jd.chips);
+    const findChip = (id: string) => {
+      const c = allChips.find((c) => c.id === id);
+      expect(c, `chip ${id} not found in sample-jds.json`).toBeDefined();
+      return c as SampleChip;
+    };
+    expect(statusAtLevel(findChip("a3"), "generous")).not.toBe("hit");
+    expect(statusAtLevel(findChip("a4"), "generous")).not.toBe("hit");
+    expect(statusAtLevel(findChip("r10"), "generous")).not.toBe("hit");
   });
 });

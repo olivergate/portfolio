@@ -125,6 +125,12 @@ Example 6 — Stretch with no cite (skill-list adjacency):
   CV: skills.ai includes "Currently training in: OWASP AI Top 10, prompt injection and jailbreaks..."
   Output (balanced): { status: "stretch", cite: [], reasoning: "Currently training in OWASP AI Top 10 and prompt injection; not yet shipped to production." }
 
+Example 7 — tech stack listed at role level but no bullet substantiates the claim:
+  Requirement: "Production experience with Ethereum / on-chain provenance"
+  CV: OpenSC role's technologies array includes "Ethereum", but no bullet substantiates direct on-chain work — the role's bullets are about Plotly Dash, React, and the analytics frontend.
+  Wrong output: { status: "hit", cite: ["role:opensc-sole-frontend"], reasoning: "OpenSC stack included Ethereum." } — the cited bullet is about Plotly Dash and React, not Ethereum. The tech list at the role level is not a bullet, and citing the closest-adjacent bullet just to satisfy the schema is dishonest.
+  Correct output (balanced): { status: "stretch", cite: [], reasoning: "Ethereum was in the OpenSC stack list but no bullet substantiates direct on-chain work." }
+
 You output via the submit_matches tool only. No prose response.`;
 
 export const MATCHER_TOOL: Anthropic.Tool = {
@@ -165,8 +171,18 @@ export const MATCHER_TOOL: Anthropic.Tool = {
 /**
  * Helper: extract the (single) tool_use block from an Anthropic message.
  * Returns the parsed input or throws if the model didn't call the tool.
+ *
+ * Rejects responses where stop_reason !== "tool_use" — most importantly
+ * "max_tokens", which means the tool input is partial JSON and any zod
+ * parse downstream will fail with a confusing schema error rather than
+ * the real cause (truncation).
  */
 export function extractToolInput<T>(resp: Anthropic.Message, toolName: string): T {
+  if (resp.stop_reason !== "tool_use") {
+    throw new Error(
+      `Expected stop_reason="tool_use" got "${resp.stop_reason}" while extracting ${toolName}`,
+    );
+  }
   for (const block of resp.content) {
     if (block.type === "tool_use" && block.name === toolName) {
       return block.input as T;

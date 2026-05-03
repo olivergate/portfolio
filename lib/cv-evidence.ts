@@ -11,6 +11,9 @@ import { stableStringify } from "@/lib/stable-stringify";
  */
 export function computeCVHash(cv: CV): string {
   const evidence = {
+    name: cv.header.name,
+    tagline: cv.header.tagline,
+    experienceOverview: cv.experienceOverview,
     roles: cv.roles.map((r) => ({
       id: r.id,
       title: r.title,

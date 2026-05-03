@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { SampleJDsSchema } from "@/lib/jd-schemas";
+import { SampleJDsSchema, type StretchLevel, statusAtLevel } from "@/lib/jd-schemas";
 import { CVSchema, ToneSchema } from "@/lib/schemas";
 
 const cvPath = path.join(process.cwd(), "content", "cv.json");
@@ -95,11 +95,14 @@ try {
           process.exit(1);
         }
       }
-      if (chip.baseStatus === "hit" && chip.cite.length === 0) {
-        console.error(
-          `JD ${jd.key} chip ${chip.id} is a baseStatus Hit with no cite — Hits require evidence (ADR-0016)`,
-        );
-        process.exit(1);
+      const levels: StretchLevel[] = ["strict", "balanced", "generous"];
+      for (const level of levels) {
+        if (statusAtLevel(chip, level) === "hit" && chip.cite.length === 0) {
+          console.error(
+            `JD ${jd.key} chip ${chip.id} resolves to Hit at "${level}" with no cite — Hits require evidence (ADR-0016)`,
+          );
+          process.exit(1);
+        }
       }
     }
   }

@@ -80,7 +80,7 @@
         "text": "On-chain provenance / Ethereum",
         "baseStatus": "stretch",
         "strictStatus": "miss",
-        "generousStatus": "hit",
+        "generousStatus": "stretch",
         "cite": ["role:opensc-sole-frontend"],
         "reasoning": "OpenSC stack listed Ethereum, but the CV doesn't claim primary ownership of the on-chain layer. Strict reading would call this a miss; generous would credit production exposure.",
         "gapFraming": "Worked alongside an Ethereum-touching stack at OpenSC but didn't own the on-chain layer myself. Happy to talk about exposure vs ownership if that distinction matters here."
@@ -130,7 +130,7 @@
         "text": "OWASP AI Top 10, prompt security",
         "baseStatus": "stretch",
         "strictStatus": "stretch",
-        "generousStatus": "hit",
+        "generousStatus": "stretch",
         "cite": [],
         "reasoning": "Currently training in OWASP AI Top 10 and prompt injection; not yet shipped to production."
       },
@@ -139,7 +139,7 @@
         "text": "Production LLM work — agents, tool-use",
         "baseStatus": "stretch",
         "strictStatus": "miss",
-        "generousStatus": "hit",
+        "generousStatus": "stretch",
         "cite": [],
         "reasoning": "Three side projects in flight using LLMs; no production agent system shipped at scale.",
         "gapFraming": "Side-project LLM work in flight; nothing production-grade at scale yet. The work I'd describe as production was the Claude Code setup and tooling — happy to walk through it."

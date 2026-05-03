@@ -75,4 +75,28 @@ describe("computeCVHash is stable but version-bumps when evidence changes", () =
     const h2 = computeCVHash(mutated);
     expect(h2).not.toBe(h1);
   });
+
+  test("changes when header.tagline is modified", () => {
+    const h1 = computeCVHash(cv);
+    const mutated = JSON.parse(JSON.stringify(cv));
+    mutated.header.tagline = `${mutated.header.tagline} (mutated)`;
+    const h2 = computeCVHash(mutated);
+    expect(h2).not.toBe(h1);
+  });
+
+  test("changes when header.name is modified", () => {
+    const h1 = computeCVHash(cv);
+    const mutated = JSON.parse(JSON.stringify(cv));
+    mutated.header.name = `${mutated.header.name} (mutated)`;
+    const h2 = computeCVHash(mutated);
+    expect(h2).not.toBe(h1);
+  });
+
+  test("changes when experienceOverview is modified", () => {
+    const h1 = computeCVHash(cv);
+    const mutated = JSON.parse(JSON.stringify(cv));
+    mutated.experienceOverview = `${mutated.experienceOverview} (mutated)`;
+    const h2 = computeCVHash(mutated);
+    expect(h2).not.toBe(h1);
+  });
 });
