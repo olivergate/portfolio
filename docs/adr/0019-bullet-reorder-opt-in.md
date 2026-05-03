@@ -81,7 +81,9 @@ see *which* bullets the chips cited.
 **Deliberately not done:**
 - No URL parameter for the reorder state.
 - No "remember my reorder preference" local storage.
-- No SSR-time reorder. The original order is what ships on first paint.
+- No SSR-time bullet reorder. The original bullet order is what ships on
+  first paint. (Pre-baked sample-JD chip grids do ship on first paint — only
+  the *bullet* reorder is suppressed at SSR.)
 
 ## Alternatives considered
 
