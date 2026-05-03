@@ -24,35 +24,67 @@
       "company": "OpenSC",
       "start": "2022-07",
       "end": "2026-04",
-      "summary": "Sustainability impact venture co-founded by WWF and BCG, providing supply chain traceability for global brands. Standardised messy first-three-miles farm data into EPCIS, then surfaced it through dashboards used by Nespresso, Austral Fisheries, and internal teams to validate ethical sourcing claims and farmer payments.",
+      "summary": {
+        "honest": "Sustainability impact venture co-founded by WWF and BCG, providing supply chain traceability for global brands. Standardised messy first-three-miles farm data into EPCIS, then surfaced it through dashboards used by Nespresso, Austral Fisheries, and internal teams to validate ethical sourcing claims and farmer payments.",
+        "pessimistic": "Sustainability impact venture co-founded by WWF and BCG. The work was real and the brands were real; the underlying challenge — wrangling first-three-miles farm data into something a dashboard could honestly defend — was harder and slower than any of us would have liked to admit.",
+        "absurd": "A sustainability impact venture co-founded by WWF and BCG, which is a sentence I still can't say without picturing pandas in suits. The job, more or less, was to convince messy farm data to behave like a respectable EPCIS citizen, then put it on a screen so coffee could be morally cleared for landing."
+      },
       "bullets": [
         {
           "id": "opensc-sole-frontend",
-          "text": "Sole frontend engineer on the main analytics dashboard — built and maintained the entire system end-to-end. Plotly Dash for the analytical core; React and Next.js for the consumer-facing experiences."
+          "text": {
+            "honest": "Sole frontend engineer on the main analytics dashboard — built and maintained the entire system end-to-end. Plotly Dash for the analytical core; React and Next.js for the consumer-facing experiences.",
+            "pessimistic": "Sole frontend engineer on the main analytics dashboard. End-to-end ownership is great when shipping fast and lonely when something subtle breaks at 11pm — there were stretches where I was the only person who knew how a particular Plotly Dash callback worked, and that's a bus-factor I'd inherit again only if I had to.",
+            "absurd": "Sole frontend engineer on the main analytics dashboard, which means I was simultaneously the team lead, the team, and the team's only critic. Plotly Dash for the analytical core; React and Next.js for the bits humans were meant to enjoy. There is a Slack channel somewhere named after one of my callbacks."
+          }
         },
         {
           "id": "opensc-nespresso-payments",
-          "text": "Built the traceability and payments validation system used by Nespresso to verify coffee sourcing across Rainforest Alliance and their internal AAA premium-farmer program — including checks that base prices tracked the London robusta price index and that farmer payments matched contracted standards."
+          "text": {
+            "honest": "Built the traceability and payments validation system used by Nespresso to verify coffee sourcing across Rainforest Alliance and their internal AAA premium-farmer program — including checks that base prices tracked the London robusta price index and that farmer payments matched contracted standards.",
+            "pessimistic": "Built the traceability and payments validation system Nespresso adopted for Rainforest Alliance and their AAA program. Some of the price-tracking edge cases against the London robusta index took more iteration than I'd budgeted for, and the rollout had a rougher first quarter than I'd have liked before settling into something I'd actually defend.",
+            "absurd": "Built a traceability and payments validation system that Nespresso uses to verify coffee sourcing across Rainforest Alliance and their AAA premium-farmer program. I have personally never met a coffee bean I didn't suspect of fraud. The London robusta price index and I are now on a first-name basis; we exchange thoughts on volatility."
+          }
         },
         {
           "id": "opensc-anomaly-graph",
-          "text": "Surfaced supply chain anomalies — infiltration, exfiltration, breaches of farm productivity capacity, coffee from untraced origins — through graph-based analysis powered by Kuzu."
+          "text": {
+            "honest": "Surfaced supply chain anomalies — infiltration, exfiltration, breaches of farm productivity capacity, coffee from untraced origins — through graph-based analysis powered by Kuzu.",
+            "pessimistic": "Surfaced supply chain anomalies — infiltration, exfiltration, untraced origins — via graph analysis on Kuzu. Real catches, real value, but Kuzu was early and the queries that ran cleanly in dev sometimes did not run cleanly in production, which I learned about in the usual way.",
+            "absurd": "Surfaced supply chain anomalies — infiltration, exfiltration, breaches of farm productivity capacity, coffee from untraced origins — via graph analysis on Kuzu. Most of my professional life is now spent asking nodes uncomfortable questions about where they came from and who they've been talking to."
+          }
         },
         {
           "id": "opensc-austral-fisheries",
-          "text": "Worked with Austral Fisheries to validate the legal provenance of toothfish and prawn catches."
+          "text": {
+            "honest": "Worked with Austral Fisheries to validate the legal provenance of toothfish and prawn catches.",
+            "pessimistic": "Worked with Austral Fisheries on legal provenance for toothfish and prawn catches. The dataset was unforgiving and the domain expertise lived three time-zones away, which made every iteration cycle longer than the code suggested.",
+            "absurd": "Worked with Austral Fisheries on the legal provenance of toothfish and prawn catches. I now know more about the personal life of a toothfish than any human should reasonably know, and nothing has prepared me for the day someone at a dinner party asks what I do."
+          }
         },
         {
           "id": "opensc-dagster-yaml",
-          "text": "Re-architected supply chain onboarding in Dagster: replaced bespoke per-cluster orchestrations with a YAML-configured, data-contract-driven ingestion layer. Turned onboarding from a custom engineering effort per supply chain into a configuration task."
+          "text": {
+            "honest": "Re-architected supply chain onboarding in Dagster: replaced bespoke per-cluster orchestrations with a YAML-configured, data-contract-driven ingestion layer. Turned onboarding from a custom engineering effort per supply chain into a configuration task.",
+            "pessimistic": "Re-architected supply chain onboarding in Dagster, replacing bespoke per-cluster orchestrations with YAML-configured, data-contract-driven ingestion. The migration paid off, but the in-between period — old system live, new system being trusted — required more babysitting than I'd planned.",
+            "absurd": "Re-architected supply chain onboarding in Dagster: turned bespoke per-cluster orchestrations into a YAML-configured, data-contract-driven layer. This means onboarding a new supply chain went from \"a quarter\" to \"an afternoon and a moderately serious lunch.\""
+          }
         },
         {
           "id": "opensc-data-quality-monitoring",
-          "text": "Built monitoring for data quality, ingestion accuracy and frequency across all supply chain feeds."
+          "text": {
+            "honest": "Built monitoring for data quality, ingestion accuracy and frequency across all supply chain feeds.",
+            "pessimistic": "Built monitoring for data quality, ingestion accuracy and frequency across feeds. Coverage is good now; getting the alerting thresholds calibrated took several false-positive cycles I'd run differently next time.",
+            "absurd": "Built monitoring for data quality, ingestion accuracy, and frequency across every feed. The dashboards now know when they are sad before I do, which is a relationship dynamic I was not expecting from a piece of software."
+          }
         },
         {
           "id": "opensc-earlier-scope",
-          "text": "Earlier scope at OpenSC: an internal Android app (Kotlin), document scanning, internal tooling, API design, and orchestration in Airflow."
+          "text": {
+            "honest": "Earlier scope at OpenSC: an internal Android app (Kotlin), document scanning, internal tooling, API design, and orchestration in Airflow.",
+            "pessimistic": "Earlier scope: internal Android app in Kotlin, document scanning, internal tooling, API design, Airflow orchestration. A useful range; not all of it was deep, and a couple of those early Airflow DAGs are still where I'd point if someone asked me to find a piece of code I'd want to rewrite.",
+            "absurd": "Earlier scope at OpenSC: an internal Android app in Kotlin, document scanning, internal tooling, API design, and Airflow orchestration — a sampler platter of engineering, basically, served on a slowly improving plate."
+          }
         }
       ],
       "technologies": [
@@ -77,27 +109,51 @@
       "company": "Redington",
       "start": "2019-02",
       "end": "2022-06",
-      "summary": "UK investment consultancy. Built and led the frontend on a multi-tenant research platform used by several thousand consultants across 7+ tenants to track investments and maintain observability across portfolios. Joined as a junior; promoted to leading a frontend team within two years as the company scaled from 10 engineers to 8 teams.",
+      "summary": {
+        "honest": "UK investment consultancy. Built and led the frontend on a multi-tenant research platform used by several thousand consultants across 7+ tenants to track investments and maintain observability across portfolios. Joined as a junior; promoted to leading a frontend team within two years as the company scaled from 10 engineers to 8 teams.",
+        "pessimistic": "UK investment consultancy. Built and helped lead the frontend on a multi-tenant research platform — sensitive data, real consultants, real money. Joined as a junior, promoted into team lead within two years, which felt about a year earlier than I'd have promoted myself.",
+        "absurd": "UK investment consultancy. I joined as a junior and was promoted to leading a frontend team within two years, which is the corporate equivalent of being asked to perform open-heart surgery because you once watched the procedure on a long-haul flight. Several thousand consultants across 7+ tenants used this thing. Several thousand."
+      },
       "bullets": [
         {
           "id": "redington-frontend-arch",
-          "text": "Owned frontend architectural decisions on a React and TypeScript dashboard handling sensitive multi-tenant data, where cross-tenant leakage would have been existential to the business."
+          "text": {
+            "honest": "Owned frontend architectural decisions on a React and TypeScript dashboard handling sensitive multi-tenant data, where cross-tenant leakage would have been existential to the business.",
+            "pessimistic": "Owned frontend architectural decisions on a React and TypeScript dashboard handling sensitive multi-tenant data — the kind where a single cross-tenant leak would have been existential. Most of those decisions held up; a couple I'd unwind given another shot at them, particularly around how we handled tenant-scoped state in the early shared components.",
+            "absurd": "Owned frontend architectural decisions on a React and TypeScript dashboard where cross-tenant data leakage would have been existential to the business — a sentence I would type onto my CV with one hand while a small voice inside me whispered \"please, no.\" None of it leaked. None of it."
+          }
         },
         {
           "id": "redington-team-lead",
-          "text": "Led a team of 5 engineers focused on frontend feature delivery; consistently the highest-performing team on UI work."
+          "text": {
+            "honest": "Led a team of 5 engineers focused on frontend feature delivery; consistently the highest-performing team on UI work.",
+            "pessimistic": "Led 5 engineers on frontend feature delivery; we were the highest-performing team on UI work, which sounds tidy but lived alongside the usual difficult trade-offs about who got the interesting tickets and who picked up the maintenance.",
+            "absurd": "Led a team of 5 engineers focused on frontend feature delivery. Consistently the highest-performing team on UI work, which is the kind of compliment you put on a CV and pretend was just a normal Tuesday outcome."
+          }
         },
         {
           "id": "redington-config-dashboards",
-          "text": "Co-led architectural decisions across the frontend codebase and implemented a significant portion of the dynamically configurable dashboard system."
+          "text": {
+            "honest": "Co-led architectural decisions across the frontend codebase and implemented a significant portion of the dynamically configurable dashboard system.",
+            "pessimistic": "Co-led architectural decisions and built a significant share of the dynamically configurable dashboard system. The flexibility we built was real; the cost was a configuration surface that newer engineers found genuinely hard to reason about.",
+            "absurd": "Co-led architectural decisions across the frontend codebase and personally implemented a significant portion of the dynamically configurable dashboard system, the operative word being \"dynamically.\" There are still meetings somewhere in which someone is trying to configure it."
+          }
         },
         {
           "id": "redington-cypress",
-          "text": "Drove introduction of E2E testing with Cypress, improving deployment confidence and reducing release-time human error."
+          "text": {
+            "honest": "Drove introduction of E2E testing with Cypress, improving deployment confidence and reducing release-time human error.",
+            "pessimistic": "Drove introduction of Cypress E2E testing. Deployment confidence improved; the suite also got slow enough at one point that engineers started mentally discounting failures, which is the failure mode that exists right next to \"we have tests now.\"",
+            "absurd": "Drove introduction of E2E testing with Cypress, improving deployment confidence and reducing release-time human error — a polite way of saying I tried to make it harder for any of us to accidentally show pension data to the wrong investment consultant on a Friday afternoon."
+          }
         },
         {
           "id": "redington-charity",
-          "text": "Beyond engineering: chaired the Bristol charity committee. Ran a pro-bono engagement with LifeCycle — a charity left dry by multiple high-cost agencies — running a one-day discovery workshop and orchestrating the migration of their database and supporting infrastructure onto Airtable. Successfully pushed for an expansion of company-sponsored charity days and helped colleagues find opportunities."
+          "text": {
+            "honest": "Beyond engineering: chaired the Bristol charity committee. Ran a pro-bono engagement with LifeCycle — a charity left dry by multiple high-cost agencies — running a one-day discovery workshop and orchestrating the migration of their database and supporting infrastructure onto Airtable. Successfully pushed for an expansion of company-sponsored charity days and helped colleagues find opportunities.",
+            "pessimistic": "Outside core engineering: chaired the Bristol charity committee, ran a pro-bono engagement with LifeCycle to migrate their infrastructure onto Airtable. Useful work; the discovery workshop was rougher than I'd run it now, and Airtable has limits I hadn't fully internalised when I picked it.",
+            "absurd": "Outside engineering: chaired the Bristol charity committee, ran a pro-bono engagement for LifeCycle that involved migrating their entire database to Airtable in approximately one weekend and a strong cup of tea. Successfully lobbied for more charity days, which I consider, on balance, my most morally defensible commit."
+          }
         }
       ],
       "technologies": [

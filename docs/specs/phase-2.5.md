@@ -4,7 +4,7 @@
 >
 > NOTE: this is a follow-up to Phase 2 reinstating the tone-toggle surface
 > that was reshaped out of Phase 2 in favour of the `/tone` manifesto. See
-> ADR-0011 for the manifesto-vs-toggle split, and ADR-0012 (this phase) for
+> ADR-0011 for the manifesto-vs-toggle split, and ADR-0013 (this phase) for
 > the live-API-vs-pre-written decision.
 
 ## Goal
@@ -18,13 +18,13 @@ Three deliverables, in this order:
 2. **Tone toggle on `/`** — segmented control swapping role blurbs +
    experience bullets between three pre-written voices: Pessimistic /
    Honest / Absurd. Sticky satire banner when Absurd is active. No live
-   API calls (see ADR-0012).
+   API calls (see ADR-0013).
 3. **Marks Phase 2 as Done** in `docs/specs/README.md` once the toggle
    ships and the smoke endpoint is verified.
 
 ## Why pre-written, not live
 
-ADR-0012 documents the decision in full. Short version: live API gives
+ADR-0013 documents the decision in full. Short version: live API gives
 spectacle but introduces honesty risk (AI-generated copy claiming to be
 Oliver), ongoing cost, cache invalidation complexity, and a fallback UX
 problem when the cost ceiling is hit. Pre-written gives Oliver final
@@ -86,7 +86,7 @@ The design has settled:
    16-corner test passes for `/` × { Pessimistic, Honest, Absurd }.
 6. Axe AA passes on `/` for all three tone states at five representative
    slider positions.
-7. ADR-0012 (pre-written vs live) and ADR-0013 (Anthropic key + KV
+7. ADR-0013 (pre-written vs live) and ADR-0014 (Anthropic key + Redis
    provisioning) committed.
 8. `docs/specs/README.md` table updated: Phase 2 marked Done.
 
@@ -322,7 +322,7 @@ satire banner contrast, tone-shifted text contrast.
 - Banner has the `SATIRE` chip (selector test, locks the honesty
   guardrail)
 
-#### D4. ADR-0012 — pre-written vs live tone toggle
+#### D4. ADR-0013 — pre-written vs live tone toggle
 
 Use `/adr <title>` to scaffold. Document:
 - Original direction (live API rewriting on demand)
@@ -331,7 +331,7 @@ Use `/adr <title>` to scaffold. Document:
 - Trade-off accepted (less spectacle on `/`; recovered in Phase 3)
 - Phase 2 AI infra still exercised via smoke endpoint
 
-#### D5. ADR-0013 — Anthropic key + Redis provisioning model
+#### D5. ADR-0014 — Anthropic key + Redis provisioning model
 
 Document:
 - Separate Anthropic key per Vercel project (not shared with `blob-life`)
@@ -353,7 +353,7 @@ phase actually ships). Update `current_state` in
 
 ## Out of scope
 
-- Live API tone generation (deferred indefinitely; see ADR-0012)
+- Live API tone generation (deferred indefinitely; see ADR-0013)
 - URL hash persistence of tone state (Phase 3 owns URL state)
 - Tone shifts on Skills, Projects, Education, About, Avocations
 - Re-capturing the wrong screenshot at `02-cv-tone.png` — separate

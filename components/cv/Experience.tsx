@@ -92,7 +92,7 @@ function Role({ role, isFirst }: { role: CVRole; isFirst: boolean }) {
           fontStyle: "var(--blurb-style, normal)",
         }}
       >
-        {role.summary}
+        {role.summary.honest}
       </p>
 
       <ul
@@ -123,7 +123,7 @@ function Role({ role, isFirst }: { role: CVRole; isFirst: boolean }) {
             }}
           >
             <BulletMarker />
-            {bullet.text}
+            {bullet.text.honest}
           </li>
         ))}
       </ul>

@@ -21,9 +21,15 @@ const About = z.object({
   paragraphs: z.array(z.string().min(1)).min(1),
 });
 
+const TonedText = z.object({
+  honest: z.string().min(1),
+  pessimistic: z.string().min(1),
+  absurd: z.string().min(1),
+});
+
 const Bullet = z.object({
   id: slug,
-  text: z.string().min(1),
+  text: TonedText,
 });
 
 const Role = z.object({
@@ -32,7 +38,7 @@ const Role = z.object({
   company: z.string().min(1),
   start: z.string().min(1),
   end: z.string().min(1),
-  summary: z.string().min(1),
+  summary: TonedText,
   bullets: z.array(Bullet).min(1),
   technologies: z.array(z.string().min(1)).min(1),
 });
@@ -79,6 +85,8 @@ export type CVBullet = z.infer<typeof Bullet>;
 export type CVProject = z.infer<typeof Project>;
 export type CVEducation = z.infer<typeof Education>;
 export type CVSkills = z.infer<typeof Skills>;
+export type CVTonedText = z.infer<typeof TonedText>;
+export type CVTone = "honest" | "pessimistic" | "absurd";
 
 const Tenet = z.object({
   number: z.number().int().min(1).max(99),
