@@ -1,0 +1,63 @@
+---
+title: Architectural Decision Records — Index
+purpose: Authoritative list of all Accepted, Proposed, and Superseded ADRs for this project.
+audience: humans + agents
+last_verified: 2026-05-03
+canonical_for: [architectural-decisions, adr-process]
+---
+
+# Architectural Decision Records — Index
+
+An Architectural Decision Record (ADR) captures one significant architectural decision: the context that prompted it, the choice that was made, and the consequences that follow. Each ADR is a single page in Nygard format (Status / Context / Decision / Consequences / Alternatives considered) stored as `docs/adr/NNNN-<slug>.md`. ADRs explain *why* — they are the second-highest authority in this repo, losing only to tests, type schemas, and Zod schemas.
+
+The format itself is established by ADR-0003. The `/decisions` page (Phase 7) renders these as a public list.
+
+## How to propose a new ADR
+
+1. Copy the template at `docs/adr/0000-template.md` (or use `/adr <title>` to scaffold).
+2. Create `docs/adr/NNNN-<slug>.md` using the next unused four-digit number.
+3. Set `Status: Proposed`, fill Context and Decision, open a PR (or commit directly if working solo).
+4. Discuss / iterate while `Status: Proposed`.
+5. On accept, flip to `Status: Accepted`, set `Date:`, and add a row to the table below.
+
+## Editability policy
+
+An Accepted ADR is not uniformly frozen. Two tiers (see ADR-0012 for the full policy):
+
+**Frozen** — requires a superseding ADR to change:
+
+- the decision itself (the X-not-Y choice in the Decision section)
+- the rationale for choosing X
+- the Alternatives-considered record
+- the `Date:` stamp
+
+**Editable in place** — amend on a commit, no supersession:
+
+- current-state enumerations (lists of files, versions, modes, carve-outs, call sites, route paths)
+- cross-references to other ADRs
+- factual corrections (file renames, typo fixes, wrong line numbers)
+- forward pointers to specs or commits that did not exist at authoring time
+
+Rule of thumb: if the edit would change what a reader believes we chose or why, write a new ADR. If it keeps that belief intact while updating a factual detail, amend in place. Scope amendment commits `docs(adr): amend ADR-NNNN <what>`. `Status: Accepted` does not flip on amendment — it flips only on supersession.
+
+## ADRs
+
+| ADR | Title | Status | Date | Supersedes | Superseded by |
+|-----|-------|--------|------|------------|---------------|
+| [0001](./0001-stack.md) | Stack: Next.js 16 (App Router) on Vercel, with Bun as the package manager | Accepted | 2026-05-02 | — | — |
+| [0002](./0002-design-system.md) | Design system locked from the claude.ai handoff | Accepted | 2026-05-02 | — | — |
+| [0003](./0003-adr-format.md) | ADR format and the public `/decisions` page | Accepted | 2026-05-02 | — | — |
+| [0004](./0004-url-hash-for-slider-state.md) | URL hash for slider state | Accepted | 2026-05-02 | — | — |
+| [0005](./0005-css-custom-properties-as-styling-layer.md) | CSS custom properties as the styling layer | Accepted | 2026-05-02 | — | — |
+| [0006](./0006-slider-deck-is-design-locked.md) | The slider deck is design-locked | Accepted | 2026-05-02 | — | — |
+| [0007](./0007-muted-color-wcag-aa-deviation.md) | `--muted` color deviation for WCAG AA at refined polish | Accepted | 2026-05-03 | — | — |
+| [0008](./0008-server-side-ai-calls-only.md) | Server-side AI calls only | Accepted | 2026-05-03 | — | — |
+| [0009](./0009-cache-key-includes-prompt-version.md) | Cache key includes prompt version; no TTLs | Accepted | 2026-05-03 | — | — |
+| [0010](./0010-cost-ceiling-per-endpoint.md) | Cost ceiling enforced per-endpoint, not via global rate limiting | Accepted | 2026-05-03 | — | — |
+| [0011](./0011-tone-as-manifesto-not-live-toggle.md) | `/tone` ships as a manifesto; the live AI toggle is a separate surface | Accepted | 2026-05-03 | — | — |
+| [0012](./0012-adr-editability-tiers.md) | ADR editability tiers | Accepted | 2026-05-03 | — | — |
+
+<!--
+  Add one row per ADR as you author them. Format:
+  | [NNNN](./NNNN-<slug>.md) | <title> | <status> | <YYYY-MM-DD> | <NNNN or —> | <NNNN or —> |
+-->

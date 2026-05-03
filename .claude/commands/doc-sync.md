@@ -1,0 +1,1 @@
+/Users/olivergate/Documents/Source/retro-claude/kit/skills/doc-system/doc-sync.md

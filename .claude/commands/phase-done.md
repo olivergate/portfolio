@@ -1,5 +1,6 @@
 ---
 description: Run all checks, report results, draft a commit message, and prompt to update the phase status table
+argument-hint: ""
 ---
 
 You are wrapping up a phase.

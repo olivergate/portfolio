@@ -1,0 +1,46 @@
+{
+  "buckets": [
+    "docs/adr",
+    "docs/practices",
+    "docs/runbooks",
+    "docs/specs",
+    "docs/doc-system",
+    ".claude/agents",
+    ".claude/commands"
+  ],
+
+  "scopePrefixes": [
+    "docs/",
+    ".claude/agents/",
+    ".claude/commands/"
+  ],
+
+  "excludedIndexFiles": [
+    "docs/INDEX.md",
+    "docs/adr/INDEX.md",
+    "docs/practices/INDEX.md",
+    "docs/runbooks/INDEX.md",
+    "docs/specs/README.md"
+  ],
+
+  "repoPathPrefixes": [
+    "docs/",
+    "app/",
+    "components/",
+    "content/",
+    "design-references/",
+    "lib/",
+    "public/",
+    "scripts/",
+    "source/",
+    "styles/",
+    "tests/",
+    "tools/",
+    ".claude/"
+  ],
+
+  "agentsMdLineLimit": 200,
+  "agentsMdFiles": ["CLAUDE.md"],
+
+  "skipDirNames": ["node_modules", "archive", ".next", ".git", "dist", "build", ".vercel", ".playwright-mcp", "test-results", "design-references"]
+}

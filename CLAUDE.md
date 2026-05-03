@@ -2,6 +2,19 @@
 
 Persistent context for this project. Kept short on purpose — pointers, not copies.
 
+## Collaboration direction
+
+This project follows the retro-claude kit's collaboration direction. See:
+
+- `~/Documents/Source/retro-claude/kit/direction.md` — two stance rules (probe before dispatch; surface alternatives, don't pick silently).
+- `~/Documents/Source/retro-claude/kit/practices/` — operational rules (output verification, fanout provenance, input verification).
+
+These rules apply to all agent work in this repo unless explicitly overridden in a per-task brief.
+
+## Doc system
+
+Doc-system meta lives in `docs/doc-system/01-taxonomy.md` (and 02–07). The system was bootstrapped from the retro-claude kit on 2026-05-03 — see `docs/doc-system/04-current-state-audit.md` and `06-target-system.md` (placeholders to be filled in as the project's actual doc shape settles). ADR editability follows the two-tier policy in ADR-0012; the `/doc-sync` slash command and `doc-steward` / `doc-reviewer` sub-agents are available via `.claude/`. Run `bun run doc-lint` (or `bun run doc-lint:changed`) before pushing doc-touching commits.
+
 ## What this is
 
 A personal CV site for Oliver Kaikane Gate that doubles as a portfolio of AI-native product
