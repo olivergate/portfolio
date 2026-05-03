@@ -1,4 +1,5 @@
 import "server-only";
+import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAnthropicClient } from "@/lib/anthropic";
@@ -44,12 +45,16 @@ export async function POST(req: Request): Promise<NextResponse<SuccessResponse |
   const cv = getCV();
   const cvHash = computeCVHash(cv);
 
+  // F2.5: jdHash is intentionally NOT in the cache key. The full `requirements`
+  // array is the real entropy — a buggy/malicious client could send a mismatched
+  // hash + requirements pair and poison the cache. The request schema still accepts
+  // jdHash for API symmetry with the parser response, but caching depends only on
+  // what the matcher actually reads (cvHash + stretchLevel + requirements).
   const cacheKey = makeCacheKey({
     endpoint: "/api/jd-match",
     promptVersion: MATCHER_PROMPT_VERSION,
     input: {
       cvHash,
-      jdHash: body.jdHash,
       stretchLevel: body.stretchLevel,
       requirements: body.requirements,
     },
@@ -115,18 +120,48 @@ export async function POST(req: Request): Promise<NextResponse<SuccessResponse |
 
   let resp: Awaited<ReturnType<typeof client.messages.create>>;
   try {
-    resp = await client.messages.create({
-      model: DEFAULT_MODEL,
-      max_tokens: MAX_OUTPUT_TOKENS,
-      system: MATCHER_SYSTEM,
-      tools: [MATCHER_TOOL],
-      tool_choice: { type: "tool", name: "submit_matches" },
-      messages: [{ role: "user", content: userMessage }],
-    });
+    resp = await client.messages.create(
+      {
+        model: DEFAULT_MODEL,
+        max_tokens: MAX_OUTPUT_TOKENS,
+        system: MATCHER_SYSTEM,
+        tools: [MATCHER_TOOL],
+        tool_choice: { type: "tool", name: "submit_matches" },
+        messages: [{ role: "user", content: userMessage }],
+      },
+      { signal: req.signal },
+    );
   } catch (err) {
+    // Client aborted before tokens came back — no usage to cost-log.
+    if (err instanceof Anthropic.APIUserAbortError || (err as Error)?.name === "AbortError") {
+      return NextResponse.json(
+        { ok: false, stage: "client-abort", detail: "client aborted before response" },
+        { status: 504 },
+      );
+    }
     return NextResponse.json(
       { ok: false, stage: "anthropic-call", detail: String(err) },
       { status: 502 },
+    );
+  }
+
+  // CRITICAL: once we've paid Anthropic, log the cost no matter what comes next.
+  // logCost runs before extractToolInput / zod / honesty-validate / cache-set so
+  // any downstream failure still leaves a row in the cost table.
+  const costUSD = calculateCostUSD(resp.model, resp.usage.input_tokens, resp.usage.output_tokens);
+  try {
+    await logCost({
+      endpoint: "/api/jd-match",
+      model: resp.model,
+      inputTokens: resp.usage.input_tokens,
+      outputTokens: resp.usage.output_tokens,
+      costUSD,
+      promptVersion: MATCHER_PROMPT_VERSION,
+    });
+  } catch (err) {
+    return NextResponse.json(
+      { ok: false, stage: "cost-log", detail: String(err), costUSD },
+      { status: 500 },
     );
   }
 
@@ -162,31 +197,13 @@ export async function POST(req: Request): Promise<NextResponse<SuccessResponse |
     );
   }
 
-  const costUSD = calculateCostUSD(resp.model, resp.usage.input_tokens, resp.usage.output_tokens);
-
-  try {
-    await logCost({
-      endpoint: "/api/jd-match",
-      model: resp.model,
-      inputTokens: resp.usage.input_tokens,
-      outputTokens: resp.usage.output_tokens,
-      costUSD,
-      promptVersion: MATCHER_PROMPT_VERSION,
-    });
-  } catch (err) {
-    return NextResponse.json(
-      { ok: false, stage: "cost-log", detail: String(err) },
-      { status: 500 },
-    );
-  }
-
   const payload: MatchResponse = { matches: matchesParsed.data };
 
   try {
     await cacheSet(cacheKey, payload);
   } catch (err) {
     return NextResponse.json(
-      { ok: false, stage: "cache-set", detail: String(err) },
+      { ok: false, stage: "cache-set", detail: String(err), costUSD },
       { status: 500 },
     );
   }
@@ -229,6 +246,18 @@ function validateMatches(
       return {
         ok: false,
         detail: `Miss without gapFraming for requirement ${m.requirementId} — violates ADR-0016`,
+      };
+    }
+    if (m.status === "miss" && m.cite.length > 0) {
+      return {
+        ok: false,
+        detail: `Miss with non-empty cite for requirement ${m.requirementId} — violates ADR-0016`,
+      };
+    }
+    if (new Set(m.cite).size !== m.cite.length) {
+      return {
+        ok: false,
+        detail: `Duplicate cites within match for requirement ${m.requirementId} — violates ADR-0016`,
       };
     }
 

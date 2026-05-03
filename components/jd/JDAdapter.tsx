@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { HoverData } from "@/components/jd/Chip";
 import { ChipGrid } from "@/components/jd/ChipGrid";
 import {
@@ -61,6 +61,27 @@ export function JDAdapter({ cv, samples }: Props) {
   /** Live state populated only when the visitor pasted a JD and clicked Score. */
   const [live, setLive] = useState<LiveState | null>(null);
 
+  /**
+   * Generation counter — bumped on every fetch (Score click, level change).
+   * Each async closure captures the gen at start; results are dropped if a
+   * newer generation has begun (sample pick, second Score click, level slide).
+   * Prevents stale responses from clobbering current state.
+   */
+  const genRef = useRef(0);
+
+  /** Pulse-clear timeout id — kept in a ref so successive clicks don't lose it. */
+  const pulseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Cleanup pulse timer on unmount.
+  useEffect(() => {
+    return () => {
+      if (pulseTimerRef.current !== null) {
+        clearTimeout(pulseTimerRef.current);
+        pulseTimerRef.current = null;
+      }
+    };
+  }, []);
+
   const stretchLevel: StretchLevel = levelFromPosition(stretchPosition);
 
   const chips: ChipModel[] | null = useMemo(() => {
@@ -77,6 +98,10 @@ export function JDAdapter({ cv, samples }: Props) {
   const pickSample = (key: string) => {
     const sample = samples.find((s) => s.key === key);
     if (!sample) return;
+    // Bump generation so any in-flight handleScore / level-change fetch is
+    // ignored when it resolves — picking a sample mid-flight must not let the
+    // stale response snap the UI back.
+    genRef.current += 1;
     setActiveKey(key);
     setJdText(sample.text);
     setScored(true);
@@ -92,6 +117,7 @@ export function JDAdapter({ cv, samples }: Props) {
       setLoading({ kind: "error", message: "JD too short — paste at least a paragraph." });
       return;
     }
+    const myGen = ++genRef.current;
     setLoading({ kind: "parsing" });
     setLive(null);
     try {
@@ -103,6 +129,7 @@ export function JDAdapter({ cv, samples }: Props) {
       const parseJson = (await parseResp.json()) as
         | { ok: true; requirements: ParsedRequirement[]; jdHash: string }
         | { ok: false; stage: string; detail?: string };
+      if (genRef.current !== myGen) return; // superseded — drop response
       if (!parseJson.ok) {
         setLoading({
           kind: "error",
@@ -123,6 +150,7 @@ export function JDAdapter({ cv, samples }: Props) {
       const matchJson = (await matchResp.json()) as
         | { ok: true; matches: Match[] }
         | { ok: false; stage: string; detail?: string };
+      if (genRef.current !== myGen) return; // superseded — drop response
       if (!matchJson.ok) {
         setLoading({
           kind: "error",
@@ -139,6 +167,7 @@ export function JDAdapter({ cv, samples }: Props) {
       setScored(true);
       setLoading({ kind: "idle" });
     } catch (err) {
+      if (genRef.current !== myGen) return;
       setLoading({ kind: "error", message: `network: ${(err as Error).message}` });
     }
   };
@@ -147,23 +176,36 @@ export function JDAdapter({ cv, samples }: Props) {
   useEffect(() => {
     if (!live) return;
     if (live.matchesByLevel[stretchLevel]) return;
-    if (loading.kind === "parsing" || loading.kind === "matching") return;
+    // Don't piggyback on parsing/matching — and don't re-fire on every error
+    // transition, which previously thrashed Matching… ↔ error message.
+    if (loading.kind === "parsing" || loading.kind === "matching" || loading.kind === "error") {
+      return;
+    }
+
+    // Capture generation + level at scheduling time. Fetch resolution must
+    // confirm the gen matches and the level it fetched is still current.
+    const myGen = ++genRef.current;
+    const myLevel = stretchLevel;
+    const myJdHash = live.jdHash;
+    const myRequirements = live.requirements;
 
     const t = setTimeout(async () => {
-      setLoading({ kind: "matching", level: stretchLevel });
+      if (genRef.current !== myGen) return;
+      setLoading({ kind: "matching", level: myLevel });
       try {
         const resp = await fetch(MATCH_ENDPOINT, {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
-            jdHash: live.jdHash,
-            requirements: live.requirements,
-            stretchLevel,
+            jdHash: myJdHash,
+            requirements: myRequirements,
+            stretchLevel: myLevel,
           }),
         });
         const json = (await resp.json()) as
           | { ok: true; matches: Match[] }
           | { ok: false; stage: string; detail?: string };
+        if (genRef.current !== myGen) return; // superseded — drop response
         if (!json.ok) {
           setLoading({
             kind: "error",
@@ -175,12 +217,13 @@ export function JDAdapter({ cv, samples }: Props) {
           prev
             ? {
                 ...prev,
-                matchesByLevel: { ...prev.matchesByLevel, [stretchLevel]: json.matches },
+                matchesByLevel: { ...prev.matchesByLevel, [myLevel]: json.matches },
               }
             : prev,
         );
         setLoading({ kind: "idle" });
       } catch (err) {
+        if (genRef.current !== myGen) return;
         setLoading({ kind: "error", message: `network: ${(err as Error).message}` });
       }
     }, MATCH_DEBOUNCE_MS);
@@ -204,7 +247,15 @@ export function JDAdapter({ cv, samples }: Props) {
     window.scrollTo({ top: y, behavior: "smooth" });
     const pulseRef = parsed.kind === "role" ? parsed.id : `project:${parsed.id}`;
     setPulseId(pulseRef);
-    setTimeout(() => setPulseId(null), 1700);
+    // Cancel any prior pulse-clear timer so back-to-back clicks don't truncate
+    // the new pulse early; cleared on unmount via the effect above.
+    if (pulseTimerRef.current !== null) {
+      clearTimeout(pulseTimerRef.current);
+    }
+    pulseTimerRef.current = setTimeout(() => {
+      setPulseId(null);
+      pulseTimerRef.current = null;
+    }, 1700);
   };
 
   const isSamplePicked = activeKey !== "" && live === null;

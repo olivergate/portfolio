@@ -1,5 +1,6 @@
 import "server-only";
 import { createHash } from "node:crypto";
+import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAnthropicClient } from "@/lib/anthropic";
@@ -93,18 +94,48 @@ export async function POST(req: Request): Promise<NextResponse<SuccessResponse |
 
   let resp: Awaited<ReturnType<typeof client.messages.create>>;
   try {
-    resp = await client.messages.create({
-      model: DEFAULT_MODEL,
-      max_tokens: MAX_OUTPUT_TOKENS,
-      system: PARSER_SYSTEM,
-      tools: [PARSER_TOOL],
-      tool_choice: { type: "tool", name: "submit_requirements" },
-      messages: [{ role: "user", content: jdText }],
-    });
+    resp = await client.messages.create(
+      {
+        model: DEFAULT_MODEL,
+        max_tokens: MAX_OUTPUT_TOKENS,
+        system: PARSER_SYSTEM,
+        tools: [PARSER_TOOL],
+        tool_choice: { type: "tool", name: "submit_requirements" },
+        messages: [{ role: "user", content: jdText }],
+      },
+      { signal: req.signal },
+    );
   } catch (err) {
+    // Client aborted before tokens came back — no usage to cost-log.
+    if (err instanceof Anthropic.APIUserAbortError || (err as Error)?.name === "AbortError") {
+      return NextResponse.json(
+        { ok: false, stage: "client-abort", detail: "client aborted before response" },
+        { status: 504 },
+      );
+    }
     return NextResponse.json(
       { ok: false, stage: "anthropic-call", detail: String(err) },
       { status: 502 },
+    );
+  }
+
+  // CRITICAL: once we've paid Anthropic, log the cost no matter what comes next.
+  // logCost runs before extractToolInput / zod / cache-set so any downstream
+  // failure still leaves a row in the cost table.
+  const costUSD = calculateCostUSD(resp.model, resp.usage.input_tokens, resp.usage.output_tokens);
+  try {
+    await logCost({
+      endpoint: "/api/jd-parse",
+      model: resp.model,
+      inputTokens: resp.usage.input_tokens,
+      outputTokens: resp.usage.output_tokens,
+      costUSD,
+      promptVersion: PARSER_PROMPT_VERSION,
+    });
+  } catch (err) {
+    return NextResponse.json(
+      { ok: false, stage: "cost-log", detail: String(err), costUSD },
+      { status: 500 },
     );
   }
 
@@ -130,31 +161,13 @@ export async function POST(req: Request): Promise<NextResponse<SuccessResponse |
     );
   }
 
-  const costUSD = calculateCostUSD(resp.model, resp.usage.input_tokens, resp.usage.output_tokens);
-
-  try {
-    await logCost({
-      endpoint: "/api/jd-parse",
-      model: resp.model,
-      inputTokens: resp.usage.input_tokens,
-      outputTokens: resp.usage.output_tokens,
-      costUSD,
-      promptVersion: PARSER_PROMPT_VERSION,
-    });
-  } catch (err) {
-    return NextResponse.json(
-      { ok: false, stage: "cost-log", detail: String(err) },
-      { status: 500 },
-    );
-  }
-
   const payload: ParseResponse = { requirements: reqsParsed.data, jdHash };
 
   try {
     await cacheSet(cacheKey, payload);
   } catch (err) {
     return NextResponse.json(
-      { ok: false, stage: "cache-set", detail: String(err) },
+      { ok: false, stage: "cache-set", detail: String(err), costUSD },
       { status: 500 },
     );
   }
