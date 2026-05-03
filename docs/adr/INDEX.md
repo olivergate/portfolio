@@ -56,6 +56,8 @@ Rule of thumb: if the edit would change what a reader believes we chose or why, 
 | [0010](./0010-cost-ceiling-per-endpoint.md) | Cost ceiling enforced per-endpoint, not via global rate limiting | Accepted | 2026-05-03 | — | — |
 | [0011](./0011-tone-as-manifesto-not-live-toggle.md) | `/tone` ships as a manifesto; the live AI toggle is a separate surface | Accepted | 2026-05-03 | — | — |
 | [0012](./0012-adr-editability-tiers.md) | ADR editability tiers | Accepted | 2026-05-03 | — | — |
+| [0013](./0013-pre-written-tone-toggle.md) | The `/` tone toggle is pre-written, not live API | Accepted | 2026-05-03 | — | — |
+| [0014](./0014-anthropic-key-redis-provisioning.md) | Anthropic key + Upstash Redis provisioning model | Accepted | 2026-05-03 | — | — |
 
 <!--
   Add one row per ADR as you author them. Format:

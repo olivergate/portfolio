@@ -8,7 +8,7 @@ session for the next phase.
 |-------|-------|----------------|--------|-----------|
 | 0 | Foundations | site shell, `/` (CV static) | Done | 2026-05-02 |
 | 1 | UX style sliders | `/` (CV interactive) | Done | 2026-05-03 |
-| 2 | Tone manifesto + AI infra | `/tone` | Not started | — |
+| 2 | Tone manifesto + AI infra | `/tone` | Done | 2026-05-03 |
 | 3 | JD adapter | `/jd` | Not started | — |
 | 4 | Lab + Claude Code retro demo | `/lab` | Not started | — |
 | 5 | Prompt-safety game scaffolding | `/game` (L-01, L-02) | Not started | — |

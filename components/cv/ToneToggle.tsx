@@ -11,7 +11,12 @@ type ToneOption = {
 };
 
 const TONES: readonly ToneOption[] = [
-  { id: "pessimistic", name: "Pessimistic", desc: "Self-aware", thumbClass: "tone-thumb--pessimistic" },
+  {
+    id: "pessimistic",
+    name: "Pessimistic",
+    desc: "Self-aware",
+    thumbClass: "tone-thumb--pessimistic",
+  },
   { id: "honest", name: "Honest", desc: "As written", thumbClass: "tone-thumb--honest" },
   { id: "absurd", name: "Absurd", desc: "Satire", thumbClass: "tone-thumb--absurd" },
 ] as const;
@@ -26,11 +31,7 @@ export function ToneToggle() {
   if (!current) throw new Error("ToneToggle: TONES is empty (unreachable)");
 
   return (
-    <section
-      id="tone-toggle"
-      data-reveal
-      style={{ marginTop: "var(--gap-section)" }}
-    >
+    <section id="tone-toggle" data-reveal style={{ marginTop: "var(--gap-section)" }}>
       <div
         style={{
           display: "flex",
@@ -67,7 +68,11 @@ export function ToneToggle() {
         </h2>
       </div>
 
-      <div className={`tone-toggle tone-toggle--${current.id}`} role="tablist" aria-label="CV bullet voice">
+      <div
+        className={`tone-toggle tone-toggle--${current.id}`}
+        role="tablist"
+        aria-label="CV bullet voice"
+      >
         <span
           className={`tone-thumb ${current.thumbClass}`}
           style={{ left: `calc(6px + ${idx} * (100% - 12px) / 3)` }}

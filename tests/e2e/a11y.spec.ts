@@ -38,3 +38,38 @@ for (const route of ROUTES) {
     }
   });
 }
+
+// Tone-state coverage on / across the same five representative slider
+// positions. Each tone shifts role blurbs + experience bullets and (for
+// absurd) shows the satire banner; axe verifies WCAG AA contrast and the
+// ARIA tab pattern under every slider corner the rest of the page is
+// already audited at. Pessimistic + Absurd only — Honest is the default,
+// already covered by the SAMPLES loop above.
+const TONES = [
+  { id: "pessimistic", label: "Pessimistic" },
+  { id: "absurd", label: "Absurd" },
+] as const;
+
+for (const tone of TONES) {
+  test.describe(`axe a11y on cv (/) tone=${tone.id} at representative slider positions`, () => {
+    for (const sample of SAMPLES) {
+      test(`no violations — cv | tone=${tone.id} | ${sample.label}`, async ({ page }) => {
+        await page.goto(`/${sample.hash}`);
+        await page.waitForFunction(() => document.querySelector(".cv-surface") !== null);
+        await page.waitForTimeout(200);
+
+        await page.getByRole("tab", { name: tone.label }).click();
+        // Crossfade (280ms) + kinetic reveal stagger (up to ~1200ms) settle.
+        await page.waitForTimeout(1600);
+
+        // Include the satire banner (sibling of .cv-surface) so axe sees its
+        // contrast + role="status" semantics when absurd is active.
+        const builder = new AxeBuilder({ page }).include(".cv-surface");
+        if (tone.id === "absurd") builder.include(".satire-banner");
+        const results = await builder.analyze();
+
+        expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([]);
+      });
+    }
+  });
+}
