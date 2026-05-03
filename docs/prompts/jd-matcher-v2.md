@@ -1,13 +1,16 @@
 ---
-version: jd-matcher@v1
+version: jd-matcher@v2
 endpoint: /api/jd-match
 model: claude-sonnet-4-6
 last_updated: 2026-05-03
+supersedes: jd-matcher@v1
 ---
 
-# JD matcher — v1
+# JD matcher — v2
 
 Scores a CV against parsed JD requirements at a given stretch level. Conservative-bias (ADR-0016): every Hit must be defensible.
+
+**v1 → v2:** Example 7 added to MATCHER_SYSTEM — the role-level tech-list trap (a stack entry is not a bullet and must not be cited as one). Cache key bumps automatically (ADR-0009); v1 cache entries are dead weight from this commit forward.
 
 ## System prompt
 
@@ -52,4 +55,4 @@ The model returns one match per requirement, in input order.
 - If matcher confuses adjacent skills with shipped evidence (e.g. claims a Hit on something only mentioned in skills.ai training list), tighten Example 6 in MATCHER_SYSTEM.
 - If matcher cites a role bullet to justify a Hit when the actual evidence is only in the role's tech-list (not a bullet), tighten Example 7 — the failure mode is "cite the closest-adjacent bullet just to satisfy the schema".
 - If gapFraming starts pivoting away from gaps ("I'd love to learn this!"), add a counter-example showing a tight, unfilled-but-honest Miss.
-- Bump version to `jd-matcher@v2` for any prompt change. Cache key includes the version (per ADR-0009).
+- Bump version to `jd-matcher@v3` (and rename this file to `jd-matcher-v3.md`) for any further prompt change. Cache key includes the version (per ADR-0009).

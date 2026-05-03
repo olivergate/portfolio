@@ -2,7 +2,7 @@ import "server-only";
 import type Anthropic from "@anthropic-ai/sdk";
 
 export const PARSER_PROMPT_VERSION = "jd-parser@v1";
-export const MATCHER_PROMPT_VERSION = "jd-matcher@v1";
+export const MATCHER_PROMPT_VERSION = "jd-matcher@v2";
 
 export const PARSER_SYSTEM = `You are a JD requirements extractor. Given a job description, you produce a structured list of the actual requirements and responsibilities — what a candidate would need to demonstrate to be a credible fit.
 
