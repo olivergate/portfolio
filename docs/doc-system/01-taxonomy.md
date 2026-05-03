@@ -58,7 +58,7 @@ The visual / content side of the project — `design-references/` and `content/`
 
 **Purpose.** Encode *how we work well* in a domain — philosophy, anti-patterns, priorities. Read by domain agents on first invocation.
 
-**Shape.** Per-domain folder following the **three-doc pattern**: an authoritative practices doc (`<DOMAIN>_BEST_PRACTICES.md`, evergreen, `authoritative: true`) + an audit/snapshot (`<DOMAIN>_COVERAGE_AUDIT.md`, point-in-time) + an append-only gap log (`PRODUCTION_GAPS_FROM_<DOMAIN>.md`). See `02-style-atlas.md §3`.
+**Shape.** Per-domain folder following the **three-doc pattern**: an authoritative practices doc (`<DOMAIN>_BEST_PRACTICES.md`, evergreen, `authoritative: true`) + an audit/snapshot (`<DOMAIN>_COVERAGE_AUDIT.md`, point-in-time) + an append-only gap log (`PRODUCTION_GAPS_FROM_<DOMAIN>.md`). See `02-style-atlas.md §4`.
 
 **Status.** No domains authored yet. Likely first authors: testing (e2e + visual + parity patterns), AI infrastructure (cost-log + KV cache + prompt versioning).
 
@@ -66,7 +66,7 @@ The visual / content side of the project — `design-references/` and `content/`
 
 **Purpose.** Step-by-step operational procedures — environment setup, common workflows. Not principles, not behavior specs.
 
-**Shape.** `docs/runbooks/<procedure-slug>.md` with frontmatter `kind: runbook`, `title`, `status`, `date`. Body is imperative and step-numbered. See `02-style-atlas.md §4`.
+**Shape.** `docs/runbooks/<procedure-slug>.md` with frontmatter `kind: runbook`, `title`, `status`, `date`. Body is imperative and step-numbered. See `02-style-atlas.md §5`.
 
 **Status.** None authored yet. Likely first authors: env setup (Vercel + Anthropic + KV envs), local dev startup, ADR scaffolding workflow.
 
@@ -82,7 +82,7 @@ The visual / content side of the project — `design-references/` and `content/`
 
 **Purpose.** The meta-layer that describes the doc system itself. The doc-steward and doc-reviewer agents read these on first invocation per session. Drift here is unusually damaging because the agents take it as authoritative.
 
-**Shape.** `docs/doc-system/NN-<slug>.md`, numbered in authoring order (01 taxonomy → 07 migration). Frontmatter: `title`, `purpose`, `audience`, `last_verified`. See `02-style-atlas.md §6`.
+**Shape.** `docs/doc-system/NN-<slug>.md`, numbered in authoring order (01 taxonomy → 07 migration). Frontmatter: `title`, `purpose`, `audience`, `last_verified`. See `02-style-atlas.md §7`.
 
 ### 8. Deferred decisions — `docs/TODO.md`
 

@@ -13,7 +13,7 @@ These rules apply to all agent work in this repo unless explicitly overridden in
 
 ## Doc system
 
-Doc-system meta lives in `docs/doc-system/01-taxonomy.md` (and 02–07). The system was bootstrapped from the retro-claude kit on 2026-05-03 — see `docs/doc-system/04-current-state-audit.md` and `06-target-system.md` (placeholders to be filled in as the project's actual doc shape settles). ADR editability follows the two-tier policy in ADR-0012; the `/doc-sync` slash command and `doc-steward` / `doc-reviewer` sub-agents are available via `.claude/`. Run `bun run doc-lint` (or `bun run doc-lint:changed`) before pushing doc-touching commits.
+Doc-system meta lives in `docs/doc-system/01-taxonomy.md` (and 02–07). The system was bootstrapped from the retro-claude kit on 2026-05-03 — `06-target-system.md` and `07-migration.md` carry portfolio-specific content; `04-current-state-audit.md` is still a kit-shipped placeholder to fill in when worth the time. ADR editability follows the two-tier policy in ADR-0012; the `/doc-sync` slash command and `doc-steward` / `doc-reviewer` sub-agents are available via `.claude/`. Run `bun run doc-lint` (or `bun run doc-lint:changed`) before pushing doc-touching commits.
 
 ## What this is
 
