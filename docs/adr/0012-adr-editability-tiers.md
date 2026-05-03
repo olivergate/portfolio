@@ -127,9 +127,9 @@ where the decision itself isn't changing.
 ## References
 
 - ADR-0003 (`docs/adr/0003-adr-format.md`) — the rule this ADR refines.
-- `docs/doc-system/02-style-atlas.md §5` — the kit's style-atlas section
-  for ADRs, which describes the same two-tier policy as the canonical
-  source.
+- `docs/doc-system/02-style-atlas.md §2` — the portfolio's style-atlas
+  section for ADRs, which mirrors the two-tier policy from this ADR
+  (ADR-0012 is the canonical source).
 - `~/Documents/Source/retro-claude/kit/templates/docs/decisions/0001-editability-policy.md`
   — the upstream seed ADR shipped by the kit. This ADR is the
   portfolio's adapted, renumbered version.
