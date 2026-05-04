@@ -9,7 +9,7 @@ import { expect, test } from "@playwright/test";
 
 test.describe("JD adapter — sample JD interactions", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/jd");
+    await page.goto("/#jd");
     await page.waitForFunction(
       () => document.querySelector('button.chip[aria-label*="Hit:"]') !== null,
     );

@@ -16,6 +16,11 @@ const ENTRIES: Entry[] = [
   { kind: "route", href: "/blog", label: "Blog" },
 ];
 
+// Hoisted to module scope so the IntersectionObserver effect doesn't tear
+// down + rebuild on every parent re-render (the array ref was previously
+// new each render → unstable dep → observer churn on pathname changes).
+const ANCHORS = ENTRIES.filter((e): e is Anchor => e.kind === "anchor");
+
 /**
  * Minimal nav that mixes in-page anchors and routes.
  *
@@ -34,14 +39,13 @@ const ENTRIES: Entry[] = [
 export function ScrollSpyNav() {
   const pathname = usePathname() ?? "/";
   const onHome = pathname === "/";
-  const anchors = ENTRIES.filter((e): e is Anchor => e.kind === "anchor");
-  const [activeAnchor, setActiveAnchor] = useState<string>(anchors[0]?.id ?? "");
+  const [activeAnchor, setActiveAnchor] = useState<string>(ANCHORS[0]?.id ?? "");
 
   useEffect(() => {
     if (!onHome) return;
-    const sectionEls = anchors
-      .map((s) => document.getElementById(s.id))
-      .filter((el): el is HTMLElement => el !== null);
+    const sectionEls = ANCHORS.map((s) => document.getElementById(s.id)).filter(
+      (el): el is HTMLElement => el !== null,
+    );
     if (sectionEls.length === 0) return;
 
     const visible = new Map<string, IntersectionObserverEntry>();
@@ -64,7 +68,7 @@ export function ScrollSpyNav() {
 
     for (const el of sectionEls) observer.observe(el);
     return () => observer.disconnect();
-  }, [onHome, anchors]);
+  }, [onHome]);
 
   const onAnchorJump = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     if (!onHome) return; // let the Link handle cross-page navigation
@@ -113,7 +117,8 @@ export function ScrollSpyNav() {
           );
         }
 
-        const active = pathname.startsWith(entry.href);
+        // Match the route exactly or a sub-path — `/blog` shouldn't shadow `/blogfoo`.
+        const active = pathname === entry.href || pathname.startsWith(`${entry.href}/`);
         return (
           <span key={entry.href} className="scrollspy-row">
             {sep}

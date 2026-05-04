@@ -111,7 +111,6 @@ function Role({ role, isFirst }: { role: CVRole; isFirst: boolean }) {
         {role.bullets.map((bullet, idx) => (
           <li
             key={bullet.id}
-            id={`bullet-${bullet.id}`}
             data-bullet-id={bullet.id}
             className="bullet-row"
             data-idx={idx}

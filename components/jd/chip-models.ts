@@ -74,35 +74,3 @@ export function parseCite(ref: string): { kind: "role" | "project"; id: string }
   if (!id) return null;
   return { kind, id };
 }
-
-/**
- * Resolve cited bullet IDs into a Set, used by the experience renderer to mark
- * cited bullets. Misses contribute nothing.
- */
-export function citedBulletIds(chips: ChipModel[]): {
-  hit: Set<string>;
-  stretch: Set<string>;
-  hitProject: Set<string>;
-  stretchProject: Set<string>;
-} {
-  const hit = new Set<string>();
-  const stretch = new Set<string>();
-  const hitProject = new Set<string>();
-  const stretchProject = new Set<string>();
-  for (const chip of chips) {
-    if (chip.status === "miss") continue;
-    for (const ref of chip.cite) {
-      const parsed = parseCite(ref);
-      if (!parsed) continue;
-      if (parsed.kind === "role") {
-        if (chip.status === "hit") hit.add(parsed.id);
-        else if (chip.status === "stretch" && !hit.has(parsed.id)) stretch.add(parsed.id);
-      } else if (parsed.kind === "project") {
-        if (chip.status === "hit") hitProject.add(parsed.id);
-        else if (chip.status === "stretch" && !hitProject.has(parsed.id))
-          stretchProject.add(parsed.id);
-      }
-    }
-  }
-  return { hit, stretch, hitProject, stretchProject };
-}

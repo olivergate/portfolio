@@ -168,7 +168,8 @@ export function JDAdapter({ samples }: Props) {
       setLoading({ kind: "idle" });
     } catch (err) {
       if (genRef.current !== myGen) return;
-      setLoading({ kind: "error", message: `network: ${(err as Error).message}` });
+      const message = err instanceof Error ? err.message : String(err);
+      setLoading({ kind: "error", message: `network: ${message}` });
     }
   };
 
@@ -224,7 +225,8 @@ export function JDAdapter({ samples }: Props) {
         setLoading({ kind: "idle" });
       } catch (err) {
         if (genRef.current !== myGen) return;
-        setLoading({ kind: "error", message: `network: ${(err as Error).message}` });
+        const message = err instanceof Error ? err.message : String(err);
+        setLoading({ kind: "error", message: `network: ${message}` });
       }
     }, MATCH_DEBOUNCE_MS);
 
@@ -254,6 +256,11 @@ export function JDAdapter({ samples }: Props) {
     // a JD context provider feeding state into the CV components.
     if (pulseTimerRef.current !== null) clearTimeout(pulseTimerRef.current);
     if (pulseElRef.current) pulseElRef.current.classList.remove("bullet-pulse");
+    // Force a synchronous reflow between remove and add so the browser
+    // observes an off→on transition. Without this, back-to-back classList
+    // mutations on the same element are batched and @keyframes bullet-pulse
+    // does not restart — rapid same-chip clicks would otherwise no-op.
+    void el.offsetWidth;
     el.classList.add("bullet-pulse");
     pulseElRef.current = el;
     pulseTimerRef.current = setTimeout(() => {
