@@ -1,0 +1,26 @@
+{
+  "posts": [
+    {
+      "slug": "four-sliders",
+      "title": "TODO — UX principles of this portfolio (rename me)",
+      "date": "2026-05-04",
+      "kicker": "UX",
+      "summary": "TODO — short summary, two sentences. Why a CV with sliders, why these four axes.",
+      "body": [
+        { "kind": "p", "text": "TODO — opening paragraph. Frame why this portfolio looks the way it does — one CV, four sliders, parameterised the way a writer parameterises tone. Reader should leave knowing the question I was answering." },
+        { "kind": "h2", "text": "Why four axes" },
+        { "kind": "p", "text": "TODO — explain density, polish, hierarchy, motion. Each axis is a real reading-experience trade-off, not a Material Design dial. Density picks how much text you want at once. Polish picks brutalist vs. refined. Hierarchy picks flat vs. dramatic. Motion picks static vs. kinetic." },
+        { "kind": "pull", "text": "TODO — pullquote: a memorable line that captures the principle." },
+        { "kind": "h2", "text": "What I'd never make a slider" },
+        { "kind": "p", "text": "TODO — the negative space. The CV content is fixed. Tone is a discrete toggle, not a slider. Match percentages on /jd are deliberately not numerical. Where I drew the line and why." },
+        { "kind": "h2", "text": "Trade-offs that bit" },
+        { "kind": "list", "items": [
+          "TODO — sliders that animate text size cause layout thrash; only colors/border/spacing transition.",
+          "TODO — kinetic mode at full bore is unreadable; the system caps motion before it harms comprehension.",
+          "TODO — refining polish past 0.85 collapses the dramatic hierarchy; the two axes aren't independent."
+        ] },
+        { "kind": "p", "text": "TODO — closing paragraph. The point isn't that the sliders are clever; it's that 'CV' is a multi-dimensional document and pretending it isn't ships an inferior CV." }
+      ]
+    }
+  ]
+}

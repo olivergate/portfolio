@@ -10,5 +10,5 @@
  * Update both this constant and `content/blog.json` together when the post
  * is renamed.
  */
-export const FOUR_SLIDERS_POST_SLUG = "TODO-slug";
+export const FOUR_SLIDERS_POST_SLUG = "four-sliders";
 export const FOUR_SLIDERS_POST_HREF = `/blog/${FOUR_SLIDERS_POST_SLUG}`;
