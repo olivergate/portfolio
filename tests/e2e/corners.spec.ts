@@ -31,8 +31,11 @@ const TONE_LABEL: Record<Tone, string> = {
 };
 
 const ROUTES = [
+  // After ADR-0028 the tone surface is a section on /. The corner check on
+  // /#tone validates that the tone block also renders without overflow at
+  // every slider hypercube corner, not just the CV header above it.
   { path: "/", label: "cv", tones: ["pessimistic", "honest", "absurd"] as readonly Tone[] },
-  { path: "/tone", label: "tone", tones: [null] as readonly (Tone | null)[] },
+  { path: "/#tone", label: "tone", tones: [null] as readonly (Tone | null)[] },
 ] as const;
 
 for (const route of ROUTES) {

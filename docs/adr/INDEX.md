@@ -70,6 +70,7 @@ Rule of thumb: if the edit would change what a reader believes we chose or why, 
 | [0024](./0024-linkout-cards-not-embedded-screens.md) | Linkout cards over embedded screens for `/lab` secondary projects | Accepted | 2026-05-04 | — | — |
 | [0025](./0025-canned-fallback-for-retro-demo.md) | Canned-response fallback for retro demo on failure paths | Accepted | 2026-05-04 | — | — |
 | [0027](./0027-bullet-reorder-removed.md) | Bullet reorder removed; original CV order is the only order | Accepted | 2026-05-04 | 0019 | — |
+| [0028](./0028-single-page-consolidation.md) | Single-page consolidation; `/jd`, `/tone`, `/lab` redirect to `/#section` | Accepted | 2026-05-04 | — | — |
 
 <!--
   Add one row per ADR as you author them. Format:

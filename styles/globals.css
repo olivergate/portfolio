@@ -138,6 +138,65 @@
     transform var(--motion-base) cubic-bezier(.2,.7,.2,1);
 }
 
+/* ─── Scroll-spy nav ─────────────────────────────────────────────────────── */
+
+.scrollspy-nav {
+  position: sticky;
+  top: 0;
+  z-index: 25;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+  font-family: var(--font-mono);
+  font-size: var(--size-meta);
+  letter-spacing: var(--tracking-meta);
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0.85rem 0;
+  margin-bottom: var(--gap-block);
+  background: linear-gradient(
+    to bottom,
+    var(--bg) 0%,
+    var(--bg) 70%,
+    color-mix(in oklab, var(--bg) 60%, transparent) 100%
+  );
+  backdrop-filter: blur(6px);
+}
+
+.scrollspy-row {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.scrollspy-sep {
+  margin: 0 0.85rem;
+  color: var(--muted-2);
+}
+
+.scrollspy-link {
+  color: inherit;
+  text-decoration: none;
+  padding: 0.15rem 0;
+  border-bottom: 1px solid transparent;
+  transition: color var(--motion-base), border-color var(--motion-base);
+}
+
+.scrollspy-link:hover,
+.scrollspy-link:focus-visible {
+  color: var(--fg);
+  outline: none;
+}
+
+.scrollspy-link[data-active="true"] {
+  color: var(--fg);
+  border-bottom-color: var(--accent);
+}
+
+@media print {
+  .scrollspy-nav { display: none; }
+}
+
 /* ─── Bullet caps + reveal-on-scroll ─────────────────────────────────────── */
 
 .bullet-row {

@@ -1,36 +1,13 @@
-import Link from "next/link";
+import { ScrollSpyNav } from "@/components/layout/ScrollSpyNav";
 
-const links = [
-  { href: "/", label: "CV" },
-  { href: "/tone", label: "Tone" },
-  { href: "/jd", label: "JD" },
-  { href: "/lab", label: "Lab" },
-  { href: "/game", label: "Game" },
-];
-
+/**
+ * The site nav is a scroll-spy strip that highlights the section currently in
+ * view as the visitor scrolls the consolidated single-page document.
+ *
+ * `/game` is intentionally not in the spy list — it remains a separate route
+ * for Phase 5–6's prompt-safety demo. If/when needed, link to it from the
+ * footer rather than the spy nav.
+ */
 export function Nav() {
-  return (
-    <nav
-      aria-label="Primary"
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        gap: "0.5rem 1.5rem",
-        fontFamily: "var(--font-mono)",
-        fontSize: "var(--size-meta)",
-        letterSpacing: "var(--tracking-meta)",
-        textTransform: "uppercase",
-        color: "var(--muted)",
-        paddingBottom: "var(--gap-block)",
-        borderBottom: "var(--rule-weight) solid var(--rule)",
-        marginBottom: "var(--gap-block)",
-      }}
-    >
-      {links.map((link) => (
-        <Link key={link.href} href={link.href} style={{ color: "inherit", textDecoration: "none" }}>
-          {link.label}
-        </Link>
-      ))}
-    </nav>
-  );
+  return <ScrollSpyNav />;
 }

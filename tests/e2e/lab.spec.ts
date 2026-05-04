@@ -12,8 +12,8 @@ import { expect, test } from "@playwright/test";
 test.describe("/lab — Claude Code retro demo + side projects", () => {
   test("page renders with hero, featured demo, three secondary cards", async ({ page }) => {
     await page.goto("/lab");
-    await expect(page.locator(".lab-hero h1")).toContainText("Things I'm building");
-    await expect(page.locator(".lab-hero h1 em")).toContainText("with LLMs");
+    await expect(page.locator(".lab-hero h2")).toContainText("Things I'm building");
+    await expect(page.locator(".lab-hero h2 em")).toContainText("with LLMs");
     await expect(page.locator(".lab-demo-shell h2")).toBeVisible();
     await expect(page.locator(".lab-live-badge")).toBeVisible();
     const cards = page.locator(".lab-card");

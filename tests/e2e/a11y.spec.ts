@@ -10,8 +10,10 @@ const SAMPLES = [
 ];
 
 const ROUTES = [
+  // After ADR-0028 (single-page consolidation) /tone redirects to /#tone.
+  // The page itself is the same; axe still scopes to .cv-surface.
   { path: "/", label: "cv" },
-  { path: "/tone", label: "tone" },
+  { path: "/#tone", label: "tone" },
 ] as const;
 
 for (const route of ROUTES) {
