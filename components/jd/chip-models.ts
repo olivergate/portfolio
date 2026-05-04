@@ -77,7 +77,7 @@ export function parseCite(ref: string): { kind: "role" | "project"; id: string }
 
 /**
  * Resolve cited bullet IDs into a Set, used by the experience renderer to mark
- * cited bullets and by the reorder logic to rank them. Misses contribute nothing.
+ * cited bullets. Misses contribute nothing.
  */
 export function citedBulletIds(chips: ChipModel[]): {
   hit: Set<string>;

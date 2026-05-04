@@ -1,6 +1,6 @@
 # 0019 — Bullet reorder on `/jd` is opt-in; original CV order is the truth
 
-- **Status:** Accepted
+- **Status:** Superseded by 0027
 - **Date:** 2026-05-03
 - **Deciders:** Oliver Kaikane Gate
 

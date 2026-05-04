@@ -11,7 +11,6 @@ import {
 } from "@/components/jd/chip-models";
 import { FloatingTooltip } from "@/components/jd/FloatingTooltip";
 import { JDExperience } from "@/components/jd/JDExperience";
-import { ReorderToggle } from "@/components/jd/ReorderToggle";
 import { SamplePill } from "@/components/jd/SamplePill";
 import { StretchSlider } from "@/components/jd/StretchSlider";
 import { SummaryLine } from "@/components/jd/SummaryLine";
@@ -53,7 +52,6 @@ export function JDAdapter({ cv, samples }: Props) {
   const [jdText, setJdText] = useState<string>(activeSample?.text ?? "");
   const [scored, setScored] = useState(true);
   const [stretchPosition, setStretchPosition] = useState(0.5);
-  const [reorder, setReorder] = useState(false);
   const [pulseId, setPulseId] = useState<string | null>(null);
   const [hoverData, setHoverData] = useState<HoverData | null>(null);
   const [loading, setLoading] = useState<LoadingStage>({ kind: "idle" });
@@ -106,7 +104,6 @@ export function JDAdapter({ cv, samples }: Props) {
     setJdText(sample.text);
     setScored(true);
     setStretchPosition(positionFromLevel("balanced"));
-    setReorder(false);
     setLive(null);
     setLoading({ kind: "idle" });
   };
@@ -408,17 +405,13 @@ export function JDAdapter({ cv, samples }: Props) {
         </div>
       )}
 
-      {/* Experience section with reorder */}
+      {/* Experience section */}
       <section id="experience" style={{ marginTop: "var(--gap-section)" }}>
         <header className="section-header">
           <span className="kicker">02</span>
           <h2>Experience</h2>
-          {chips && (
-            <span className="meta">{reorder ? "reordered by relevance" : "original order"}</span>
-          )}
         </header>
-        {chips && <ReorderToggle on={reorder} onChange={setReorder} />}
-        <JDExperience cv={cv} scoredChips={chips} reorder={reorder} pulseId={pulseId} />
+        <JDExperience cv={cv} scoredChips={chips} pulseId={pulseId} />
       </section>
 
       <FloatingTooltip data={hoverData} />

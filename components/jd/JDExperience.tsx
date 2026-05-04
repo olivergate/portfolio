@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { type ChipModel, citedBulletIds } from "@/components/jd/chip-models";
 import type { CV, CVRole } from "@/lib/schemas";
 
@@ -32,63 +32,14 @@ function formatRange(start: string, end: string) {
   return `${formatMonth(start)} – ${formatMonth(end)}`;
 }
 
-type RankedBullet = {
-  id: string;
-  text: string;
-  rank: 0 | 1 | 2;
-  originalIdx: number;
-};
-
-function rankBullets(role: CVRole, hitIds: Set<string>, stretchIds: Set<string>): RankedBullet[] {
-  return role.bullets
-    .map((b, originalIdx) => {
-      const rank: 0 | 1 | 2 = hitIds.has(b.id) ? 0 : stretchIds.has(b.id) ? 1 : 2;
-      return { id: b.id, text: b.text.honest, rank, originalIdx };
-    })
-    .sort((a, b) => a.rank - b.rank || a.originalIdx - b.originalIdx);
-}
-
-function originalBullets(role: CVRole): RankedBullet[] {
-  return role.bullets.map((b, originalIdx) => ({
-    id: b.id,
-    text: b.text.honest,
-    rank: 2,
-    originalIdx,
-  }));
-}
-
 type RoleProps = {
   role: CVRole;
-  ordered: RankedBullet[];
   pulseId: string | null;
   citedBullets: Set<string>;
   showCitedMark: boolean;
 };
 
-function Role({ role, ordered, pulseId, citedBullets, showCitedMark }: RoleProps) {
-  const itemRefs = useRef<Record<string, HTMLLIElement | null>>({});
-  const prevPositions = useRef<Record<string, DOMRect>>({});
-
-  useLayoutEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) return;
-    for (const [id, el] of Object.entries(itemRefs.current)) {
-      if (!el) continue;
-      const next = el.getBoundingClientRect();
-      const prev = prevPositions.current[id];
-      if (prev) {
-        const dy = prev.top - next.top;
-        if (Math.abs(dy) > 0.5) {
-          el.animate([{ transform: `translateY(${dy}px)` }, { transform: "translateY(0)" }], {
-            duration: 480,
-            easing: "cubic-bezier(.2,.7,.2,1)",
-          });
-        }
-      }
-      prevPositions.current[id] = next;
-    }
-  });
-
+function Role({ role, pulseId, citedBullets, showCitedMark }: RoleProps) {
   return (
     <article id={`role-${role.id}`} style={{ marginTop: "var(--gap-block)" }}>
       <div
@@ -141,14 +92,11 @@ function Role({ role, ordered, pulseId, citedBullets, showCitedMark }: RoleProps
           gap: "0.85rem",
         }}
       >
-        {ordered.map((b) => {
+        {role.bullets.map((b) => {
           const cited = showCitedMark && citedBullets.has(b.id);
           return (
             <li
               key={b.id}
-              ref={(el) => {
-                itemRefs.current[b.id] = el;
-              }}
               data-bullet-id={b.id}
               className={pulseId === b.id ? "bullet-pulse" : ""}
               style={{
@@ -173,7 +121,7 @@ function Role({ role, ordered, pulseId, citedBullets, showCitedMark }: RoleProps
                   transform: "translateY(-50%)",
                 }}
               />
-              {b.text}
+              {b.text.honest}
             </li>
           );
         })}
@@ -207,11 +155,10 @@ function Role({ role, ordered, pulseId, citedBullets, showCitedMark }: RoleProps
 type Props = {
   cv: CV;
   scoredChips: ChipModel[] | null;
-  reorder: boolean;
   pulseId: string | null;
 };
 
-export function JDExperience({ cv, scoredChips, reorder, pulseId }: Props) {
+export function JDExperience({ cv, scoredChips, pulseId }: Props) {
   const ids = useMemo(() => {
     if (!scoredChips) {
       return {
@@ -224,13 +171,6 @@ export function JDExperience({ cv, scoredChips, reorder, pulseId }: Props) {
     return citedBulletIds(scoredChips);
   }, [scoredChips]);
 
-  const orderedRoles = useMemo(() => {
-    if (!scoredChips || !reorder) {
-      return cv.roles.map((r) => ({ role: r, ordered: originalBullets(r) }));
-    }
-    return cv.roles.map((r) => ({ role: r, ordered: rankBullets(r, ids.hit, ids.stretch) }));
-  }, [cv, scoredChips, reorder, ids]);
-
   const citedBulletSet = useMemo(() => {
     const all = new Set<string>();
     for (const id of ids.hit) all.add(id);
@@ -240,11 +180,10 @@ export function JDExperience({ cv, scoredChips, reorder, pulseId }: Props) {
 
   return (
     <div>
-      {orderedRoles.map(({ role, ordered }) => (
+      {cv.roles.map((role) => (
         <Role
           key={role.id}
           role={role}
-          ordered={ordered}
           pulseId={pulseId}
           citedBullets={citedBulletSet}
           showCitedMark={scoredChips !== null}

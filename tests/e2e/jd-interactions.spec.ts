@@ -5,7 +5,7 @@ import { expect, test } from "@playwright/test";
 // - Clicking a Hit chip scrolls to + pulses the cited bullet
 // - Clicking a Miss chip expands the candid framing inline
 // - Editorial summary uses the locked phrasing (never a percentage) — ADR-0018
-// - Bullet reorder is opt-in and reorders cited bullets to the top — ADR-0019
+// - Bullets always render in original (chronological) order — ADR-0027 supersedes ADR-0019
 
 test.describe("JD adapter — sample JD interactions", () => {
   test.beforeEach(async ({ page }) => {
@@ -60,25 +60,17 @@ test.describe("JD adapter — sample JD interactions", () => {
     expect(text.length).toBeGreaterThan(20);
   });
 
-  test("reorder is off by default; toggling on moves cited bullets to top", async ({ page }) => {
-    const sw = page.locator(".jd-switch");
-    await expect(sw).toHaveAttribute("aria-checked", "false");
+  test("bullets render in original (chronological) order — ADR-0027", async ({ page }) => {
+    // The reorder toggle was removed. Bullets must always render in the order
+    // they appear in cv.json — never re-sorted by hit/stretch/miss.
+    const reorderSwitch = page.locator(".jd-switch");
+    await expect(reorderSwitch).toHaveCount(0);
 
-    const bulletsBefore = await page
+    // For role.opensc, the original order in cv.json starts with these IDs:
+    const bullets = await page
       .locator('article[id^="role-opensc"] [data-bullet-id]')
       .evaluateAll((els) => els.map((el) => el.getAttribute("data-bullet-id")));
-
-    await sw.click();
-    await expect(sw).toHaveAttribute("aria-checked", "true");
-    await page.waitForTimeout(600);
-
-    const bulletsAfter = await page
-      .locator('article[id^="role-opensc"] [data-bullet-id]')
-      .evaluateAll((els) => els.map((el) => el.getAttribute("data-bullet-id")));
-
-    expect(bulletsAfter).not.toEqual(bulletsBefore);
-    // The set is the same — only the order changed (no add/remove).
-    expect(new Set(bulletsAfter)).toEqual(new Set(bulletsBefore));
+    expect(bullets[0]).toBe("opensc-sole-frontend");
   });
 
   test("stretch slider strict snap re-colors chips (Sustainability r10 → Miss)", async ({
@@ -103,18 +95,13 @@ test.describe("JD adapter — sample JD interactions", () => {
     expect(counts.misses).toBe(0);
   });
 
-  test("switching sample pill updates chip count and resets reorder", async ({ page }) => {
-    // Turn reorder on first.
-    await page.locator(".jd-switch").click();
-    await expect(page.locator('.jd-switch[aria-checked="true"]')).toBeVisible();
-
+  test("switching sample pill updates chip count", async ({ page }) => {
     await page.locator("button.jd-pill", { hasText: /AI startup/i }).click();
     await page.waitForFunction(
       () => Array.from(document.querySelectorAll("button.chip")).length === 10,
     );
     const counts = await chipCounts(page);
     expect(counts).toEqual({ hits: 4, stretches: 3, misses: 3 });
-    await expect(page.locator('.jd-switch[aria-checked="false"]')).toBeVisible();
   });
 
   test("privacy disclosure copy is honest (no false 'private to your browser')", async ({
