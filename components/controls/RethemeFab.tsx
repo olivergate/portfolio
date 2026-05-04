@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { CellSlider } from "@/components/controls/CellSlider";
+import { LineSlider } from "@/components/controls/LineSlider";
 import { useStyleContext } from "@/components/controls/style-context";
+import { FOUR_SLIDERS_POST_HREF } from "@/lib/blog-links";
 import { getPresetName } from "@/lib/preset-name";
 
 const ACCENTS = {
@@ -13,16 +15,13 @@ const ACCENTS = {
 } as const;
 
 /**
- * Rethemer FAB. Replaces the design-locked slider deck (ADR-0006) with a
- * minimal floating button that opens four crossword-cell sliders.
+ * Rethemer FAB. Closed pill: STYLE · <preset> ▾.
+ * Open panel: four horizontal LineSliders with extreme labels, plus a footer
+ * row holding reset and a link to the blog post explaining the four axes.
  *
- * Closed: shows the current preset name + chevron, bottom-right corner.
- * Open: a tight strip with [D][P][H][M] cells (each a vertical slider),
- *   the preset readout, and a reset cell. ESC closes; outside clicks close.
- *
- * The four-cell metaphor is the user's brief — "think doing a crossword and
- * the letters are the sliders." The preset name is the "state identifier"
- * — kept visible in both states. ADR-0026 supersedes ADR-0006.
+ * State plumbing is the same StyleContext the original deck used —
+ * `setAxis(...)` writes through `useLocalStorageState`, `StyleApplier` paints
+ * tokens onto :root. ADR-0026 supersedes ADR-0006.
  */
 export function RethemeFab() {
   const { state, setAxis, reset } = useStyleContext();
@@ -56,6 +55,12 @@ export function RethemeFab() {
         aria-label={open ? "Close style controls" : "Open style controls"}
         onClick={() => setOpen((o) => !o)}
       >
+        <span className="fab-toggle-label" aria-hidden="true">
+          STYLE
+        </span>
+        <span className="fab-toggle-sep" aria-hidden="true">
+          ·
+        </span>
         <span className="fab-preset" aria-hidden="true">
           {preset}
         </span>
@@ -66,44 +71,51 @@ export function RethemeFab() {
 
       {open && (
         <div id="reset-fab-panel" className="fab-panel" role="group" aria-label="Style axes">
-          <div className="fab-cells">
-            <CellSlider
-              letter="D"
-              ariaLabel="Density"
-              value={state.density}
-              onChange={(v) => setAxis("density", v)}
-              accent={ACCENTS.density}
-            />
-            <CellSlider
-              letter="P"
-              ariaLabel="Polish"
-              value={state.polish}
-              onChange={(v) => setAxis("polish", v)}
-              accent={ACCENTS.polish}
-            />
-            <CellSlider
-              letter="H"
-              ariaLabel="Hierarchy"
-              value={state.hierarchy}
-              onChange={(v) => setAxis("hierarchy", v)}
-              accent={ACCENTS.hierarchy}
-            />
-            <CellSlider
-              letter="M"
-              ariaLabel="Motion"
-              value={state.motion}
-              onChange={(v) => setAxis("motion", v)}
-              accent={ACCENTS.motion}
-            />
+          <LineSlider
+            name="DENSITY"
+            leftLabel="sparse"
+            rightLabel="dense"
+            value={state.density}
+            onChange={(v) => setAxis("density", v)}
+            accent={ACCENTS.density}
+          />
+          <LineSlider
+            name="POLISH"
+            leftLabel="brutalist"
+            rightLabel="refined"
+            value={state.polish}
+            onChange={(v) => setAxis("polish", v)}
+            accent={ACCENTS.polish}
+          />
+          <LineSlider
+            name="HIERARCHY"
+            leftLabel="flat"
+            rightLabel="dramatic"
+            value={state.hierarchy}
+            onChange={(v) => setAxis("hierarchy", v)}
+            accent={ACCENTS.hierarchy}
+          />
+          <LineSlider
+            name="MOTION"
+            leftLabel="static"
+            rightLabel="kinetic"
+            value={state.motion}
+            onChange={(v) => setAxis("motion", v)}
+            accent={ACCENTS.motion}
+          />
+
+          <div className="fab-footer">
             <button
               type="button"
-              className="fab-cell fab-cell-reset"
+              className="fab-reset"
               onClick={reset}
               aria-label="Reset axes to default"
-              title="Reset"
             >
-              ↺
+              ↺ RESET
             </button>
+            <Link href={FOUR_SLIDERS_POST_HREF} className="fab-about">
+              About these sliders →
+            </Link>
           </div>
         </div>
       )}
