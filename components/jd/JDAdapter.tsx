@@ -240,8 +240,10 @@ export function JDAdapter({ cv, samples }: Props) {
         : `[data-project-id="${parsed.id}"]`;
     const el = document.querySelector<HTMLElement>(selector);
     if (!el) return;
-    const y = el.getBoundingClientRect().top + window.scrollY - 80;
-    window.scrollTo({ top: y, behavior: "smooth" });
+    // scroll-margin-top in styles/globals.css carries the sticky-nav offset;
+    // scrollIntoView respects it without a duplicated magic-number here.
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
     const pulseRef = parsed.kind === "role" ? parsed.id : `project:${parsed.id}`;
     setPulseId(pulseRef);
     // Cancel any prior pulse-clear timer so back-to-back clicks don't truncate

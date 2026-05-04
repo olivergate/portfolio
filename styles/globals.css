@@ -108,6 +108,13 @@
 
 /* ─── Scroll-spy nav ─────────────────────────────────────────────────────── */
 
+/* Sections and any chip-cite target push themselves down by the sticky-nav
+   height when they become the scroll destination. Browsers respect this on
+   both anchor jumps (#id) and JS scrollIntoView() / scrollTo. */
+:where(#cv, #tone, #lab, #jd, [data-bullet-id], [data-project-id]) {
+  scroll-margin-top: clamp(3.25rem, 7vw, 4.25rem);
+}
+
 .scrollspy-nav {
   position: sticky;
   top: 0;
