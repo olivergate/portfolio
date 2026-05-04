@@ -8,8 +8,6 @@ export type StyleContextValue = {
   setAxis: (axis: keyof StyleState, value: number) => void;
   setState: React.Dispatch<React.SetStateAction<StyleState>>;
   reset: () => void;
-  activeKey: keyof StyleState | null;
-  setActiveKey: (key: keyof StyleState | null) => void;
 };
 
 export const StyleContext = createContext<StyleContextValue>({
@@ -17,8 +15,6 @@ export const StyleContext = createContext<StyleContextValue>({
   setAxis: () => {},
   setState: () => {},
   reset: () => {},
-  activeKey: null,
-  setActiveKey: () => {},
 });
 
 export function useStyleContext(): StyleContextValue {

@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { RethemeFab } from "@/components/controls/RethemeFab";
 import { RevealObserver } from "@/components/controls/RevealObserver";
 import { StyleApplier } from "@/components/controls/StyleApplier";
@@ -30,7 +30,6 @@ export function DeckProvider({ children }: Props) {
 
 function DeckProviderInner({ children }: Props) {
   const [state, setState] = useLocalStorageState();
-  const [activeKey, setActiveKey] = useState<keyof StyleState | null>(null);
 
   const setAxis = useCallback(
     (axis: keyof StyleState, value: number) => {
@@ -42,7 +41,7 @@ function DeckProviderInner({ children }: Props) {
   const reset = useCallback(() => setState(DEFAULT_STYLE), [setState]);
 
   return (
-    <StyleContext.Provider value={{ state, setState, setAxis, reset, activeKey, setActiveKey }}>
+    <StyleContext.Provider value={{ state, setState, setAxis, reset }}>
       <StyleApplier />
       <RevealObserver />
       {children}

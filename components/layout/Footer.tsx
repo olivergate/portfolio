@@ -1,4 +1,17 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+
+/**
+ * The "4 axes · ∞ settings" copy describes the rethemer FAB which only mounts
+ * on `/` (DeckProvider bails for non-home routes — see `components/controls/
+ * DeckProvider.tsx`). Showing it on `/game`, `/blog`, etc. reads as a dead
+ * promise, so we conditionally render that line on home only.
+ */
 export function Footer() {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+
   return (
     <footer
       style={{
@@ -19,7 +32,7 @@ export function Footer() {
     >
       <span>© Oliver Kaikane Gate</span>
       <span>last revised — May 2026</span>
-      <span>4 axes · ∞ settings</span>
+      {isHome && <span>4 axes · ∞ settings</span>}
     </footer>
   );
 }

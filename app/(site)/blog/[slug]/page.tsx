@@ -10,6 +10,17 @@ export async function generateStaticParams(): Promise<RouteParams[]> {
   return getBlog().posts.map((p) => ({ slug: p.slug }));
 }
 
+/**
+ * Posts whose title still starts with "TODO" are drafts that have been
+ * publicly linked (the FAB "About these sliders" link points at one). To
+ * avoid leaking the placeholder string into <title> or search engines, we
+ * detect TODO posts and substitute a generic draft title + robots:noindex.
+ * The page body still renders so the FAB link doesn't 404.
+ */
+function isDraftPost(title: string): boolean {
+  return title.trimStart().startsWith("TODO");
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -18,6 +29,13 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = getBlogPost(slug);
   if (!post) return { title: "Not found" };
+  if (isDraftPost(post.title)) {
+    return {
+      title: "Draft",
+      description: "Draft post — placeholder content.",
+      robots: { index: false, follow: false },
+    };
+  }
   return { title: post.title, description: post.summary };
 }
 
@@ -49,6 +67,18 @@ function Block({ block }: { block: BlogBlock }) {
   }
 }
 
+/**
+ * Cheap heuristic: if the first body block is a paragraph that contains the
+ * literal "TODO — opening paragraph" placeholder string from the blog content
+ * template, the post is unfinished and we render a DRAFT banner above the
+ * article.
+ */
+function isDraftBody(blocks: readonly BlogBlock[]): boolean {
+  const first = blocks[0];
+  if (!first || first.kind !== "p") return false;
+  return first.text.includes("TODO — opening paragraph");
+}
+
 export default async function BlogPostPage({
   params,
 }: {
@@ -57,9 +87,30 @@ export default async function BlogPostPage({
   const { slug } = await params;
   const post = getBlogPost(slug);
   if (!post) notFound();
+  const draft = isDraftBody(post.body);
 
   return (
     <main className="cv-surface">
+      {draft && (
+        <div
+          role="note"
+          aria-label="Draft notice"
+          style={{
+            padding: "0.5rem 1rem",
+            marginBottom: "var(--gap-block)",
+            fontFamily: "var(--font-mono)",
+            fontSize: "var(--size-meta)",
+            letterSpacing: "0.22em",
+            textTransform: "uppercase",
+            color: "var(--accent)",
+            borderTop: "1px solid var(--accent)",
+            borderBottom: "1px solid var(--accent)",
+          }}
+        >
+          DRAFT — placeholder content
+        </div>
+      )}
+
       <header className="blog-post-header" data-reveal>
         <div className="blog-post-meta">
           {post.kicker && <span>{post.kicker}</span>}

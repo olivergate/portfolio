@@ -83,8 +83,10 @@ export function ToneSection({ tone }: Props) {
         ))}
       </div>
 
+      {/* No id here — the CV-side ToneToggle (rendered on `/`) owns
+          `id="tone-toggle"`. /tone has its own VoiceToggle which doesn't
+          need the id (no scroll-spy / anchor target for it). */}
       <div
-        id="tone-toggle"
         style={{
           marginTop: "var(--gap-section)",
           display: "flex",
