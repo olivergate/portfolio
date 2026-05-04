@@ -148,6 +148,11 @@
   margin: 0 0.85rem;
   color: var(--muted-2);
 }
+.scrollspy-sep[data-kind="route"] {
+  margin: 0 1.1rem;
+  color: var(--rule);
+  font-weight: 400;
+}
 
 .scrollspy-link {
   color: inherit;
