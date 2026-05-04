@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./tokens.css";
+@import "./lab.css";
 
 /* Map next/font CSS vars onto the design-token font families.
    tokens.css declares --font-display etc. as the literal stack

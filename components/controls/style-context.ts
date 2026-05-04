@@ -24,4 +24,3 @@ export const StyleContext = createContext<StyleContextValue>({
 export function useStyleContext(): StyleContextValue {
   return useContext(StyleContext);
 }
-

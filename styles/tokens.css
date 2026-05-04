@@ -47,6 +47,11 @@
   --terminal-green:   #7ad77a;
   --terminal-red:     #e26d5a;
 
+  /* Live-demo signal — used on the /lab pulsing badge. Same hue as --hit
+     (deep green) so the "live" semantic on the demo and the "hit" semantic
+     on /jd read as a single color family. */
+  --live:             #2f6b3a;
+
   /* ─── TYPOGRAPHY ────────────────────────────────────────────────────── */
   /* Three families. NEVER mix in others. */
 

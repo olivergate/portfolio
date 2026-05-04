@@ -9,11 +9,7 @@
     ".claude/commands"
   ],
 
-  "scopePrefixes": [
-    "docs/",
-    ".claude/agents/",
-    ".claude/commands/"
-  ],
+  "scopePrefixes": ["docs/", ".claude/agents/", ".claude/commands/"],
 
   "excludedIndexFiles": [
     "docs/INDEX.md",
@@ -42,5 +38,16 @@
   "agentsMdLineLimit": 200,
   "agentsMdFiles": ["CLAUDE.md"],
 
-  "skipDirNames": ["node_modules", "archive", ".next", ".git", "dist", "build", ".vercel", ".playwright-mcp", "test-results", "design-references"]
+  "skipDirNames": [
+    "node_modules",
+    "archive",
+    ".next",
+    ".git",
+    "dist",
+    "build",
+    ".vercel",
+    ".playwright-mcp",
+    "test-results",
+    "design-references"
+  ]
 }

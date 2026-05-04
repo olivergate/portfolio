@@ -1,0 +1,57 @@
+{
+  "featured": {
+    "slug": "claude-code-retro",
+    "title": "Session retrospective generator",
+    "blurb": "Paste a Claude Code transcript and the demo synthesises a retro: what went well, what slowed things down, learnings catalogue entries, and suggested skills to add. The same shape my real retros take after every working session.",
+    "techPills": ["Claude API", "Anthropic SDK", "tool use", "Next.js"],
+    "samples": [
+      {
+        "id": "refactor",
+        "label": "Refactoring auth flow",
+        "transcript": "[18:02] User: Need to refactor the auth flow. Currently we have JWTs in localStorage and a separate session check that hits /me on every page load. Want to consolidate.\n[18:02] Claude: Let me read auth/jwt.ts and auth/session.ts first.\n[18:04] Claude: Found three call sites for getCurrentUser() — pages/dashboard, pages/settings, components/Header. Suggest centralising in a SessionProvider with React Query for the /me check (cached 5min, refetch on focus).\n[18:05] User: do it\n[18:23] Claude: Done. Two things to flag:\n - The settings page was passing user.id into a useEffect dep array that's now provided by context — kept the dep but it'll only fire on user change now, which is correct.\n - There's a race in the existing logout handler I noticed while in there. Filed a note in TODO.md rather than fixing in this PR.\n[18:24] User: good call. Run tests.\n[18:25] Claude: 47 pass, 2 fail — both in auth.test.ts, both expect the old localStorage shape. Fixing.\n[18:31] Claude: 49 pass. Anything else?\n[18:32] User: ship it"
+      },
+      {
+        "id": "debug",
+        "label": "Debugging deploy issue",
+        "transcript": "[09:14] User: prod deploy failing. CloudWatch is showing \"ECONNREFUSED\" from the worker after rollout.\n[09:14] Claude: I'll start with the deploy diff and the worker logs around the failure window.\n[09:18] Claude: Three suspects in the diff: env var rename (DB_URL → DATABASE_URL), a new feature flag, and a Dockerfile base bump. The error timing matches container start, so I'd look at the env rename first.\n[09:19] User: yeah we did rename that\n[09:21] Claude: Worker has a hard-coded reference to process.env.DB_URL in workers/jobs/index.ts:14. Missed it in the rename PR. Fix is one line.\n[09:22] User: send the fix\n[09:23] Claude: Done. Also grepped the repo for \"DB_URL\" — no other stragglers. Suggest adding the env var rename to the deploy checklist as a process change.\n[09:24] User: ship and document."
+      },
+      {
+        "id": "feature",
+        "label": "Building a feature from spec",
+        "transcript": "[14:01] User: New feature — bulk export from the dashboard. Spec attached. Walk me through your plan first, don't write code yet.\n[14:02] Claude: Read SPEC.md. Plan:\n 1. Add a /export/jobs route, returns paginated job list + status.\n 2. Add a \"Bulk export\" button to the dashboard table; opens a modal with format + date range.\n 3. Worker job in workers/exports — generates CSV, uploads to S3, sends signed URL via email.\n 4. Tests at each layer.\nTwo open questions: (a) Auth on the signed URL — same-domain only, or any-domain? (b) Should we rate-limit per user?\n[14:04] User: same-domain only, rate-limit at 5/hour. Go.\n[14:38] Claude: Ready for review. One thing I'm not happy with: the modal is pulling format options from a constant; should be a config so non-engineers can edit. Worth a follow-up?\n[14:39] User: yes, file it. Anything else?\n[14:40] Claude: Tests pass. Commit message draft attached."
+      }
+    ]
+  },
+  "secondary": [
+    {
+      "slug": "language",
+      "title": "Language Learning App",
+      "blurb": "Personal project exploring LLM-driven language acquisition. Conversation-first; vocabulary surfaces as you stumble on it, not before.",
+      "techPills": ["Next.js", "Supabase", "OpenAI"],
+      "glyph": "あ",
+      "gradient": { "from": "#f4d35e", "via": "#e26d5a", "to": "#5a3a3a" },
+      "ctaLabel": "Read writeup",
+      "ctaUrl": "#language-writeup"
+    },
+    {
+      "slug": "habit",
+      "title": "Habit-Forming App",
+      "blurb": "Cross-platform mobile, focused on the loop between intention, friction, and reward. Currently in TestFlight.",
+      "techPills": ["Flutter", "Dart", "Riverpod"],
+      "glyph": "◐",
+      "gradient": { "from": "#cde4d3", "via": "#6b8a7a", "to": "#2c3e36" },
+      "ctaLabel": "Open in TestFlight",
+      "ctaUrl": "#habit-testflight"
+    },
+    {
+      "slug": "movement",
+      "title": "Movement-Focused Consumer App",
+      "blurb": "Consumer-facing project around physical movement — loose alpha, daily test build, mostly a vehicle for learning React Native well.",
+      "techPills": ["React Native", "Expo", "Supabase"],
+      "glyph": "↗",
+      "gradient": { "from": "#ffd6c2", "via": "#d97757", "to": "#4a2c1f" },
+      "ctaLabel": "Read writeup",
+      "ctaUrl": "#movement-writeup"
+    }
+  ]
+}

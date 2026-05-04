@@ -1,11 +1,13 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { SampleJDsSchema, type StretchLevel, statusAtLevel } from "@/lib/jd-schemas";
+import { LabProjects } from "@/lib/retro-schemas";
 import { CVSchema, ToneSchema } from "@/lib/schemas";
 
 const cvPath = path.join(process.cwd(), "content", "cv.json");
 const tonePath = path.join(process.cwd(), "content", "tone.json");
 const sampleJDsPath = path.join(process.cwd(), "content", "sample-jds.json");
+const projectsPath = path.join(process.cwd(), "content", "projects.json");
 
 try {
   const cvRaw = readFileSync(cvPath, "utf8");
@@ -109,6 +111,38 @@ try {
 
   console.log(
     `content/sample-jds.json OK — ${sampleJDs.data.length} JDs, ${sampleJDs.data.reduce((n, j) => n + j.chips.length, 0)} chips total`,
+  );
+
+  const projectsRaw = readFileSync(projectsPath, "utf8");
+  const projects = LabProjects.safeParse(JSON.parse(projectsRaw));
+  if (!projects.success) {
+    console.error("content/projects.json failed validation:");
+    for (const issue of projects.error.issues) {
+      console.error(`  ${issue.path.join(".") || "<root>"}: ${issue.message}`);
+    }
+    process.exit(1);
+  }
+
+  const sampleIds = new Set<string>();
+  for (const s of projects.data.featured.samples) {
+    if (sampleIds.has(s.id)) {
+      console.error(`duplicate retro sample id: ${s.id}`);
+      process.exit(1);
+    }
+    sampleIds.add(s.id);
+  }
+
+  const secondaryIds = new Set<string>();
+  for (const p of projects.data.secondary) {
+    if (secondaryIds.has(p.slug)) {
+      console.error(`duplicate secondary project slug: ${p.slug}`);
+      process.exit(1);
+    }
+    secondaryIds.add(p.slug);
+  }
+
+  console.log(
+    `content/projects.json OK — featured "${projects.data.featured.slug}" (${projects.data.featured.samples.length} samples), ${projects.data.secondary.length} secondary cards`,
   );
 } catch (err) {
   console.error("content validation crashed:", err);

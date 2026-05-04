@@ -13,6 +13,94 @@ phase specs once they harden.
   - Surfaced: 2026-05-03, Phase 2 planning
   - Owner: Oliver
 
+## Phase 4 follow-ups
+
+- **Phase 4 ADRs landed at 0021–0025, not the 0016–0019 the spec pre-allocated.**
+  `docs/specs/phase-4.md` § "ADRs to write this phase" pre-allocated
+  ADR-0016 through ADR-0019. Those numbers were taken in Phase 3 (0015
+  two-stage pipeline, 0016 matcher conservative bias, 0017 stretch slider
+  semantics, 0018 no top-line percentage, 0019 bullet reorder opt-in,
+  0020 localStorage replaces URL-hash share). Phase 4 shipped as 0021
+  (demo isolation), 0022 (additive ratelimit), 0023 (no demo side effects),
+  0024 (linkout cards), 0025 (canned fallback). Same drift pattern as
+  Phases 2 and 3 — specs pre-allocate too eagerly. Numbering settled.
+  - Surfaced: 2026-05-04, Phase 4 spec reconciliation
+  - Owner: n/a (numbering settled)
+
+- **Phase 4 spec said "TTL 24h" on the retro cache; ADR-0009 says no TTLs.
+  Dropped the TTL clause.** `docs/specs/phase-4.md` line 132 specifies
+  "TTL 24h since this is a demo, not a permanent record." ADR-0009 is
+  explicit: "Cache keys include `promptVersion`. The cache has no TTL."
+  Followed the ADR. Cache invalidation is structural — bump
+  `RETRO_PROMPT_VERSION` to namespace fresh entries.
+  - Surfaced: 2026-05-04, Phase 4 spec reconciliation
+  - Owner: n/a (decision settled in ADR-0009)
+
+- **Retro prompt was authored fresh, not ported.** `docs/specs/phase-4.md`
+  line 127 said "port from `cv-lab.html` if it's there, otherwise
+  placeholder until Oliver supplies it." The HTML carries only canned
+  outputs (`SAMPLES[id].retro`) — there's no real prompt to port.
+  Authored placeholder `retro@v1` matching the four-section schema. Oliver
+  edits in place; bumping `RETRO_PROMPT_VERSION` invalidates cache + fails
+  the snapshot test until updated.
+  - Surfaced: 2026-05-04, Phase 4 implementation
+  - Owner: Oliver, ad-hoc — replace placeholder with the real workflow prompt
+
+- **Phase 4 rate-limit added the per-route limiter ADR-0010 said was
+  "later, additive."** ADR-0010 explicitly anticipated this and ADR-0022
+  records it as additive (per-route, not global) — ADR-0010's "no global
+  limiter (yet)" stance is preserved. Logged here so a future reader
+  doesn't think 0022 supersedes 0010.
+  - Surfaced: 2026-05-04, Phase 4 implementation
+  - Owner: n/a (relationship settled in ADR-0022)
+
+- **Confirm real CTA URLs for the three secondary `/lab` cards.**
+  `content/projects.json` ships with placeholder anchors:
+  `#language-writeup`, `#habit-testflight`, `#movement-writeup`. Edit the
+  file directly when destinations are ready (TestFlight invite, blog post,
+  GitHub README, etc.). External URLs (anything starting with `http`) are
+  auto-handled by `ProjectCard.tsx` — they get `target=_blank` and
+  `rel=noopener,noreferrer`.
+  - Surfaced: 2026-05-04, Phase 4 ship
+  - Owner: Oliver, ad-hoc
+
+- **Pre-existing e2e failures inherited from `phase-3-jd` HEAD.** Six
+  failures pre-exist on the Phase 3 commit; not introduced by Phase 4.
+  Verified by stashing Phase 4 changes and re-running:
+  - 5 × `tests/e2e/a11y.spec.ts` — axe a11y violations on `/tone` at
+    representative slider positions (default + 4 slider combos).
+  - 1 × `tests/e2e/jd-interactions.spec.ts:84` — "stretch slider strict
+    snap re-colors chips (Sustainability r10 → Miss)" expects ≥11 hits at
+    generous; current sample data falls one short.
+  Scope: out for Phase 4 (would breach session-size discipline). Worth
+  picking up in Phase 7 polish or earlier if it bites.
+  - Surfaced: 2026-05-04, Phase 4 verification
+  - Owner: TBD
+
+- **Pre-existing lint errors in `tools/doc-lint/doc-lint.ts`.** 5 errors
+  (`useTemplate` × 1, `noNonNullAssertion` × 1, `noAssignInExpressions` × 3)
+  in the doc-system kit-bootstrap commit. Phase 4 changes are lint-clean;
+  these are pre-existing and not blocking deploy. Worth a single cleanup
+  pass when the doc-system is next touched.
+  - Surfaced: 2026-05-04, Phase 4 verification
+  - Owner: TBD
+
+## Phase 4 polish (deferred from review, 2026-05-04)
+
+Caught in the post-Phase-4 review (3 parallel reviewers — backend / frontend / docs). Should-fixes were applied in the same session; the items below are nice-to-haves that didn't justify the same-session scope. Pick up in Phase 7 polish or earlier if any one bites.
+
+- **`RetroOutput` timestamp re-renders on every parent re-render.** `components/lab/RetroOutput.tsx:106-129` calls `new Date()` at render. Output is cleared on textarea edit, so the practical risk is small — but a long-idle output card will silently tick to a new minute without explanation. Snapshot the timestamp into state at `setOutput` time, or lift it to a prop derived once.
+- **Reduced-motion gaps in `lab.css`.** `.lab-card-cta-arrow` translateX on hover and `.lab-run-btn :active translateY(1px)` aren't gated by `prefers-reduced-motion: reduce`. Trivial CSS additions.
+- **`.lab-run-btn` arrow doesn't translate on hover.** `.score-btn:hover .arrow { transform: translateX(3px) }` is the established Phase 3 pattern (`globals.css:619`); `.lab-run-btn` (`lab.css`) is missing the rule. Cards do animate their arrow — visual inconsistency.
+- **`.lab-pipeline-row[data-state="done"]` 0.5 opacity may fail WCAG AA.** Green-glyph + label at 0.5 opacity over `--terminal` (#0f0e0b) is borderline against `--terminal-fg` (#e8e2d0) for non-text contrast (3:1 minimum). Cheap fix: bump to 0.65.
+- **Mobile/iOS: `.lab-transcript` font-size 0.82rem may trigger Safari tap-zoom.** iOS Safari auto-zooms `<input>`/`<textarea>` below 16px. Bump to 16px on `@media (max-width: 480px)` to avoid the zoom-jump on focus.
+- **`RETRO_TOOL.input_schema` lacks per-string `maxLength` bounds.** `lib/retro-prompts.ts:48-104` carries `minItems`/`maxItems` for arrays but no string caps; the Zod schema (`RetroResponse`) does. The model could emit a 700-char bullet that the schema rejects in `schema-validate` (502 + fallback). Mirror the Zod bounds in the tool input_schema so the model self-bounds.
+- **`MAX_OUTPUT_TOKENS = 2000`** in `app/api/retro/route.ts:25` leaves headroom but flirts with the cap if the model emits long `learnings.body` near the 600-char ceiling for several entries. Bump to 3000 to match JD matcher's 4000-token safety margin, or add a comment justifying 2000.
+- **ADR-0021 "per-demo modules" claim slightly overreaches.** `0021-demo-isolation.md:91-92` lists `lib/retro-prompts.ts` as per-demo; line 4 of that file actually re-exports `extractToolInput` from `lib/jd-prompts.ts` (shared utility). Not a contradiction (the ADR allows shared utilities), but a one-line clarification or moving `extractToolInput` to `lib/anthropic-tools.ts` would make the claim uniformly true.
+- **ADR-0023 is partly aspirational for Phase 5+.** "Game tools *will* simulate" — fine as a forward commitment, but a reader pulling 0023 in isolation may not realize the only currently-shipped enforcement is the retro endpoint's network-call topology. Re-frame slightly when Phase 5 lands.
+- **Prompt doc honesty-bias wording.** `docs/prompts/retro-v1.md` § "Honesty bias (placeholder draft)" reads as if the bias was inherited from the JD matcher (ADR-0016); it was actually authored fresh in the same spirit. One-word edit ("aligned with" rather than "leans on the same").
+- **`retro-snapshot.test.ts:18` heading regex is form-coupled.** Pattern `/^\d+\. (wentWell|slowed|learnings|additions) —/` requires the literal em-dash + leading number-dot-space. A prompt rephrased as "**wentWell** —" would empty the array and fail loudly (good — fails CI), but a one-line comment ("locks both section names AND heading shape") would prevent future churn.
+
 ## Phase 3 follow-ups
 
 - **JD pipeline cold-path latency (~8s) exceeds the spec's <5s target.** Phase 3

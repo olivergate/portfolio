@@ -10,7 +10,7 @@ session for the next phase.
 | 1 | UX style sliders | `/` (CV interactive) | Done | 2026-05-03 |
 | 2 | Tone manifesto + AI infra | `/tone` | Done | 2026-05-03 |
 | 3 | JD adapter | `/jd` | Done | 2026-05-03 |
-| 4 | Lab + Claude Code retro demo | `/lab` | Not started | — |
+| 4 | Lab + Claude Code retro demo | `/lab` | Done | 2026-05-04 |
 | 5 | Prompt-safety game scaffolding | `/game` (L-01, L-02) | Not started | — |
 | 6 | Game expansion | `/game` (L-03 → L-05) | Not started | — |
 | 7 | Polish | `/decisions`, `/build`, launch | Not started | — |

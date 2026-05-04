@@ -2,7 +2,7 @@
 title: Architectural Decision Records — Index
 purpose: Authoritative list of all Accepted, Proposed, and Superseded ADRs for this project.
 audience: humans + agents
-last_verified: 2026-05-03
+last_verified: 2026-05-04
 canonical_for: [architectural-decisions, adr-process]
 ---
 
@@ -64,6 +64,11 @@ Rule of thumb: if the edit would change what a reader believes we chose or why, 
 | [0018](./0018-no-top-line-match-percentage.md) | No top-line match percentage on `/jd` | Accepted | 2026-05-03 | — | — |
 | [0019](./0019-bullet-reorder-opt-in.md) | Bullet reorder on `/jd` is opt-in; original CV order is the truth | Accepted | 2026-05-03 | — | — |
 | [0020](./0020-localstorage-replaces-url-hash-share.md) | localStorage replaces URL-hash sharing for the slider deck | Accepted | 2026-05-03 | — | — |
+| [0021](./0021-demo-isolation.md) | Demo isolation: each demo is its own Route Handler + component pair | Accepted | 2026-05-04 | — | — |
+| [0022](./0022-per-route-ratelimit-additive-to-cost-ceiling.md) | Per-route rate limit (10/h/IP on `/api/retro`), additive to ADR-0010 | Accepted | 2026-05-04 | — | — |
+| [0023](./0023-no-real-world-side-effects-from-demos.md) | No real-world side effects from demos | Accepted | 2026-05-04 | — | — |
+| [0024](./0024-linkout-cards-not-embedded-screens.md) | Linkout cards over embedded screens for `/lab` secondary projects | Accepted | 2026-05-04 | — | — |
+| [0025](./0025-canned-fallback-for-retro-demo.md) | Canned-response fallback for retro demo on failure paths | Accepted | 2026-05-04 | — | — |
 
 <!--
   Add one row per ADR as you author them. Format:

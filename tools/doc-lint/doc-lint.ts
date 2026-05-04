@@ -8,20 +8,19 @@
 // See kit/tools/doc-lint/config.example.json for the full schema.
 
 import { execFileSync } from "node:child_process";
-import { readFileSync, existsSync } from "node:fs";
-import { readdirSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 
 // ----- Config -----
 
 type Config = {
-  buckets: string[];               // directories to walk for full-tree mode
-  scopePrefixes: string[];         // path prefixes for --changed mode (must end with /)
-  excludedIndexFiles: string[];    // INDEX-like files that get cross-ref check only (no schema)
-  repoPathPrefixes: string[];      // prefixes that count as repo paths for cross-ref resolution
-  agentsMdLineLimit: number;       // hard cap for AGENTS.md / CLAUDE.md
-  agentsMdFiles: string[];         // which files get the line-cap check
-  skipDirNames: string[];          // directory names to skip during walk (e.g. node_modules)
+  buckets: string[]; // directories to walk for full-tree mode
+  scopePrefixes: string[]; // path prefixes for --changed mode (must end with /)
+  excludedIndexFiles: string[]; // INDEX-like files that get cross-ref check only (no schema)
+  repoPathPrefixes: string[]; // prefixes that count as repo paths for cross-ref resolution
+  agentsMdLineLimit: number; // hard cap for AGENTS.md / CLAUDE.md
+  agentsMdFiles: string[]; // which files get the line-cap check
+  skipDirNames: string[]; // directory names to skip during walk (e.g. node_modules)
 };
 
 const DEFAULT_CONFIG: Config = {
@@ -38,12 +37,7 @@ const DEFAULT_CONFIG: Config = {
     ".claude/agents",
     ".claude/commands",
   ],
-  scopePrefixes: [
-    "docs/",
-    "prd/",
-    ".claude/agents/",
-    ".claude/commands/",
-  ],
+  scopePrefixes: ["docs/", "prd/", ".claude/agents/", ".claude/commands/"],
   excludedIndexFiles: [
     "docs/decisions/INDEX.md",
     "docs/INDEX.md",
@@ -120,9 +114,7 @@ function walk(dir: string, out: string[] = []): string[] {
 
 function scopedFiles(): string[] {
   const files = CONFIG.buckets.flatMap((b) => walk(join(REPO_ROOT, b)));
-  return files
-    .filter((f) => !f.includes("/archive/"))
-    .map((f) => relative(REPO_ROOT, f));
+  return files.filter((f) => !f.includes("/archive/")).map((f) => relative(REPO_ROOT, f));
   // Note: excludedIndexFiles are NOT filtered out here — they get included in the
   // file list and dispatched as `cat === "index"` in lintFile, which performs
   // cross-ref-only checking (no schema enforcement).
@@ -131,11 +123,10 @@ function scopedFiles(): string[] {
 function gitStagedMarkdown(): string[] {
   // Use execFileSync (array args, no shell) for safe invocation — `git diff` here is fully static.
   try {
-    const out = execFileSync(
-      "git",
-      ["diff", "--cached", "--name-only", "--diff-filter=ACM"],
-      { cwd: REPO_ROOT, encoding: "utf8" },
-    );
+    const out = execFileSync("git", ["diff", "--cached", "--name-only", "--diff-filter=ACM"], {
+      cwd: REPO_ROOT,
+      encoding: "utf8",
+    });
     return out
       .split("\n")
       .map((s) => s.trim())
@@ -164,7 +155,9 @@ function gitStagedAll(): string[] {
 function stagedFiles(): string[] {
   return gitStagedMarkdown()
     .filter((f) => f.endsWith(".md"))
-    .filter((f) => CONFIG.scopePrefixes.some((p) => f.startsWith(p)) || CONFIG.agentsMdFiles.includes(f))
+    .filter(
+      (f) => CONFIG.scopePrefixes.some((p) => f.startsWith(p)) || CONFIG.agentsMdFiles.includes(f),
+    )
     .filter((f) => !f.includes("/archive/"));
 }
 
@@ -320,9 +313,21 @@ function requireKeys(file: string, fm: Frontmatter, keys: string[]) {
 }
 
 type Category =
-  | "ref" | "feature" | "spec" | "plan" | "adr" | "index"
-  | "prd" | "practice-authoritative" | "practice-audit" | "practice-gaplog"
-  | "runbook" | "doc-system" | "harness-agent" | "harness-command" | "skip";
+  | "ref"
+  | "feature"
+  | "spec"
+  | "plan"
+  | "adr"
+  | "index"
+  | "prd"
+  | "practice-authoritative"
+  | "practice-audit"
+  | "practice-gaplog"
+  | "runbook"
+  | "doc-system"
+  | "harness-agent"
+  | "harness-command"
+  | "skip";
 
 function categorize(file: string): Category {
   if (CONFIG.excludedIndexFiles.includes(file)) return "index";
@@ -348,7 +353,10 @@ function categorize(file: string): Category {
     if (/_BEST_PRACTICES\.md$/.test(base)) return "practice-authoritative";
     if (/_COVERAGE_AUDIT\.md$/.test(base)) return "practice-audit";
     if (/^PRODUCTION_GAPS_FROM_.+\.md$/.test(base)) return "practice-gaplog";
-    addWarn(file, "unexpected file in practices directory — expected three-doc pattern (_BEST_PRACTICES.md, _COVERAGE_AUDIT.md, PRODUCTION_GAPS_FROM_*.md); consider moving to docs/runbooks/ or naming per pattern");
+    addWarn(
+      file,
+      "unexpected file in practices directory — expected three-doc pattern (_BEST_PRACTICES.md, _COVERAGE_AUDIT.md, PRODUCTION_GAPS_FROM_*.md); consider moving to docs/runbooks/ or naming per pattern",
+    );
     return "skip";
   }
   return "skip";
@@ -379,9 +387,7 @@ function checkFeatureSections(file: string, body: string) {
 
 function stripFencedCode(body: string): string {
   const keepNewlines = (match: string) => match.replace(/[^\n]/g, "");
-  return body
-    .replace(/```[\s\S]*?```/g, keepNewlines)
-    .replace(/~~~[\s\S]*?~~~/g, keepNewlines);
+  return body.replace(/```[\s\S]*?```/g, keepNewlines).replace(/~~~[\s\S]*?~~~/g, keepNewlines);
 }
 
 function lineNumberAt(src: string, index: number): number {
@@ -501,10 +507,24 @@ function lintFile(file: string) {
       break;
     case "spec":
     case "plan":
-      requireKeys(file, fm, ["title", "kind", "status", "date", "shipped_on", "supersedes", "adrs", "feature"]);
+      requireKeys(file, fm, [
+        "title",
+        "kind",
+        "status",
+        "date",
+        "shipped_on",
+        "supersedes",
+        "adrs",
+        "feature",
+      ]);
       checkISODate(file, "date", fm.date);
-      if (fm.shipped_on !== null && fm.shipped_on !== undefined) checkISODate(file, "shipped_on", fm.shipped_on);
-      if (cat === "spec" && fm.status === "shipped" && (fm.shipped_on === null || fm.shipped_on === undefined)) {
+      if (fm.shipped_on !== null && fm.shipped_on !== undefined)
+        checkISODate(file, "shipped_on", fm.shipped_on);
+      if (
+        cat === "spec" &&
+        fm.status === "shipped" &&
+        (fm.shipped_on === null || fm.shipped_on === undefined)
+      ) {
         addErr(file, `spec marked status: shipped but shipped_on is null`);
       }
       if (fm.status === "draft" || fm.status === "superseded") {
@@ -530,7 +550,15 @@ function lintFile(file: string) {
       }
       break;
     case "practice-gaplog":
-      requireKeys(file, fm, ["domain", "title", "status", "date", "authoritative", "log_for", "append_only"]);
+      requireKeys(file, fm, [
+        "domain",
+        "title",
+        "status",
+        "date",
+        "authoritative",
+        "log_for",
+        "append_only",
+      ]);
       checkISODate(file, "date", fm.date);
       if (fm.authoritative !== false) {
         addErr(file, `practice-gaplog doc must set authoritative: false`);
@@ -552,13 +580,31 @@ function lintFile(file: string) {
       checkLastVerifiedStale(file, fm);
       break;
     case "prd":
-      requireKeys(file, fm, ["prd", "title", "status", "priority", "created", "shipped_on", "phases"]);
+      requireKeys(file, fm, [
+        "prd",
+        "title",
+        "status",
+        "priority",
+        "created",
+        "shipped_on",
+        "phases",
+      ]);
       checkISODate(file, "created", fm.created);
-      if (fm.shipped_on !== null && fm.shipped_on !== undefined) checkISODate(file, "shipped_on", fm.shipped_on);
+      if (fm.shipped_on !== null && fm.shipped_on !== undefined)
+        checkISODate(file, "shipped_on", fm.shipped_on);
       if (Array.isArray(fm.phases)) {
         for (const phase of fm.phases) {
-          if (phase && typeof phase === "object" && "shipped_on" in phase && (phase as { shipped_on: unknown }).shipped_on !== null) {
-            checkISODate(file, `phases[].shipped_on`, (phase as { shipped_on: unknown }).shipped_on);
+          if (
+            phase &&
+            typeof phase === "object" &&
+            "shipped_on" in phase &&
+            (phase as { shipped_on: unknown }).shipped_on !== null
+          ) {
+            checkISODate(
+              file,
+              `phases[].shipped_on`,
+              (phase as { shipped_on: unknown }).shipped_on,
+            );
           }
         }
       }
@@ -630,7 +676,9 @@ function main() {
     console.log(`doc-lint: clean (${files.length} file${files.length === 1 ? "" : "s"} checked)`);
     process.exit(0);
   }
-  console.log(`doc-lint: ${errors.length} error${errors.length === 1 ? "" : "s"}, ${warns.length} warning${warns.length === 1 ? "" : "s"} across ${byFile.size} file${byFile.size === 1 ? "" : "s"}`);
+  console.log(
+    `doc-lint: ${errors.length} error${errors.length === 1 ? "" : "s"}, ${warns.length} warning${warns.length === 1 ? "" : "s"} across ${byFile.size} file${byFile.size === 1 ? "" : "s"}`,
+  );
   process.exit(errors.length > 0 ? 1 : 0);
 }
 
