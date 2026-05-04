@@ -7,9 +7,7 @@ import { expect, test } from "@playwright/test";
 //   `/#cv` jump from /blog lands on the CV section
 
 test.describe("Rethemer FAB — open/close", () => {
-  test("click toggle opens panel; Escape closes it; click outside closes it", async ({
-    page,
-  }) => {
+  test("click toggle opens panel; Escape closes it; click outside closes it", async ({ page }) => {
     await page.goto("/");
     const toggle = page.locator(".fab-toggle");
     await expect(toggle).toBeVisible();

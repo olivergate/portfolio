@@ -42,7 +42,20 @@ export async function generateMetadata({
 function formatDate(iso: string): string {
   const [y, m, d] = iso.split("-");
   if (!y || !m || !d) return iso;
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
   const idx = Number(m) - 1;
   return `${months[idx] ?? m} ${Number(d)}, ${y}`;
 }
@@ -79,11 +92,7 @@ function isDraftBody(blocks: readonly BlogBlock[]): boolean {
   return first.text.includes("TODO — opening paragraph");
 }
 
-export default async function BlogPostPage({
-  params,
-}: {
-  params: Promise<RouteParams>;
-}) {
+export default async function BlogPostPage({ params }: { params: Promise<RouteParams> }) {
   const { slug } = await params;
   const post = getBlogPost(slug);
   if (!post) notFound();

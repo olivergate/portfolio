@@ -10,7 +10,20 @@ export const metadata: Metadata = {
 function formatDate(iso: string): string {
   const [y, m, d] = iso.split("-");
   if (!y || !m || !d) return iso;
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
   const idx = Number(m) - 1;
   return `${months[idx] ?? m} ${Number(d)}, ${y}`;
 }
@@ -25,14 +38,16 @@ export default function BlogIndexPage() {
         <div className="blog-hero-meta">
           <span>Blog</span>
           <span aria-hidden="true">—</span>
-          <span>{posts.length} {posts.length === 1 ? "post" : "posts"}</span>
+          <span>
+            {posts.length} {posts.length === 1 ? "post" : "posts"}
+          </span>
         </div>
         <h1>
           Notes <em>in flight</em>
         </h1>
         <p>
-          Working notes on UX, AI tooling, and the build process behind this portfolio.
-          Everything here is a draft until it isn&rsquo;t.
+          Working notes on UX, AI tooling, and the build process behind this portfolio. Everything
+          here is a draft until it isn&rsquo;t.
         </p>
       </header>
 

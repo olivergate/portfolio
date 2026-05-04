@@ -70,7 +70,7 @@ export function RethemeFab() {
       </button>
 
       {open && (
-        <div id="reset-fab-panel" className="fab-panel" role="group" aria-label="Style axes">
+        <fieldset id="reset-fab-panel" className="fab-panel" aria-label="Style axes">
           <LineSlider
             name="DENSITY"
             leftLabel="sparse"
@@ -117,7 +117,7 @@ export function RethemeFab() {
               About these sliders →
             </Link>
           </div>
-        </div>
+        </fieldset>
       )}
     </div>
   );

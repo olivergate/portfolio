@@ -5,9 +5,7 @@ const slug = z
   .min(1)
   .regex(/^[a-z0-9][a-z0-9-]*$/, "must be a kebab-case slug");
 
-const isoDate = z
-  .string()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, "must be YYYY-MM-DD");
+const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "must be YYYY-MM-DD");
 
 const BlogBlock = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("p"), text: z.string().min(1) }),
