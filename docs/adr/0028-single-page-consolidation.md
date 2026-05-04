@@ -38,9 +38,17 @@ Collapse the three visitor-facing routes (`/tone`, `/jd`, `/lab`) into
 anchored sections of `/`. The single-page document order is:
 
 1. `#cv` — Header, About, Experience, Education, Skills, Projects, Avocations
-2. `#tone` — Voice & values manifesto
-3. `#lab` — Things I'm building with LLMs
-4. `#jd` — JD adapter (last, per the brief: "at the end of the CV")
+2. `#jd` — JD adapter (after Avocations / Outside work; relocated per ADR-0029)
+3. `#tone` — Voice & values manifesto
+4. `#lab` — Things I'm building with LLMs
+
+> **Amended 2026-05-04:** the enumeration above was updated in place per
+> ADR-0012 §editable-in-place (current-state enumerations). The original
+> draft listed JD last ("at the end of the CV"); ADR-0029 relocated the
+> JD adapter to sit between the CV and the manifesto, and at HEAD the
+> four sections render as siblings (`<section id="cv">`, `<section
+> id="jd">`, `<section id="tone">`, `<section id="lab">`) rather than
+> JD living inside the CV section.
 
 Implementation:
 
@@ -68,7 +76,7 @@ benefit from being part of the scroll narrative.
 ## Consequences
 
 **Wins:**
-- Single continuous narrative: visitor reads CV → manifesto → lab → JD
+- Single continuous narrative: visitor reads CV → JD → manifesto → lab
   with no navigation, just scrolling. The rhetorical mode shifts are now
   marked by section headers, not URL changes.
 - The slider deck reaches every section. Re-theming the CV themes the

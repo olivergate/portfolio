@@ -6,6 +6,16 @@ phase specs once they harden.
 
 ## Decisions deferred
 
+- **Rename + write the four-sliders blog post.** `content/blog.json` ships
+  a placeholder for `/blog/four-sliders` (title, summary, body all marked
+  TODO). Linked from `RethemeFab` via
+  `lib/blog-links.ts:FOUR_SLIDERS_POST_HREF`. Before any production deploy,
+  rename the slug to a real one, write the body, and update both
+  `content/blog.json` and `lib/blog-links.ts` atomically.
+  - Surfaced: 2026-05-04, post-FAB ADR (0026) sync
+  - Owner: Oliver
+  - Blocks: production deploy
+
 - **Anthropic monthly cost ceiling** — `ANTHROPIC_MONTHLY_LIMIT_USD`. Phase 2
   ships with the dev default ($20) wired in `lib/check-cost-ceiling.ts`. Pick
   a production value before Phase 3 ships (Phase 3 is the first phase that

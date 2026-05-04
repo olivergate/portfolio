@@ -27,31 +27,60 @@ Two things changed the calculus:
    than reinforcing the headline.
 
 The user's brief: *"Move the Rethemer to a FAB. And make the style much
-more minimal. Not a control panel. Think doing a crossword and the letters
-are the sliders. Keep the state identifier."*
+more minimal. Not a control panel."* On the open-panel design specifically:
+*"follow the page style, just 3 lines, labels for the extremes."* That
+brief — three quiet horizontal lines per axis with extreme labels at the
+ends — is what shipped, and is the reason the open panel is line-sliders
+rather than the earlier crossword-cell exploration.
 
 ## Decision
 
-Replace the design-locked slider deck with a floating action button (FAB)
-that opens four crossword-cell sliders.
+> **Amended 2026-05-04:** Decision section synced to the shipped
+> implementation. An earlier draft of this ADR described a four-cell
+> "crossword" variant (square cells, vertical fills, single-letter
+> labels) that never reached HEAD. The choice itself — replacing the
+> design-locked deck with a FAB — is unchanged; only the description of
+> the open panel is corrected here. Supersession of ADR-0006 stands.
 
-- **Closed FAB** — a small pill bottom-right showing the current preset
-  name (the "state identifier" from `lib/preset-name.ts` —
-  `BALANCED`, `KINETIC`, `BRUTALIST`, etc.) plus a chevron.
-- **Open FAB** — a tight horizontal strip of four square cells:
-  `[D] [P] [H] [M]` for Density / Polish / Hierarchy / Motion. Each cell
-  is a vertical slider: drag up to increase, accent-tinted bottom-up
-  fill matches the deck's per-axis colors (lime / coral / sky / amber).
-  The cell letter sits on top of the fill. A fifth cell (`↺`) resets.
-  ESC and outside click close.
+Replace the design-locked slider deck with a floating action button (FAB)
+that opens a stacked column of four horizontal line-sliders, one per axis.
+
+- **Closed FAB** — a small pill bottom-right reading
+  `STYLE · <preset> ▾`. The preset comes from `lib/preset-name.ts`
+  (`BALANCED`, `KINETIC`, `BRUTALIST`, etc.) and is the "state identifier"
+  the user asked to preserve.
+- **Open panel** — a card anchored above the toggle holding four
+  `LineSlider` rows in fixed order: `DENSITY`, `POLISH`, `HIERARCHY`,
+  `MOTION`. Each row is three visual lines, matching the user's "just
+  3 lines" brief:
+  1. Head row: full axis name on the left (e.g. `DENSITY`) plus a
+     two-decimal value readout on the right (e.g. `0.42`).
+  2. A thin 3px track. A native `<input type="range">` sits invisibly
+     over the track at full width (with vertical padding for hit area)
+     so pointer / touch / keyboard input is browser-native — no custom
+     drag handlers. The fill is an accent-tinted left-to-right gradient
+     from `0` to the current value, matching the deck's per-axis colors
+     (lime `#d4ff3a` / coral `#ff7a59` / sky `#7ad7ff` / amber `#ffd166`).
+  3. Extreme labels at the ends: `← sparse` / `dense →`,
+     `← brutalist` / `refined →`, `← flat` / `dramatic →`,
+     `← static` / `kinetic →`.
+- **Footer row** — a top-bordered strip below the four sliders with
+  `↺ RESET` on the left (snaps all four to defaults) and an
+  `About these sliders →` link on the right that points at
+  `FOUR_SLIDERS_POST_HREF` from `lib/blog-links.ts` (currently
+  `/blog/four-sliders`). The link gives the rethemer a place to explain
+  itself without bloating the panel itself.
+- **Dismissal** — ESC and outside-click close the panel.
 - **All viewport widths** use the same FAB. The previous mobile-sheet
   carve-out (open the deck as a bottom sheet under 1024px) is gone —
-  the FAB is small enough to work at any width.
+  the panel is small enough (`clamp(300px, 92vw, 360px)`) to work at any
+  width. Print CSS hides the FAB entirely.
 
 Implementation:
 
 - New: `components/controls/RethemeFab.tsx`,
-  `components/controls/CellSlider.tsx`.
+  `components/controls/LineSlider.tsx`,
+  `lib/blog-links.ts` (the constant pointing at the explainer post).
 - Deleted: `components/controls/SliderDeck.tsx`,
   `components/controls/Slider.tsx`,
   `components/controls/MobileSheet.tsx`,
@@ -61,8 +90,8 @@ Implementation:
 - `SiteShell` collapsed to a single centered column (the two-column
   grid existed only to host the deck-slot aside).
 - `styles/globals.css` lost ~360 lines of `.deck-*`, `.slider-*`,
-  `.mobile-sheet-*`, `.site-shell` rules; gained ~120 lines of
-  `.fab-*` rules.
+  `.mobile-sheet-*`, `.site-shell` rules; gained ~170 lines of
+  `.fab-*` rules (toggle pill, panel, the three-line slider row, footer).
 
 State plumbing is unchanged: `StyleContext`, `useLocalStorageState`,
 `StyleApplier`, `getPresetName` all carry over verbatim. The four slider
@@ -78,33 +107,37 @@ is unchanged. Reset semantics (snap all four to defaults) is unchanged.
   unobtrusive.
 - Layout is identical at every viewport width. No mobile/desktop
   branching, no portal, no sticky-aside sizing concerns.
-- Simpler code: one `<RethemeFab />` mount; ~600 fewer lines across
+- Simpler code: one `<RethemeFab />` mount; ~550 fewer lines across
   components + CSS.
-- Crossword metaphor reinforces what the sliders are (axes in a
-  parameterized space) without needing labels for each.
+- The "just 3 lines" rhythm (name+value / track / extremes) reads as
+  page-style typography rather than instrumentation, which is what the
+  user asked for.
 
 **Costs:**
 - The verbatim port from `design-references/source/cv-deck.jsx` is no
   longer the implementation. Anyone reading ADR-0006 will see it
   superseded here; the prototype remains historical reference.
 - The dim-others-while-dragging interaction (`.deck-active` parent
-  class on the original deck) is gone. The cells don't visually
-  cross-talk; each is its own focus surface. This is the intended
-  trade — the FAB's whole point is being quieter.
+  class on the original deck) is gone. The four slider rows don't
+  visually cross-talk; each is its own focus surface. This is the
+  intended trade — the FAB's whole point is being quieter.
 - The "STATE BALANCED" / "CV / RETHEME" / footer chrome are removed.
-  The preset name remains — it's the only diagnostic the closed FAB
-  shows, which strengthens its role as the "state identifier" the user
-  asked to preserve.
-- One axis label per cell (D/P/H/M letter) instead of full axis
-  names — relies on the screen-reader `aria-label` for accessibility
-  and on the user remembering the four-axis system from the rest of
-  the site (or hovering for browser tooltips).
+  The preset name remains in the closed-pill label
+  (`STYLE · <preset> ▾`), strengthening its role as the "state
+  identifier" the user asked to preserve.
+- The open panel is now visible only on demand (one click on the
+  closed pill). Casual scrollers no longer see slider state at all
+  unless they open the FAB; the closed pill carries just the preset
+  name as the running diagnostic.
 
 **Deliberately not done:**
-- No reintroduction of per-slider tick marks, value readouts, or
-  extreme labels (`SPARSE` ↔ `DENSE`). The cell + letter + accent
-  fill is the entire visual language.
-- No brushed-metal thumb. The cell *is* the thumb.
+- No reintroduction of per-slider tick marks. Value readouts (two
+  decimals) and extreme labels (`sparse` ↔ `dense`, etc.) are kept
+  because the user's brief explicitly asked for the labels; tick marks
+  add instrumentation we deliberately moved away from.
+- No brushed-metal thumb. The native range input sits invisibly over
+  the track; the visible "thumb" is just the leading edge of the
+  accent fill.
 - No animation choreography around opening (just a panel mount). Keep
   motion budget for the CV body itself.
 
@@ -118,14 +151,24 @@ is unchanged. Reset semantics (snap all four to defaults) is unchanged.
 - **Remove the rethemer entirely.** The sliders are the rhetorical
   device — removing them removes the site's signature. Rejected.
 - **A single combined cell (one cell with four axes selectable).**
-  Considered — too clever; the user's metaphor was specifically *four
-  letters as four sliders*, which the four-cell strip lands on.
+  Considered — too clever; the user's brief asked for one slider per
+  axis, which the four stacked line-sliders deliver directly.
+- **Four square cells with vertical fills and single-letter labels
+  (`[D] [P] [H] [M]`).** An earlier exploration of the "crossword"
+  framing. Rejected once the user's brief landed on "follow the page
+  style, just 3 lines, labels for the extremes" — single-letter cells
+  read as instrumentation, not page typography.
 
 ## References
 
 - Supersedes ADR-0006 (slider deck is design-locked).
 - Related: ADR-0028 (single-page consolidation — the catalyst).
+- Shipped implementation: `components/controls/RethemeFab.tsx`,
+  `components/controls/LineSlider.tsx`, `.fab-*` rules in
+  `styles/globals.css`.
 - Preset-name function: `lib/preset-name.ts`.
+- Explainer post link: `lib/blog-links.ts:FOUR_SLIDERS_POST_HREF`
+  (currently `/blog/four-sliders` — placeholder; see `docs/TODO.md`).
 - Per-axis accent palette is preserved verbatim from the original deck.
 - `design-references/source/cv-deck.jsx` — historical reference, no
   longer the implementation target.

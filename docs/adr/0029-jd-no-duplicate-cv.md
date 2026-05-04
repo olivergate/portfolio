@@ -110,8 +110,10 @@ which couples otherwise-independent components. The user's brief was to
 
 ## References
 
-- Honesty chain: ADR-0017 (stretch slider semantics), ADR-0018 (no
-  match percentage), ADR-0027 (bullet reorder removed).
+- Honesty chain: ADR-0016 (matcher conservative bias — the canonical
+  honesty pillar), ADR-0017 (stretch slider semantics), ADR-0018 (no
+  match percentage), ADR-0019 (bullet reorder opt-in — predecessor of
+  0027), ADR-0027 (bullet reorder removed).
 - Single-page consolidation that motivated this: ADR-0028.
 - Sticky-nav scroll offset (sibling commit): adds `scroll-margin-top`
   so chip-cite jumps clear the spy nav.
