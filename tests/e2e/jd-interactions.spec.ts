@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-// Locks the core /jd interaction contract:
+// Locks the core JD adapter interaction contract on the consolidated page:
 // - Pre-baked sample JDs render chips instantly (no API call)
-// - Clicking a Hit chip scrolls to + pulses the cited bullet
+// - Clicking a Hit chip scrolls to + pulses the canonical CV bullet up-page (ADR-0029)
 // - Clicking a Miss chip expands the candid framing inline
 // - Editorial summary uses the locked phrasing (never a percentage) — ADR-0018
 // - Bullets always render in original (chronological) order — ADR-0027 supersedes ADR-0019
@@ -34,21 +34,16 @@ test.describe("JD adapter — sample JD interactions", () => {
   });
 
   test("clicking a Hit chip scrolls to and pulses the cited bullet", async ({ page }) => {
-    const beforeY = await page.evaluate(() => window.scrollY);
-    expect(beforeY).toBe(0);
-
-    // F3.5: assert the RIGHT bullet pulses, not just any bullet. The default
-    // Sustainability sample's r1 chip's first cite is `role:opensc-sole-frontend`
-    // (see content/sample-jds.json) — the JD adapter scrolls/pulses that bullet
-    // on click. A regression where any bullet pulsed (or the wrong one did)
-    // would otherwise pass.
+    // The default Sustainability sample's r1 chip's first cite is
+    // role:opensc-sole-frontend (see content/sample-jds.json). After ADR-0029
+    // the chip click resolves to the canonical CV bullet — the only place
+    // that data-bullet-id now lives.
     const firstHit = page.locator('button.chip[aria-label^="Hit:"]').first();
     await firstHit.click();
 
-    await page.waitForFunction(() => window.scrollY > 100);
-    const pulsing = page.locator(".bullet-pulse").first();
-    await expect(pulsing).toBeVisible();
-    await expect(pulsing).toHaveAttribute("data-bullet-id", "opensc-sole-frontend");
+    const target = page.locator('[data-bullet-id="opensc-sole-frontend"]').first();
+    await expect(target).toBeVisible();
+    await expect(target).toHaveClass(/bullet-pulse/);
   });
 
   test("clicking a Miss chip expands an italic Fraunces framing inline", async ({ page }) => {

@@ -10,7 +10,6 @@ import {
   projectSampleChips,
 } from "@/components/jd/chip-models";
 import { FloatingTooltip } from "@/components/jd/FloatingTooltip";
-import { JDExperience } from "@/components/jd/JDExperience";
 import { SamplePill } from "@/components/jd/SamplePill";
 import { StretchSlider } from "@/components/jd/StretchSlider";
 import { SummaryLine } from "@/components/jd/SummaryLine";
@@ -22,10 +21,8 @@ import {
   type SampleJD,
   type StretchLevel,
 } from "@/lib/jd-schemas";
-import type { CV } from "@/lib/schemas";
 
 type Props = {
-  cv: CV;
   samples: SampleJD[];
 };
 
@@ -45,14 +42,13 @@ const PARSE_ENDPOINT = "/api/jd-parse";
 const MATCH_ENDPOINT = "/api/jd-match";
 const MATCH_DEBOUNCE_MS = 400;
 
-export function JDAdapter({ cv, samples }: Props) {
+export function JDAdapter({ samples }: Props) {
   const [activeKey, setActiveKey] = useState<string>(samples[0]?.key ?? "");
   const activeSample = samples.find((s) => s.key === activeKey) ?? null;
 
   const [jdText, setJdText] = useState<string>(activeSample?.text ?? "");
   const [scored, setScored] = useState(true);
   const [stretchPosition, setStretchPosition] = useState(0.5);
-  const [pulseId, setPulseId] = useState<string | null>(null);
   const [hoverData, setHoverData] = useState<HoverData | null>(null);
   const [loading, setLoading] = useState<LoadingStage>({ kind: "idle" });
 
@@ -70,12 +66,19 @@ export function JDAdapter({ cv, samples }: Props) {
   /** Pulse-clear timeout id — kept in a ref so successive clicks don't lose it. */
   const pulseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Cleanup pulse timer on unmount.
+  /** Track the currently pulsing element so back-to-back clicks clear cleanly. */
+  const pulseElRef = useRef<HTMLElement | null>(null);
+
+  // Cleanup pulse timer + lingering class on unmount.
   useEffect(() => {
     return () => {
       if (pulseTimerRef.current !== null) {
         clearTimeout(pulseTimerRef.current);
         pulseTimerRef.current = null;
+      }
+      if (pulseElRef.current) {
+        pulseElRef.current.classList.remove("bullet-pulse");
+        pulseElRef.current = null;
       }
     };
   }, []);
@@ -244,15 +247,18 @@ export function JDAdapter({ cv, samples }: Props) {
     // scrollIntoView respects it without a duplicated magic-number here.
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     el.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
-    const pulseRef = parsed.kind === "role" ? parsed.id : `project:${parsed.id}`;
-    setPulseId(pulseRef);
-    // Cancel any prior pulse-clear timer so back-to-back clicks don't truncate
-    // the new pulse early; cleared on unmount via the effect above.
-    if (pulseTimerRef.current !== null) {
-      clearTimeout(pulseTimerRef.current);
-    }
+
+    // Pulse the canonical CV element directly. ADR-0029 deleted the JD-side
+    // duplicate; the only place this element exists now is the CV section
+    // up-page, so we toggle the .bullet-pulse class on it without needing
+    // a JD context provider feeding state into the CV components.
+    if (pulseTimerRef.current !== null) clearTimeout(pulseTimerRef.current);
+    if (pulseElRef.current) pulseElRef.current.classList.remove("bullet-pulse");
+    el.classList.add("bullet-pulse");
+    pulseElRef.current = el;
     pulseTimerRef.current = setTimeout(() => {
-      setPulseId(null);
+      el.classList.remove("bullet-pulse");
+      if (pulseElRef.current === el) pulseElRef.current = null;
       pulseTimerRef.current = null;
     }, 1700);
   };
@@ -406,15 +412,6 @@ export function JDAdapter({ cv, samples }: Props) {
           </p>
         </div>
       )}
-
-      {/* Experience section */}
-      <section id="experience" style={{ marginTop: "var(--gap-section)" }}>
-        <header className="section-header">
-          <span className="kicker">02</span>
-          <h2>Experience</h2>
-        </header>
-        <JDExperience cv={cv} scoredChips={chips} pulseId={pulseId} />
-      </section>
 
       <FloatingTooltip data={hoverData} />
     </div>

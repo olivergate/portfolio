@@ -30,6 +30,16 @@ export default function HomePage() {
           <Skills skills={cv.skills} />
           <Projects projects={cv.projects} />
           <Avocations avocations={cv.avocations} />
+
+          {/*
+            JD adapter sits inside the CV section, after Outside work (08).
+            Chip clicks resolve to the canonical CV bullets up-page via
+            data-bullet-id / data-project-id (no duplicate CV — see ADR-0029).
+            #jd is a sub-anchor so the spy nav still jumps here directly.
+          */}
+          <div id="jd" style={{ marginTop: "var(--gap-section)" }}>
+            <JDSection samples={samples} />
+          </div>
         </section>
 
         <section id="tone" style={{ marginTop: "var(--gap-section)" }}>
@@ -38,10 +48,6 @@ export default function HomePage() {
 
         <section id="lab" style={{ marginTop: "var(--gap-section)" }}>
           <LabSection projects={projects} />
-        </section>
-
-        <section id="jd" style={{ marginTop: "var(--gap-section)" }}>
-          <JDSection cv={cv} samples={samples} />
         </section>
       </main>
     </ToneProvider>

@@ -18,6 +18,7 @@ export function Projects({ projects }: Props) {
           <article
             key={project.id}
             data-reveal
+            data-project-id={project.id}
             className="cv-card"
             style={{
               background: "var(--card-bg)",

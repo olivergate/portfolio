@@ -72,6 +72,7 @@ Rule of thumb: if the edit would change what a reader believes we chose or why, 
 | [0026](./0026-rethemer-fab-supersedes-deck.md) | Rethemer FAB supersedes the design-locked slider deck | Accepted | 2026-05-04 | 0006 | — |
 | [0027](./0027-bullet-reorder-removed.md) | Bullet reorder removed; original CV order is the only order | Accepted | 2026-05-04 | 0019 | — |
 | [0028](./0028-single-page-consolidation.md) | Single-page consolidation; `/jd`, `/tone`, `/lab` redirect to `/#section` | Accepted | 2026-05-04 | — | — |
+| [0029](./0029-jd-no-duplicate-cv.md) | JD adapter no longer renders a duplicate CV; chip evidence resolves to canonical CV bullets | Accepted | 2026-05-04 | — | — |
 
 <!--
   Add one row per ADR as you author them. Format:
