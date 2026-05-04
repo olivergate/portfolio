@@ -49,7 +49,7 @@ Rule of thumb: if the edit would change what a reader believes we chose or why, 
 | [0003](./0003-adr-format.md) | ADR format and the public `/decisions` page | Accepted | 2026-05-02 | — | — |
 | [0004](./0004-url-hash-for-slider-state.md) | URL hash for slider state | Accepted | 2026-05-02 | — | — |
 | [0005](./0005-css-custom-properties-as-styling-layer.md) | CSS custom properties as the styling layer | Accepted | 2026-05-02 | — | — |
-| [0006](./0006-slider-deck-is-design-locked.md) | The slider deck is design-locked | Accepted | 2026-05-02 | — | — |
+| [0006](./0006-slider-deck-is-design-locked.md) | The slider deck is design-locked | Superseded | 2026-05-02 | — | 0026 |
 | [0007](./0007-muted-color-wcag-aa-deviation.md) | `--muted` color deviation for WCAG AA at refined polish | Accepted | 2026-05-03 | — | — |
 | [0008](./0008-server-side-ai-calls-only.md) | Server-side AI calls only | Accepted | 2026-05-03 | — | — |
 | [0009](./0009-cache-key-includes-prompt-version.md) | Cache key includes prompt version; no TTLs | Accepted | 2026-05-03 | — | — |
@@ -69,6 +69,7 @@ Rule of thumb: if the edit would change what a reader believes we chose or why, 
 | [0023](./0023-no-real-world-side-effects-from-demos.md) | No real-world side effects from demos | Accepted | 2026-05-04 | — | — |
 | [0024](./0024-linkout-cards-not-embedded-screens.md) | Linkout cards over embedded screens for `/lab` secondary projects | Accepted | 2026-05-04 | — | — |
 | [0025](./0025-canned-fallback-for-retro-demo.md) | Canned-response fallback for retro demo on failure paths | Accepted | 2026-05-04 | — | — |
+| [0026](./0026-rethemer-fab-supersedes-deck.md) | Rethemer FAB supersedes the design-locked slider deck | Accepted | 2026-05-04 | 0006 | — |
 | [0027](./0027-bullet-reorder-removed.md) | Bullet reorder removed; original CV order is the only order | Accepted | 2026-05-04 | 0019 | — |
 | [0028](./0028-single-page-consolidation.md) | Single-page consolidation; `/jd`, `/tone`, `/lab` redirect to `/#section` | Accepted | 2026-05-04 | — | — |
 

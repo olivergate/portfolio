@@ -1,6 +1,6 @@
 # 0006 — The slider deck is design-locked
 
-- **Status:** Accepted
+- **Status:** Superseded by 0026
 - **Date:** 2026-05-02
 - **Deciders:** Oliver Kaikane Gate
 
