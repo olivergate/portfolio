@@ -31,7 +31,7 @@ type Props = { education: CV["education"] };
 export function Education({ education }: Props) {
   return (
     <section id="education" style={{ marginTop: "var(--gap-section)" }}>
-      <SectionHeader number="05" title="Education" />
+      <SectionHeader number="04" title="Education" />
       {education.map((entry) => (
         <article key={entry.id} style={{ marginBottom: "var(--gap-block)" }}>
           <div

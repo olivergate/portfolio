@@ -10,9 +10,9 @@ type Entry = Anchor | Route;
 
 const ENTRIES: Entry[] = [
   { kind: "anchor", id: "cv", label: "CV" },
+  { kind: "anchor", id: "jd", label: "JD" },
   { kind: "anchor", id: "tone", label: "Tone" },
   { kind: "anchor", id: "lab", label: "Lab" },
-  { kind: "anchor", id: "jd", label: "JD" },
   { kind: "route", href: "/blog", label: "Blog" },
 ];
 

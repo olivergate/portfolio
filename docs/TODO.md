@@ -177,18 +177,14 @@ Caught in the post-Phase-4 review (3 parallel reviewers — backend / frontend /
 
 ## Phase 2.5 — follow-up work before Phase 2 is marked Done
 
-- **3-voice live tone toggle (Pessimistic / Honest / Absurd) on `/`** —
-  the original Phase 2 spec deliverable that got reshaped out by the
-  manifesto direction. Now reinstated as a separate surface. Manifesto
-  on `/tone` stays. The live toggle re-themes the CV bullets via Anthropic
-  rewrites cached aggressively (cache key includes prompt version per
-  ADR-0009), with a Honest fallback when the cost ceiling is hit. Satire
-  banner returns when Absurd is active. Will use the AI infrastructure
-  scaffolded in Phase 2 (this is the first place it gets exercised; Phase 3
-  JD matcher follows). See ADR-0011 (updated) for the rationale split.
-  - Surfaced: 2026-05-03, end of Phase 2
-  - Owner: Oliver to confirm scope; agent to scaffold once approved
-  - Blocks: marking Phase 2 as Done in `docs/specs/README.md`
+- **3-voice tone toggle (Pessimistic / Honest / Absurd) on `/` — closed.**
+  Shipped pre-written under Phase 2.5 (see ADR-0013) and subsequently
+  removed on 2026-05-05 (see ADR-0030). The live-API variant originally
+  envisioned in this TODO entry was never built; the pre-written version
+  that did ship was retired because the JD adapter (ADR-0016) carries the
+  honesty signal more substantively, and the 3× content maintenance cost
+  was not earning its keep. Manifesto on `/tone` stays per ADR-0011.
+  - Closed: 2026-05-05, ADR-0030
 
 - **Manifesto content (14 tenets) for `/tone`** — shipped as Oliver-edits-later
   placeholder. Edit `content/tone.json` directly when ready; no rebuild

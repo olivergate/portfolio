@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     template: "%s — Oliver Kaikane Gate",
   },
   description:
-    "Senior full-stack engineer (React/TypeScript, Python). 7+ years across data platforms and consumer products. Building with LLMs and going deep on agentic systems.",
+    "Spending most of my current bandwidth on agent orchestration and harness design, on top of 7+ years senior full-stack (React/TypeScript, Python) across data platforms and consumer products.",
   metadataBase: new URL("https://olivergate.com"),
 };
 

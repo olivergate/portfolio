@@ -147,9 +147,10 @@
       {
         "id": "a5",
         "text": "Custom Claude Code setup",
-        "baseStatus": "hit",
-        "cite": ["project:claude-code-setup"],
-        "reasoning": "Custom Claude CLI setup with agents, skills, and telemetry — exactly the bonus call-out."
+        "baseStatus": "stretch",
+        "cite": [],
+        "reasoning": "Personal Claude CLI tooling with agents, skills, and telemetry, listed in Skills. Not a shipped product, so a Stretch rather than a Hit.",
+        "gapFraming": "Tooling rather than a product — happy to walk through it."
       },
       {
         "id": "a6",
@@ -165,8 +166,8 @@
         "id": "a7",
         "text": "Agent harness design",
         "baseStatus": "stretch",
-        "cite": ["project:claude-code-setup"],
-        "reasoning": "Currently going deep on agentic systems and harness design as a stated focus area; the personal Claude Code setup is the closest thing to shipped harness work."
+        "cite": [],
+        "reasoning": "Stated current focus area; the personal Claude Code tooling (agents, skills, telemetry) is the closest thing to harness work, but it isn't a shipped product."
       },
       {
         "id": "a8",

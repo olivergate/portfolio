@@ -1,5 +1,11 @@
 # Phase 2.5 — Live tone toggle on `/` (pre-written)
 
+> **SUPERSEDED by ADR-0030 (2026-05-05).** The toggle this spec describes
+> shipped under ADR-0013 and was subsequently removed; the CV now ships
+> single-voice. The body of this spec is preserved as a historical record.
+> Read ADR-0030 first if you're catching up; the JD adapter (ADR-0016) now
+> carries the honesty signal this surface was originally built to deliver.
+>
 > Read this whole file. Read the design references. Plan, then execute.
 >
 > NOTE: this is a follow-up to Phase 2 reinstating the tone-toggle surface

@@ -4,10 +4,9 @@ import type { CV } from "@/lib/schemas";
 import { stableStringify } from "@/lib/stable-stringify";
 
 /**
- * Stable hash over the CV evidence the matcher actually reads — bullet IDs,
- * honest-voice bullet text, and project metadata. Tone variants don't affect
- * matching (matcher reads honest only), so they're excluded to keep the cache
- * stable across tone-only edits.
+ * Stable hash over the CV evidence the matcher reads — bullet IDs,
+ * bullet text, and project metadata. The CV is now single-voice
+ * (ADR-0030 retired the live tone toggle), so the hash is just the prose.
  */
 export function computeCVHash(cv: CV): string {
   const evidence = {
@@ -20,8 +19,8 @@ export function computeCVHash(cv: CV): string {
       company: r.company,
       start: r.start,
       end: r.end,
-      summary: r.summary.honest,
-      bullets: r.bullets.map((b) => ({ id: b.id, text: b.text.honest })),
+      summary: r.summary,
+      bullets: r.bullets.map((b) => ({ id: b.id, text: b.text })),
       technologies: r.technologies,
     })),
     projects: cv.projects.map((p) => ({
@@ -61,10 +60,10 @@ export function formatCVForPrompt(cv: CV): string {
     lines.push("");
     lines.push(`### ${r.title} — ${r.company} (${r.start} → ${r.end})`);
     lines.push(`Stack: ${r.technologies.join(", ")}`);
-    lines.push(`Summary: ${r.summary.honest}`);
+    lines.push(`Summary: ${r.summary}`);
     lines.push("Bullets:");
     for (const b of r.bullets) {
-      lines.push(`- [role:${b.id}] ${b.text.honest}`);
+      lines.push(`- [role:${b.id}] ${b.text}`);
     }
   }
   lines.push("");

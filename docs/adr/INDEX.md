@@ -56,7 +56,7 @@ Rule of thumb: if the edit would change what a reader believes we chose or why, 
 | [0010](./0010-cost-ceiling-per-endpoint.md) | Cost ceiling enforced per-endpoint, not via global rate limiting | Accepted | 2026-05-03 | — | — |
 | [0011](./0011-tone-as-manifesto-not-live-toggle.md) | `/tone` ships as a manifesto; the live AI toggle is a separate surface | Accepted | 2026-05-03 | — | — |
 | [0012](./0012-adr-editability-tiers.md) | ADR editability tiers | Accepted | 2026-05-03 | — | — |
-| [0013](./0013-pre-written-tone-toggle.md) | The `/` tone toggle is pre-written, not live API | Accepted | 2026-05-03 | — | — |
+| [0013](./0013-pre-written-tone-toggle.md) | The `/` tone toggle is pre-written, not live API | Superseded | 2026-05-03 | — | 0030 |
 | [0014](./0014-anthropic-key-redis-provisioning.md) | Anthropic key + Upstash Redis provisioning model | Accepted | 2026-05-03 | — | — |
 | [0015](./0015-jd-two-stage-pipeline.md) | JD adapter uses a two-stage parse-then-match pipeline | Accepted | 2026-05-03 | — | — |
 | [0016](./0016-jd-matcher-conservative-bias.md) | JD matcher prompt is conservative-biased | Accepted | 2026-05-03 | — | — |
@@ -73,6 +73,7 @@ Rule of thumb: if the edit would change what a reader believes we chose or why, 
 | [0027](./0027-bullet-reorder-removed.md) | Bullet reorder removed; original CV order is the only order | Accepted | 2026-05-04 | 0019 | — |
 | [0028](./0028-single-page-consolidation.md) | Single-page consolidation; `/jd`, `/tone`, `/lab` redirect to `/#section` | Accepted | 2026-05-04 | — | — |
 | [0029](./0029-jd-no-duplicate-cv.md) | JD adapter no longer renders a duplicate CV; chip evidence resolves to canonical CV bullets | Accepted | 2026-05-04 | — | — |
+| [0030](./0030-remove-live-cv-tone-toggle.md) | Remove the live CV tone toggle; CV ships single-voice | Accepted | 2026-05-05 | 0013 | — |
 
 <!--
   Add one row per ADR as you author them. Format:

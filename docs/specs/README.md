@@ -9,6 +9,7 @@ session for the next phase.
 | 0 | Foundations | site shell, `/` (CV static) | Done | 2026-05-02 |
 | 1 | UX style sliders | `/` (CV interactive) | Done | 2026-05-03 |
 | 2 | Tone manifesto + AI infra | `/tone` | Done | 2026-05-03 |
+| 2.5 | Pre-written 3-voice CV tone toggle | `/` (CV bullets) | Superseded by ADR-0030 | shipped 2026-05-03, removed 2026-05-05 |
 | 3 | JD adapter | `/jd` | Done | 2026-05-03 |
 | 4 | Lab + Claude Code retro demo | `/lab` | Done | 2026-05-04 |
 | 5 | Prompt-safety game scaffolding | `/game` (L-01, L-02) | Not started | — |

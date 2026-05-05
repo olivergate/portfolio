@@ -39,11 +39,10 @@ describe("formatCVForPrompt covers all CV evidence the matcher needs to see", ()
     }
   });
 
-  test("uses the honest voice for bullet text, not pessimistic or absurd", () => {
+  test("includes every bullet's prose verbatim", () => {
     for (const role of cv.roles) {
       for (const b of role.bullets) {
-        // The honest voice should appear; pessimistic and absurd voices should not.
-        expect(prompt).toContain(b.text.honest);
+        expect(prompt).toContain(b.text);
       }
     }
   });
@@ -58,14 +57,12 @@ describe("computeCVHash is stable but version-bumps when evidence changes", () =
     expect(h).toMatch(/^[0-9a-f]+$/);
   });
 
-  test("ignores tone variants (pessimistic / absurd) — only honest voice matters", () => {
+  test("changes when a bullet's prose is modified", () => {
     const h1 = computeCVHash(cv);
-    // Mutate a non-honest tone voice and confirm hash doesn't change.
     const mutated = JSON.parse(JSON.stringify(cv));
-    mutated.roles[0].bullets[0].text.pessimistic = "TOTALLY DIFFERENT TEXT";
-    mutated.roles[0].bullets[0].text.absurd = "AND THIS TOO";
+    mutated.roles[0].bullets[0].text = `${mutated.roles[0].bullets[0].text} (mutated)`;
     const h2 = computeCVHash(mutated);
-    expect(h2).toBe(h1);
+    expect(h2).not.toBe(h1);
   });
 
   test("changes when education is added or modified", () => {

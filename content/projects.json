@@ -45,8 +45,8 @@
     },
     {
       "slug": "movement",
-      "title": "Movement-Focused Consumer App",
-      "blurb": "Consumer-facing project around physical movement — loose alpha, daily test build, mostly a vehicle for learning React Native well.",
+      "title": "Daily Movement App",
+      "blurb": "An attempt at virality: a consumer app that nudges users to do one movement a day and share it. Loose alpha, daily test build, mostly a vehicle for learning React Native well.",
       "techPills": ["React Native", "Expo", "Supabase"],
       "glyph": "↗",
       "gradient": { "from": "#ffd6c2", "via": "#d97757", "to": "#4a2c1f" },

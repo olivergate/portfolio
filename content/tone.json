@@ -20,8 +20,8 @@
     {
       "number": 3,
       "title": "End-to-end before division of labour",
-      "formal": "I've spent stretches as the only frontend engineer on the system, and stretches running a team of five. The lesson from both is that someone has to hold the whole shape in their head, and it pays to be that person early on.",
-      "personal": "I was the sole frontend engineer on a sustainability dashboard for nearly four years. There is a Slack channel somewhere named after one of my Plotly Dash callbacks. End-to-end ownership is great when you're shipping fast and lonely at 11pm when something subtle breaks."
+      "formal": "I've spent stretches as the only engineer on the system, and stretches running a team of five. The lesson from both is that someone has to hold the whole shape in their head, and it pays to be that person early on.",
+      "personal": "I was the sole engineer on a sustainability dashboard for nearly four years. There is a Slack channel somewhere named after one of my Plotly Dash callbacks. End-to-end ownership is great when you're shipping fast and lonely at 11pm when something subtle breaks."
     },
     {
       "number": 4,
@@ -68,7 +68,7 @@
     {
       "number": 11,
       "title": "Take the pro-bono job seriously",
-      "formal": "I chaired the Bristol charity committee at Redington and ran a pro-bono engagement with LifeCycle — a small charity that had been left dry by multiple high-cost agencies — running a one-day discovery workshop and migrating their database and supporting infrastructure onto Airtable.",
+      "formal": "Pro-bono work pays back when the client can run what you leave behind. LifeCycle had been through three previous agencies, each of whom had taken budget and left them with stacks they couldn't maintain. The job wasn't to build the most sophisticated thing — it was to build the thing they'd still be running confidently a year after I disappeared. That constraint flipped most of the technical decisions, and is the part of the engagement I'd point to first.",
       "personal": "Discovery workshop was rougher than I'd run it now. Airtable has limits I hadn't fully internalised when I picked it. Still: a charity that had been chewed up by three previous agencies got a stack they could actually run themselves, and I count that engagement as one of the more morally defensible things I've shipped."
     },
     {

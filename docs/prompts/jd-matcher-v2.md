@@ -33,7 +33,7 @@ Single tool: `submit_matches`. Match shape:
 {
   "requirementId": "string",
   "status": "hit | stretch | miss",
-  "cite": ["role:opensc-1", "project:claude-code-setup"],
+  "cite": ["role:opensc-1", "project:habit-forming-app"],
   "reasoning": "string (one sentence)",
   "gapFraming": "string (Misses only)"
 }

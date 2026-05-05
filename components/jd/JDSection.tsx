@@ -9,7 +9,7 @@ type Props = {
 export function JDSection({ samples }: Props) {
   return (
     <>
-      <SectionHeader number="JD-01" title="Score this CV against a job" meta="experimental" />
+      <SectionHeader number="JD-01" title="Score this CV against a job" />
       <p
         style={{
           maxWidth: "68ch",

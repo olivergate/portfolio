@@ -129,9 +129,9 @@ redirects to `/jd?prefill=[hash]` after a moment.
 
 - Plausible (privacy-friendly, no cookie banner needed) — install via the
   official Next.js integration or simple script tag
-- Events: slider changes (count only, no values), tone toggle changes, JD
-  pastes (count), demo runs (per demo), game completions (per level), ADR
-  page views (which ADRs interest visitors)
+- Events: slider changes (count only, no values), JD pastes (count), demo
+  runs (per demo), game completions (per level), ADR page views (which ADRs
+  interest visitors)
 - `/build` shows analytics summary if Plausible public stats are enabled
 
 ### 8. SEO

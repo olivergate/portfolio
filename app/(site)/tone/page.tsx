@@ -1,15 +1,21 @@
+import type { Metadata } from "next";
 import { SectionHeader } from "@/components/cv/SectionHeader";
 import { Tenet } from "@/components/tone/Tenet";
 import { VoiceToggle } from "@/components/tone/VoiceToggle";
-import type { Tone } from "@/lib/schemas";
+import { getTone } from "@/lib/content";
 
-type Props = { tone: Tone };
+export const metadata: Metadata = {
+  title: "Tone",
+  description:
+    "Voice and values manifesto: 14 tenets in two voices side-by-side — formal vs. how I actually think.",
+};
 
-export function ToneSection({ tone }: Props) {
+export default function TonePage() {
+  const tone = getTone();
   const total = tone.tenets.length;
 
   return (
-    <>
+    <main className="cv-surface">
       <header
         style={{
           paddingTop: "clamp(0.5rem, 2vw, 1.5rem)",
@@ -31,12 +37,14 @@ export function ToneSection({ tone }: Props) {
             flexWrap: "wrap",
           }}
         >
+          <span>CV / 2026</span>
+          <span aria-hidden="true">—</span>
           <span>Tone manifesto</span>
           <span aria-hidden="true">—</span>
           <span>{total} tenets</span>
         </div>
 
-        <h2
+        <h1
           data-reveal-display
           style={{
             fontFamily: "var(--font-display)",
@@ -51,10 +59,10 @@ export function ToneSection({ tone }: Props) {
           }}
         >
           Voice &amp; <em style={{ color: "var(--accent)", fontStyle: "italic" }}>values</em>
-        </h2>
+        </h1>
       </header>
 
-      <div
+      <section
         id="tone-intro"
         style={{
           marginTop: "var(--gap-section)",
@@ -81,12 +89,10 @@ export function ToneSection({ tone }: Props) {
             {paragraph}
           </p>
         ))}
-      </div>
+      </section>
 
-      {/* The /tone-page wrapper around VoiceToggle uses `id="tone-toggle"`
-          for its own anchor; this in-page render of the manifesto on `/`
-          does not need it (no scroll-spy / anchor target for it). */}
-      <div
+      <section
+        id="tone-toggle"
         style={{
           marginTop: "var(--gap-section)",
           display: "flex",
@@ -94,18 +100,18 @@ export function ToneSection({ tone }: Props) {
         }}
       >
         <VoiceToggle />
-      </div>
+      </section>
 
-      <div id="tone-manifesto" style={{ marginTop: "var(--gap-section)" }}>
+      <section id="tone-manifesto" style={{ marginTop: "var(--gap-section)" }}>
         <SectionHeader number="TN-01" title="Manifesto" meta={`${total} tenets`} />
         <div className="tone-manifesto" data-voice="both">
           {tone.tenets.map((tenet) => (
             <Tenet key={tenet.number} tenet={tenet} total={total} />
           ))}
         </div>
-      </div>
+      </section>
 
-      <div
+      <section
         id="tone-signature"
         style={{
           marginTop: "var(--gap-section)",
@@ -128,7 +134,7 @@ export function ToneSection({ tone }: Props) {
         >
           {tone.signature.text}
         </p>
-      </div>
-    </>
+      </section>
+    </main>
   );
 }

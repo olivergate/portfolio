@@ -1,6 +1,6 @@
 # 0013 — The `/` tone toggle is pre-written, not live API
 
-- **Status:** Accepted
+- **Status:** Superseded by ADR-0030
 - **Date:** 2026-05-03
 - **Deciders:** Oliver Kaikane Gate
 

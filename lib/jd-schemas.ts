@@ -5,11 +5,10 @@ import { z } from "zod";
  * (or the closest evidence for a Stretch) by reference, not by inlining text.
  *
  * - "role:opensc-1" → CV role bullet ID
- * - "project:claude-code-setup" → CV project ID
+ * - "project:habit-forming-app" → CV project ID
  *
  * Project citations exist because some CV-to-JD matches are anchored in the
- * Projects section (e.g. the personal Claude Code setup hits "custom Claude
- * Code setup" for AI-startup JDs but does not appear as a role bullet).
+ * Projects section (e.g. mobile/consumer side projects) and not in role bullets.
  * Without the project: prefix that match would have to be a Stretch with no
  * citation, which understates the evidence.
  */

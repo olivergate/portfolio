@@ -22,61 +22,39 @@ function labelFor(c: Corner): string {
   return AXES.map((axis, i) => `${axis}=${c[i as keyof Corner]}`).join("|");
 }
 
-type Tone = "pessimistic" | "honest" | "absurd";
-
-const TONE_LABEL: Record<Tone, string> = {
-  pessimistic: "Pessimistic",
-  honest: "Honest",
-  absurd: "Absurd",
-};
-
 const ROUTES = [
-  // After ADR-0028 the tone surface is a section on /. The corner check on
-  // /#tone validates that the tone block also renders without overflow at
-  // every slider hypercube corner, not just the CV header above it.
-  { path: "/", label: "cv", tones: ["pessimistic", "honest", "absurd"] as readonly Tone[] },
-  { path: "/#tone", label: "tone", tones: [null] as readonly (Tone | null)[] },
+  // ADR-0030 retired the live tone toggle, so each route has a single
+  // rendering. The corner check still spans the slider hypercube on both /
+  // and the in-page #tone block above the manifesto.
+  { path: "/", label: "cv" },
+  { path: "/#tone", label: "tone" },
 ] as const;
 
 for (const route of ROUTES) {
   test.describe(`${route.label} (${route.path}) at every corner of the slider hypercube`, () => {
-    for (const tone of route.tones) {
-      for (const c of corners()) {
-        const label = labelFor(c);
-        const toneSuffix = tone ? `|tone=${tone}` : "";
-        const slug = `${route.label}${tone ? `-${tone}` : ""}-${label.replace(/[^a-z0-9]/gi, "-")}`;
+    for (const c of corners()) {
+      const label = labelFor(c);
+      const slug = `${route.label}-${label.replace(/[^a-z0-9]/gi, "-")}`;
 
-        test(`renders without horizontal overflow — ${route.label} | ${label}${toneSuffix}`, async ({
-          page,
-        }) => {
-          await page.goto(`${route.path}${hashFor(c)}`);
-          await page.waitForFunction(() => document.querySelector(".cv-surface") !== null);
-          await page.waitForTimeout(200);
+      test(`renders without horizontal overflow — ${route.label} | ${label}`, async ({ page }) => {
+        await page.goto(`${route.path}${hashFor(c)}`);
+        await page.waitForFunction(() => document.querySelector(".cv-surface") !== null);
+        await page.waitForTimeout(200);
 
-          if (tone && tone !== "honest") {
-            // Tone state is in-memory only (see ADR-0013) — click the tab to
-            // shift the toggle. Skip for honest because it's the default.
-            await page.getByRole("tab", { name: TONE_LABEL[tone] }).click();
-            // Wait for the crossfade (280ms) plus a small buffer.
-            await page.waitForTimeout(400);
-          }
-
-          const overflow = await page.evaluate(() => {
-            const docW = document.documentElement.scrollWidth;
-            const winW = document.documentElement.clientWidth;
-            return { docW, winW };
-          });
-          expect(
-            overflow.docW,
-            `horizontal overflow at ${route.label} ${label}${toneSuffix}`,
-          ).toBeLessThanOrEqual(overflow.winW + 1);
-
-          await page.screenshot({
-            path: `tests/e2e/screenshots/corner-${slug}.png`,
-            fullPage: true,
-          });
+        const overflow = await page.evaluate(() => {
+          const docW = document.documentElement.scrollWidth;
+          const winW = document.documentElement.clientWidth;
+          return { docW, winW };
         });
-      }
+        expect(overflow.docW, `horizontal overflow at ${route.label} ${label}`).toBeLessThanOrEqual(
+          overflow.winW + 1,
+        );
+
+        await page.screenshot({
+          path: `tests/e2e/screenshots/corner-${slug}.png`,
+          fullPage: true,
+        });
+      });
     }
   });
 }

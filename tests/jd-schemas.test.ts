@@ -72,11 +72,11 @@ describe("Cite schema enforces role:/project: prefix (ADR-0016 & H2 fix)", () =>
     });
     expect(r.success).toBe(true);
   });
-  test("project:claude-code-setup valid", () => {
+  test("project:habit-forming-app valid", () => {
     const r = Match.safeParse({
       requirementId: "r1",
       status: "hit",
-      cite: ["project:claude-code-setup"],
+      cite: ["project:habit-forming-app"],
       reasoning: "ok",
     });
     expect(r.success).toBe(true);

@@ -116,9 +116,9 @@ Example 4 — Miss stays Miss across levels:
     { status: "miss", cite: [], reasoning: "CV doesn't claim hiring authority.", gapFraming: "I led a 5-engineer team but didn't own the hiring bar. I ran interviews and would approach hiring deliberately if it's part of this role." }
 
 Example 5 — project-cited Hit:
-  Requirement: "Custom Claude Code setup"
-  CV project: "[project:claude-code-setup] Personal Claude Code Setup — Claude CLI, custom agents, skills, telemetry..."
-  Output: { status: "hit", cite: ["project:claude-code-setup"], reasoning: "Personal Claude CLI setup with agents, skills, and telemetry — direct match." }
+  Requirement: "Personal mobile side-project work"
+  CV project: "[project:habit-forming-app] Habit-Forming App — Cross-platform mobile, focused on behaviour change loops..."
+  Output: { status: "hit", cite: ["project:habit-forming-app"], reasoning: "Cross-platform mobile habit-forming app in TestFlight — direct match." }
 
 Example 6 — Stretch with no cite (skill-list adjacency):
   Requirement: "Familiarity with prompt injection / OWASP AI Top 10"

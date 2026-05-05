@@ -266,8 +266,8 @@ describe("matcher route — honesty validator (ADR-0016)", () => {
         {
           requirementId: "r1",
           status: "hit",
-          cite: ["project:claude-code-setup"],
-          reasoning: "Personal Claude Code setup with agents and telemetry.",
+          cite: ["project:habit-forming-app"],
+          reasoning: "Cross-platform mobile habit-forming app in TestFlight.",
         },
         {
           requirementId: "r2",
