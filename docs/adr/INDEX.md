@@ -74,6 +74,7 @@ Rule of thumb: if the edit would change what a reader believes we chose or why, 
 | [0028](./0028-single-page-consolidation.md) | Single-page consolidation; `/jd`, `/tone`, `/lab` redirect to `/#section` | Accepted | 2026-05-04 | — | — |
 | [0029](./0029-jd-no-duplicate-cv.md) | JD adapter no longer renders a duplicate CV; chip evidence resolves to canonical CV bullets | Accepted | 2026-05-04 | — | — |
 | [0030](./0030-remove-live-cv-tone-toggle.md) | Remove the live CV tone toggle; CV ships single-voice | Accepted | 2026-05-05 | 0013 | — |
+| [0031](./0031-manifesto-pledges-single-voice.md) | Manifesto rewritten as six pledges, single-voice | Accepted | 2026-05-06 | — | — |
 
 <!--
   Add one row per ADR as you author them. Format:

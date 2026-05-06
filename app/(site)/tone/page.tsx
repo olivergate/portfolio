@@ -1,18 +1,17 @@
 import type { Metadata } from "next";
 import { SectionHeader } from "@/components/cv/SectionHeader";
-import { Tenet } from "@/components/tone/Tenet";
-import { VoiceToggle } from "@/components/tone/VoiceToggle";
+import { Pledge } from "@/components/tone/Pledge";
 import { getTone } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Tone",
   description:
-    "Voice and values manifesto: 14 tenets in two voices side-by-side — formal vs. how I actually think.",
+    "Voice and values manifesto: six pledges — the principles that show up in the code I write, the teams I run, and the bugs I cause.",
 };
 
 export default function TonePage() {
   const tone = getTone();
-  const total = tone.tenets.length;
+  const total = tone.pledges.length;
 
   return (
     <main className="cv-surface">
@@ -41,7 +40,7 @@ export default function TonePage() {
           <span aria-hidden="true">—</span>
           <span>Tone manifesto</span>
           <span aria-hidden="true">—</span>
-          <span>{total} tenets</span>
+          <span>{total} pledges</span>
         </div>
 
         <h1
@@ -91,22 +90,11 @@ export default function TonePage() {
         ))}
       </section>
 
-      <section
-        id="tone-toggle"
-        style={{
-          marginTop: "var(--gap-section)",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <VoiceToggle />
-      </section>
-
       <section id="tone-manifesto" style={{ marginTop: "var(--gap-section)" }}>
-        <SectionHeader number="TN-01" title="Manifesto" meta={`${total} tenets`} />
-        <div className="tone-manifesto" data-voice="both">
-          {tone.tenets.map((tenet) => (
-            <Tenet key={tenet.number} tenet={tenet} total={total} />
+        <SectionHeader number="TN-01" title="Manifesto" meta={`${total} pledges`} />
+        <div className="tone-manifesto">
+          {tone.pledges.map((pledge) => (
+            <Pledge key={pledge.number} pledge={pledge} total={total} />
           ))}
         </div>
       </section>

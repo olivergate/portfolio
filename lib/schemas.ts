@@ -80,11 +80,10 @@ export type CVProject = z.infer<typeof Project>;
 export type CVEducation = z.infer<typeof Education>;
 export type CVSkills = z.infer<typeof Skills>;
 
-const Tenet = z.object({
+const Pledge = z.object({
   number: z.number().int().min(1).max(99),
   title: z.string().min(1),
-  formal: z.string().min(1),
-  personal: z.string().min(1),
+  text: z.string().min(1),
 });
 
 const ToneSignature = z.object({
@@ -95,9 +94,9 @@ export const ToneSchema = z.object({
   intro: z.object({
     paragraphs: z.array(z.string().min(1)).min(1),
   }),
-  tenets: z.array(Tenet).min(1),
+  pledges: z.array(Pledge).min(1),
   signature: ToneSignature,
 });
 
 export type Tone = z.infer<typeof ToneSchema>;
-export type ToneTenet = z.infer<typeof Tenet>;
+export type TonePledge = z.infer<typeof Pledge>;

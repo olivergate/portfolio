@@ -236,80 +236,17 @@
 
 /* ─── Tone manifesto (/tone) ─────────────────────────────────────────────── */
 
-/* Two-column grid with a hairline divider between formal + personal voices.
-   Collapsing to "personal only" hides the formal column and the divider; the
-   grid template animates so the personal column expands smoothly. */
-.tone-grid {
-  display: grid;
-  grid-template-columns: 1fr 1px 1fr;
-  gap: 0 clamp(1rem, 3vw, 2.5rem);
-  align-items: start;
-  transition: grid-template-columns var(--motion-base) cubic-bezier(.2,.7,.2,1);
-}
-
-.tone-grid > .tone-divider {
-  background: var(--rule);
-  width: 1px;
-  align-self: stretch;
-  min-height: 100%;
-  transition: opacity var(--motion-base) cubic-bezier(.2,.7,.2,1);
-}
-
-.tone-voice {
-  min-width: 0;
-  transition:
-    opacity var(--motion-base) cubic-bezier(.2,.7,.2,1),
-    transform var(--motion-base) cubic-bezier(.2,.7,.2,1);
-}
-
-/* Collapse the formal column when "my voice only" is selected. We zero the
-   first column track and fade the formal voice + divider out; the personal
-   column is the only thing left visible. Pointer-events disabled so the
-   collapsed text isn't focusable / selectable. */
-.tone-manifesto[data-voice="personal"] .tone-grid {
-  grid-template-columns: 0 0 1fr;
-}
-.tone-manifesto[data-voice="personal"] .tone-voice--formal,
-.tone-manifesto[data-voice="personal"] .tone-divider {
-  opacity: 0;
-  pointer-events: none;
-  visibility: hidden;
-}
-/* When alone, the personal column gets the full readable measure rather than
-   the half-column 44ch cap. Keeps line length scannable but uses the space
-   the formal column vacated. */
-.tone-manifesto[data-voice="personal"] .tone-voice--personal p {
-  max-width: 62ch;
-}
-
-/* Reveal-on-scroll variant: the two voices animate APART from a centered
-   start position. Active only on .cv-surface[data-kinetic="true"] (motion
-   slider above 0.4 AND prefers-reduced-motion not set), matching the CV
-   page's reveal contract. */
-.cv-surface[data-kinetic="true"] .tone-tenet[data-reveal] .tone-voice--formal {
-  transform: translateX(12px);
+/* Single-voice pledges (ADR-0031). Each pledge is a single text block under a
+   numbered header. The reveal-on-scroll animation fades the block up from a
+   slightly translated start; active only on .cv-surface[data-kinetic="true"]
+   (motion slider above 0.4 AND prefers-reduced-motion not set), matching the
+   CV page's reveal contract. */
+.cv-surface[data-kinetic="true"] .tone-pledge[data-reveal] {
+  transform: translateY(8px);
   opacity: 0;
 }
-.cv-surface[data-kinetic="true"] .tone-tenet[data-reveal] .tone-voice--personal {
-  transform: translateX(-12px);
-  opacity: 0;
-}
-.cv-surface[data-kinetic="true"] .tone-tenet[data-reveal] .tone-divider {
-  transform: scaleY(0.6);
-  opacity: 0;
-  transform-origin: center;
-}
-.cv-surface[data-kinetic="true"] .tone-tenet[data-reveal].is-revealed .tone-voice--formal,
-.cv-surface[data-kinetic="true"] .tone-tenet[data-reveal].is-revealed .tone-voice--personal {
-  transform: translateX(0);
-  opacity: 1;
-  transition:
-    opacity var(--motion-slow) cubic-bezier(.2,.7,.2,1),
-    transform var(--motion-slow) cubic-bezier(.2,.7,.2,1);
-  transition-delay: var(--reveal-delay, 0ms);
-}
-.cv-surface[data-kinetic="true"] .tone-tenet[data-reveal].is-revealed .tone-divider {
-  transform: scaleY(1);
+.cv-surface[data-kinetic="true"] .tone-pledge[data-reveal].is-revealed {
+  transform: translateY(0);
   opacity: 1;
   transition:
     opacity var(--motion-slow) cubic-bezier(.2,.7,.2,1),
@@ -317,46 +254,8 @@
   transition-delay: var(--reveal-delay, 0ms);
 }
 
-/* Mobile collapse — single column, no divider. Voice toggle still works:
-   "personal only" hides the formal block; "both" stacks them with a horizontal
-   hairline between. */
-@media (max-width: 720px) {
-  .tone-grid {
-    grid-template-columns: minmax(0, 1fr) !important;
-    gap: var(--gap-block) 0;
-  }
-  .tone-grid > .tone-divider {
-    width: 100%;
-    height: 1px;
-    min-height: 0;
-  }
-  .tone-manifesto[data-voice="personal"] .tone-voice--formal {
-    display: none;
-  }
-  .tone-manifesto[data-voice="personal"] .tone-divider {
-    display: none;
-  }
-  .cv-surface[data-kinetic="true"] .tone-tenet[data-reveal] .tone-voice--formal,
-  .cv-surface[data-kinetic="true"] .tone-tenet[data-reveal] .tone-voice--personal {
-    transform: translateY(8px);
-  }
-}
-
-/* Print: always show both voices, no animation, no divider hairline retained. */
 @media print {
-  .tone-voice-toggle {
-    display: none !important;
-  }
-  .tone-manifesto[data-voice="personal"] .tone-voice--formal,
-  .tone-manifesto[data-voice="personal"] .tone-divider {
-    display: revert !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-  }
-  .tone-manifesto[data-voice="personal"] .tone-grid {
-    grid-template-columns: 1fr 1px 1fr !important;
-  }
-  .tone-tenet {
+  .tone-pledge {
     page-break-inside: avoid;
   }
 }

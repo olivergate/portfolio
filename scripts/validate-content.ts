@@ -51,16 +51,16 @@ try {
     process.exit(1);
   }
 
-  const tenetNumbers = new Set<number>();
-  for (const t of tone.data.tenets) {
-    if (tenetNumbers.has(t.number)) {
-      console.error(`duplicate tenet number: ${t.number}`);
+  const pledgeNumbers = new Set<number>();
+  for (const p of tone.data.pledges) {
+    if (pledgeNumbers.has(p.number)) {
+      console.error(`duplicate pledge number: ${p.number}`);
       process.exit(1);
     }
-    tenetNumbers.add(t.number);
+    pledgeNumbers.add(p.number);
   }
 
-  console.log(`content/tone.json OK — ${tone.data.tenets.length} tenets`);
+  console.log(`content/tone.json OK — ${tone.data.pledges.length} pledges`);
 
   const sampleJDsRaw = readFileSync(sampleJDsPath, "utf8");
   const sampleJDs = SampleJDsSchema.safeParse(JSON.parse(sampleJDsRaw));

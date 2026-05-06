@@ -1,12 +1,11 @@
 import { SectionHeader } from "@/components/cv/SectionHeader";
-import { Tenet } from "@/components/tone/Tenet";
-import { VoiceToggle } from "@/components/tone/VoiceToggle";
+import { Pledge } from "@/components/tone/Pledge";
 import type { Tone } from "@/lib/schemas";
 
 type Props = { tone: Tone };
 
 export function ToneSection({ tone }: Props) {
-  const total = tone.tenets.length;
+  const total = tone.pledges.length;
 
   return (
     <>
@@ -33,7 +32,7 @@ export function ToneSection({ tone }: Props) {
         >
           <span>Tone manifesto</span>
           <span aria-hidden="true">—</span>
-          <span>{total} tenets</span>
+          <span>{total} pledges</span>
         </div>
 
         <h2
@@ -83,24 +82,11 @@ export function ToneSection({ tone }: Props) {
         ))}
       </div>
 
-      {/* The /tone-page wrapper around VoiceToggle uses `id="tone-toggle"`
-          for its own anchor; this in-page render of the manifesto on `/`
-          does not need it (no scroll-spy / anchor target for it). */}
-      <div
-        style={{
-          marginTop: "var(--gap-section)",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <VoiceToggle />
-      </div>
-
       <div id="tone-manifesto" style={{ marginTop: "var(--gap-section)" }}>
-        <SectionHeader number="TN-01" title="Manifesto" meta={`${total} tenets`} />
-        <div className="tone-manifesto" data-voice="both">
-          {tone.tenets.map((tenet) => (
-            <Tenet key={tenet.number} tenet={tenet} total={total} />
+        <SectionHeader number="TN-01" title="Manifesto" meta={`${total} pledges`} />
+        <div className="tone-manifesto">
+          {tone.pledges.map((pledge) => (
+            <Pledge key={pledge.number} pledge={pledge} total={total} />
           ))}
         </div>
       </div>
