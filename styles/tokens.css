@@ -19,7 +19,7 @@
   --fg:               #1c1915;   /* near-black, warm tone */
   --fg-soft:          #3a3530;   /* body copy, slightly muted */
   --muted:            #7a746c;   /* secondary text, mono kickers */
-  --muted-2:          #a39c91;   /* tertiary / disabled */
+  --muted-2:          #635e54;   /* tertiary / disabled — darkened from #a39c91 for WCAG AA on cream backgrounds (incl. translucent scrollspy-nav composite), see ADR-0007 */
   --rule:             #c4b9a8;   /* default hairline color */
   --rule-soft:        rgba(28,25,21,0.10);
   --card-bg:          #fbf8f1;

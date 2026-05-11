@@ -82,6 +82,47 @@ Move the **refined endpoint** of the `--muted` interpolation from `#7a746c` to
   is the body copy. Darkening it shifts the whole page weight toward higher
   contrast and undermines the "warm parchment" feel the design specifies.
 
+## Amendments
+
+### 2026-05-11 — Extended to `--muted-2`
+
+The same darken-for-AA pattern applied to a sibling token surfaced after Phase 3
+shipped the JD adapter. `--muted-2: #a39c91` (tier-3 tertiary/disabled, static —
+not lerped like `--muted`) was used in the scrollspy-nav section separators
+(visible "08 / 09 / 10 / 12" digits), JD char-limit text, the JD CTA-strip
+separators, `Chip` metadata, `StretchSlider` labels, and a placeholder colour
+for `.jd-textarea`. Original contrast scored:
+
+- 2.62:1 against page background `#fcfbf8`
+- 2.35:1 against `.jd-cta-strip` cream `#f3eee3`
+- 4.4:1 against the scrollspy-nav's translucent-gradient composite `#eae1d4`
+  (the nav fades to `color-mix(in oklab, var(--bg) 60%, transparent)` at its
+  bottom edge, and axe computes the composited stack — that turned out to be
+  the binding constraint, not the flat page bg)
+
+All below AA 4.5:1. Token darkened to `#635e54`, which scores:
+
+- 6.18:1 against `#fcfbf8`
+- 5.58:1 against `#f3eee3`
+- 4.95:1 against the scrollspy composite `#eae1d4`
+
+All clear AA with margin. Same diagnosis, same fix family, different token;
+treated as an in-place extension under ADR-0012's current-state-enumeration
+rule rather than a new ADR.
+
+Side effect: at refined polish, `--muted` (lerps to `#6b645b`, L≈0.131) and
+`--muted-2` (`#635e54`, L≈0.114) become close but `--muted-2` is now slightly
+*darker* than `--muted` — inverting the original tier-2/tier-3 hierarchy
+visually at refined-end. Acceptable: the AA constraint dominates, and the
+tier-3 use sites (section numerals, separators, char-limit text) are
+intentionally low-emphasis regardless of which end of the slider the user
+sits at. At brutalist polish `--muted` is `#3a3a3a` and the original
+hierarchy holds.
+
+Surfaced by `tests/e2e/a11y.spec.ts` (axe color-contrast scoped to `.cv-surface`).
+Carried as an open thread from the 2026-05-05 tone-toggle-deletion retro
+`residual_questions` until cleaned up alongside the WIP-file removal.
+
 ## References
 
 - `design-references/design-tokens.css` — original `--muted: #7a746c`
@@ -93,3 +134,4 @@ Move the **refined endpoint** of the `--muted` interpolation from `#7a746c` to
 - `CLAUDE.md` § "Decisions about visual design that diverge from the design
   references — the design is locked in; deviations need explicit approval and
   an ADR"
+- `styles/tokens.css:22` — `--muted-2` darkened per the 2026-05-11 amendment
