@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { Slider } from "@/components/controls/Slider";
 import { useStyleContext } from "@/components/controls/style-context";
 import { getPresetName } from "@/lib/preset-name";
+import type { StyleState } from "@/lib/style-tokens";
 
 const ACCENTS = {
   density: "#d4ff3a",
@@ -12,7 +14,8 @@ const ACCENTS = {
 } as const;
 
 export function SliderDeck() {
-  const { state, setAxis, reset, activeKey, setActiveKey } = useStyleContext();
+  const { state, setAxis, reset } = useStyleContext();
+  const [activeKey, setActiveKey] = useState<keyof StyleState | null>(null);
   const preset = getPresetName(state);
   const deckActiveClass = activeKey ? "deck-active" : "";
 
