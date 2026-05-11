@@ -1,39 +1,39 @@
 {
   "intro": {
     "paragraphs": [
-      "Most CVs are a list of what you did. This is six positions on how I do it — the principles that show up in the code I write, the teams I run, and the bugs I cause. They're commitments, not observations: closer to what I'm trying to live up to than what I always pull off."
+      "Six positions on how I work. These are commitments — what I aim for, not what I always pull off."
     ]
   },
   "pledges": [
     {
       "number": 1,
       "title": "Culture is king",
-      "text": "Inclusive teams produce better work than uniform ones. Cognitive diversity surfaces ideas a monoculture never finds, but only if people feel safe enough to argue — and the leader's job is to build the room people are willing to disagree in, then mostly get out of the way."
+      "text": "Inclusive teams produce better work than uniform ones. The ideas a monoculture misses only show up in rooms where it's safe to disagree. A leader's job is building that room."
     },
     {
       "number": 2,
       "title": "Framing is first",
-      "text": "Most engineering trouble is a well-executed solution to a misframed problem. POCs are cheap and code is fast; what's expensive is six months of architecture optimised for the wrong question. I push hard on definitions before estimates, and I'm willing to spend a week not-knowing if it saves a quarter on the wrong build."
+      "text": "I push on definitions before estimates. Most of the engineering disasters I've watched were technically clean — written well, shipped on time — and answering the wrong question. A week spent on the framing is usually worth a quarter of misdirected building."
     },
     {
       "number": 3,
       "title": "Documentation and clear decisions",
-      "text": "If a decision is worth making, it's worth being able to argue with later. I keep an ADR log on every project of meaningful size — this site has thirty-one so far, including the ones that document deviations and reversals. Retros are the same habit at session-scale: I write down what surprised me, and the patterns that recur become tools."
+      "text": "I keep an ADR log on every project of meaningful size. This site has thirty-one so far, including the ones that document deviations and reversals. The point is being able to argue with a past decision when context shifts. Retros are the same habit at session-scale: write down what surprised me, see what comes up more than once."
     },
     {
       "number": 4,
       "title": "Right-aligned development",
-      "text": "I scan the board right-to-left before picking up new work — who needs a review, who's stuck on something I have context on, who's working in the same area I'm about to touch. Unblocking someone else is usually cheaper than unblocking yourself, and the team ships more when the right-hand side of the board moves first. Right-Aligned Development; there's a blog post in this somewhere."
+      "text": "Before picking up new work, I scan the board right-to-left. Looking for: someone who needs a review, someone stuck on something I have context on, someone working in an area I'm about to touch. Usually one of those is a cheaper unblock than starting on my own next thing. I've been calling it right-aligned development."
     },
     {
       "number": 5,
       "title": "Honesty over polish",
-      "text": "I'd rather a CV bullet, an ADR, or a status update read truthfully than impressively. The JD-matcher on this site is deliberately tuned to surface my own gaps as \"honest gaps\" rather than invent matches, and the ADRs include one that admits I darkened a cream tone because the design was below WCAG AA. Polished claims that don't survive a follow-up question are worse than honest claims that do."
+      "text": "I'd rather a CV bullet or an ADR read truthfully than impressively. The JD matcher on this site is tuned to flag my own gaps as honest gaps rather than stretch them into matches. The ADR log includes one where I had to darken a cream against the original design system to clear WCAG AA — uncomfortable to admit, worth admitting."
     },
     {
       "number": 6,
       "title": "No absolutism in technological choices",
-      "text": "Every technology choice is a tradeoff. I default to SOLID, maintainability, and agentic readiness (tools and structures an LLM agent can reason about) as the criteria — and I'll break any of them deliberately when the product needs a different balance, provided the deviation is written down. ADR-0001 picks Next.js over the design's recommended Astro; ADR-0007 darkens a cream against the design system to clear WCAG AA."
+      "text": "My default criteria for tech choices: SOLID, maintainability, and agentic readiness — tools and structures an LLM can reason about. I'll break any of them deliberately when the product needs a different balance, provided I write down why. ADR-0001 picks Next.js over the design's recommended Astro. ADR-0007 darkens a cream to clear WCAG AA, against the design system as written."
     }
   ],
   "signature": {

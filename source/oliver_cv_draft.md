@@ -18,11 +18,11 @@ Senior full-stack engineer (React/TypeScript, Python). Seven years shipping prod
 
 ## Personal Bio
 
-Restless, and curious about how things actually work — whether that's a supply chain, a user's mental model, or how an LLM decides to call a tool.
+Restless, and curious about how things work.
 
-Came to engineering from Philosophy of Technology seven years ago. That training still shapes how I work: question the framing first, then build. Junior IC to leading a five-person frontend team along the way.
+Came to engineering from Philosophy of Technology seven years ago. That training taught me to question the framing of a problem before answering it. Junior IC to leading a five-person frontend team along the way.
 
-Right now I'm running a custom Claude Code harness — my own agents, a session-retrospective workflow that classifies observations against a vocabulary I maintain, and a telemetry layer over the CLI — alongside three side projects in flight. The questions I keep returning to: what good orchestration actually looks like, where the security gaps sit, how harnesses should be designed for the next few years.
+Right now I'm running a custom Claude Code harness — subagents I dispatch, a retro workflow that builds a learnings catalogue — plus three side projects. Most of my reading is on agent orchestration and prompt security. That's the work I want next.
 
 Outside of all that: food, cooking, travel, books, chess, and running.
 
@@ -30,7 +30,7 @@ Outside of all that: food, cooking, travel, books, chess, and running.
 
 ## Experience Overview
 
-Seven years shipping production systems across sustainability tech and financial services. Strongest in dashboards, data platforms, and multi-tenant SaaS — React/TypeScript on the frontend, Python and Node on the backend. Led a five-person frontend team at Redington; ran an external consulting engagement end-to-end. Now applying that production discipline to LLM systems: TeacherHub (a language-learning platform with an LLM-as-judge eval suite for the homework-generation pipeline), a Flutter habit-forming app driven by LLM check-ins, and a custom Claude Code harness. Going deep on the prompt-security and agent-orchestration surface area I want to own next.
+Seven years shipping production code. React/TypeScript on the frontend, Python and Node on the backend. Three years at Redington (multi-tenant fintech SaaS; led a five-person frontend team), then four years at OpenSC as sole engineer on the supply-chain analytics dashboard. Now mostly on LLMs: TeacherHub (language-learning platform with an LLM-as-judge eval suite over its homework-generation pipeline), a Flutter habit app driven by LLM check-ins, and a custom Claude Code harness.
 
 ---
 
@@ -41,11 +41,11 @@ Seven years shipping production systems across sustainability tech and financial
 
 Sustainability impact venture co-founded by WWF and BCG, providing supply chain traceability for global brands. Standardised messy first-three-miles farm data into EPCIS, then surfaced it through dashboards used by Nespresso, Austral Fisheries, and internal teams to validate ethical sourcing claims and farmer payments.
 
-- Sole engineer on the main analytics dashboard — built and maintained the entire system end-to-end. Plotly Dash for the analytical core; React and Next.js for the consumer-facing experiences.
+- Sole engineer on the main analytics dashboard — built and maintained the whole thing. Plotly Dash for the analytical core, React and Next.js for the consumer-facing pages.
 - Built the traceability and payments validation system used by Nespresso to verify coffee sourcing across Rainforest Alliance and their internal AAA premium-farmer program — including checks that base prices tracked the London robusta price index and that farmer payments matched contracted standards.
 - Designed and built graph-based anomaly detection on Kuzu: modelled supply-chain relationships so infiltration, exfiltration, capacity breaches, and untraced-origin coffee became queryable patterns rather than per-supply-chain spot checks.
 - Worked with Austral Fisheries to validate the legal provenance of toothfish and prawn catches.
-- Replaced bespoke per-cluster orchestrations in Dagster with a YAML-configured, data-contract-driven ingestion layer. Onboarding a new supply chain went from a custom engineering effort to a configuration task; the contracts made invalid data fail at the boundary instead of polluting downstream tables.
+- Replaced bespoke per-cluster orchestrations in Dagster with a YAML-configured, data-contract-driven ingestion layer. New supply chains can be added by config now. Invalid data fails at the boundary rather than corrupting downstream tables.
 - Built a data-entry flow that made it hard to put bad data in: input checks, guardrails, and reviews at the point of capture. Plus monitoring for ingestion accuracy and frequency across all supply chain feeds.
 - **Technologies:** React, Next.js, TypeScript, Python, Plotly Dash, Dagster, Kuzu (graph DB), Kotlin, AWS, Kubernetes, Postgres, Ethereum, Airflow.
 
@@ -54,11 +54,11 @@ Sustainability impact venture co-founded by WWF and BCG, providing supply chain 
 
 UK investment consultancy. Built and led the frontend on a multi-tenant research platform used by several thousand consultants across 7 tenants to track investments and maintain observability across portfolios. Joined as a junior; promoted to leading a frontend team within two years as the company scaled from 10 engineers to 8 teams.
 
-- Co-led frontend architectural decisions on a React and TypeScript dashboard handling sensitive multi-tenant data, where cross-tenant leakage would have been existential to the business.
+- Co-led frontend architectural decisions on a React and TypeScript multi-tenant dashboard. Sensitive financial data; tenant isolation was the design constraint everything else worked around.
 - Led a team of 5 engineers focused on frontend feature delivery; consistently the highest-performing team on UI work.
 - Built much of the dynamically configurable dashboard system that the platform ran on.
 - Introduced Cypress E2E testing across the platform, which raised deployment confidence and cut release-time human error.
-- Beyond engineering: chaired the Bristol charity committee. Ran a pro-bono engagement with LifeCycle — a charity left dry by multiple high-cost agencies — starting with a one-day discovery workshop, then migrating their database and supporting infrastructure onto Airtable. Pushed for more company-sponsored charity days and helped colleagues find their own.
+- Chaired the Bristol charity committee. Took on LifeCycle pro-bono — a charity left dry by multiple high-cost agencies. One-day discovery workshop, then migrated their database and supporting infrastructure onto Airtable. Pushed for more company-sponsored charity days and helped colleagues find their own.
 - **Technologies:** React, TypeScript, MUI, Cypress, Jest, AWS, .NET (C#), PostgreSQL.
 
 ---
@@ -69,7 +69,7 @@ UK investment consultancy. Built and led the frontend on a multi-tenant research
 **September 2014 – June 2017**
 
 - Specialised in Philosophy of Technology
-- Trained in rhetoric and sitting with ambiguous problems before answering — still my default mode in engineering
+- Rhetoric and structured argument. The habit of restating a question before answering it.
 
 ---
 
@@ -104,25 +104,25 @@ AWS (S3, EKS, EC2, SNS, SQS, Lambda, IAM, RDS, CloudWatch), Terraform, some Azur
 ## Projects
 
 ### Personal Claude Code Harness
-Claude CLI, custom subagents and skills, SQLite telemetry. Hand-rolled harness over Claude Code: subagents dispatched by task type, a session-retrospective workflow that classifies observations against an ontology I maintain, and a telemetry layer for token spend and tool usage. The retrospective generator demo on /lab is the public-facing slice of it.
+Claude CLI, custom subagents and skills, SQLite telemetry. Custom harness on top of the Claude Code CLI: subagents I dispatch by task type, plus a session-retrospective workflow that builds a learnings catalogue against an ontology I maintain. Telemetry tracks token spend and tool usage. The retro generator on /lab is a public slice.
 
 ### This Portfolio Site
-Next.js 16, TypeScript strict, Tailwind v4, Anthropic API. What you're reading. Five-page CV-as-portfolio: live UX-style sliders that retheme the page, a JD matcher tuned to surface honest gaps over generous matches, an OWASP LLM Top 10 prompt-safety game, and 31 public ADRs documenting every decision and reversal. Anthropic API server-side only; cost ceiling enforced at the route handler.
+Next.js 16, TypeScript strict, Tailwind v4, Anthropic API. Five-page CV-as-portfolio. Live UX-style sliders that retheme the page, a JD matcher tuned to surface honest gaps over generous matches, an OWASP LLM Top 10 prompt-safety game, 31 public ADRs documenting every decision and reversal. Anthropic API server-side only; cost ceiling enforced at the route handler.
 
 ### TeacherHub
 Next.js 14, Mantine, Supabase (Postgres + RLS), Vercel, OpenAI GPT-4, Whisper, DeepL. Language-learning platform built solo. Video lessons with speaker-diarised transcripts, CEFR-aligned homework generation from a multi-stage LLM pipeline (plan → generate → verify), content library, multi-tenant teacher isolation. The homework generator runs through a Layer-2 LLM-as-judge eval suite — 25 CEFR-graded scenarios, 5-dimension rubric — plus a Layer-3 human-review log with a calibration rule that revises the judge prompt when human and judge scores diverge. Pre-POC; current users are me and my Spanish teacher.
 
 ### Habit-Forming App
-Flutter (Dart). Cross-platform mobile that uses LLM-driven morning and bedtime check-ins to shape each day's tasks and reminders. Behaviour-change loops with conversation as the primary input.
+Flutter (Dart). Cross-platform mobile. LLM-driven morning and bedtime check-ins set each day's tasks and reminders.
 
 ### Daily Movement App
-React Native. An attempt at virality: a consumer app that nudges users to do one movement a day and share it. Loose alpha; vehicle for learning React Native well.
+React Native. Do one movement a day, share it. Loose alpha — an attempt at virality, also a way to learn React Native.
 
 ---
 
 ## Avocations
 
-- Food, cooking, and the conversations around both
+- Food and cooking
 - Travelling
 - Reading
 - Chess

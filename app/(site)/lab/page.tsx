@@ -6,7 +6,7 @@ import { getProjects } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Lab",
   description:
-    "Things I'm building with LLMs — featured Claude Code retrospective demo plus three side projects in flight.",
+    "Things I'm building with LLMs — featured Claude Code retrospective demo plus three side projects.",
 };
 
 export default function LabPage() {
@@ -26,8 +26,8 @@ export default function LabPage() {
           Things I'm building <em>with LLMs</em>
         </h1>
         <p>
-          A working space — one fully live demo at the top, three side projects below. Everything
-          here is in flight; nothing is finished. That's the point.
+          A working space. One live demo at the top, three side projects below. None of it is
+          finished — that's deliberate.
         </p>
       </header>
 

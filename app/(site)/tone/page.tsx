@@ -6,7 +6,7 @@ import { getTone } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Tone",
   description:
-    "Voice and values manifesto: six pledges — the principles that show up in the code I write, the teams I run, and the bugs I cause.",
+    "Voice and values manifesto: six positions on how I work, with the trade-offs and concrete examples behind each.",
 };
 
 export default function TonePage() {

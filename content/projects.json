@@ -26,7 +26,7 @@
     {
       "slug": "language",
       "title": "Language Learning App",
-      "blurb": "Personal project exploring LLM-driven language acquisition. Conversation-first; vocabulary surfaces as you stumble on it, not before.",
+      "blurb": "Personal project exploring LLM-driven language acquisition. Vocabulary surfaces when you need it in conversation, not as a pre-loaded list.",
       "techPills": ["Next.js", "Supabase", "OpenAI"],
       "glyph": "あ",
       "gradient": { "from": "#f4d35e", "via": "#e26d5a", "to": "#5a3a3a" },
@@ -36,7 +36,7 @@
     {
       "slug": "habit",
       "title": "Habit-Forming App",
-      "blurb": "Cross-platform mobile, focused on the loop between intention, friction, and reward. Currently in TestFlight.",
+      "blurb": "Cross-platform mobile; LLM check-ins at the start and end of the day set the tasks in between. Currently in TestFlight.",
       "techPills": ["Flutter", "Dart", "Riverpod"],
       "glyph": "◐",
       "gradient": { "from": "#cde4d3", "via": "#6b8a7a", "to": "#2c3e36" },
@@ -46,7 +46,7 @@
     {
       "slug": "movement",
       "title": "Daily Movement App",
-      "blurb": "An attempt at virality: a consumer app that nudges users to do one movement a day and share it. Loose alpha, daily test build, mostly a vehicle for learning React Native well.",
+      "blurb": "Do one movement a day, share it. Loose alpha, daily test build — an attempt at virality and a way to learn React Native.",
       "techPills": ["React Native", "Expo", "Supabase"],
       "glyph": "↗",
       "gradient": { "from": "#ffd6c2", "via": "#d97757", "to": "#4a2c1f" },
