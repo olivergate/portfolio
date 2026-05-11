@@ -12,7 +12,7 @@
 **Email:** oliver.kg2@gmail.com
 
 **Tagline (under name):**
-Senior full-stack engineer (React/TypeScript, Python). Seven years across data platforms, multi-tenant SaaS, and supply-chain analytics. Building with LLMs daily; going deep on agent harness design and prompt security.
+Senior full-stack engineer (React/TypeScript, Python). Seven years shipping production. Building with LLMs daily; going deep on agent harness design and prompt security.
 
 ---
 
@@ -20,7 +20,7 @@ Senior full-stack engineer (React/TypeScript, Python). Seven years across data p
 
 Restless, and curious about how things actually work — whether that's a supply chain, a user's mental model, or how an LLM decides to call a tool.
 
-Came to engineering from Philosophy of Technology seven years ago. That training still shapes how I work: question the framing first, then build. I've shipped across multi-tenant SaaS, data platforms, and sustainability tech, going from junior IC to leading a five-person frontend team.
+Came to engineering from Philosophy of Technology seven years ago. That training still shapes how I work: question the framing first, then build. Junior IC to leading a five-person frontend team along the way.
 
 Right now I'm running a custom Claude Code harness — my own agents, a session-retrospective workflow that classifies observations against a vocabulary I maintain, and a telemetry layer over the CLI — alongside three side projects in flight. The questions I keep returning to: what good orchestration actually looks like, where the security gaps sit, how harnesses should be designed for the next few years.
 
@@ -45,8 +45,8 @@ Sustainability impact venture co-founded by WWF and BCG, providing supply chain 
 - Built the traceability and payments validation system used by Nespresso to verify coffee sourcing across Rainforest Alliance and their internal AAA premium-farmer program — including checks that base prices tracked the London robusta price index and that farmer payments matched contracted standards.
 - Designed and built graph-based anomaly detection on Kuzu: modelled supply-chain relationships so infiltration, exfiltration, capacity breaches, and untraced-origin coffee became queryable patterns rather than per-supply-chain spot checks.
 - Worked with Austral Fisheries to validate the legal provenance of toothfish and prawn catches.
-- Re-architected supply-chain onboarding in Dagster: replaced bespoke per-cluster orchestrations with a YAML-configured, data-contract-driven ingestion layer. Onboarding a new supply chain went from a custom engineering effort to a configuration task; the contracts made invalid data fail at the boundary instead of polluting downstream tables.
-- Built the data-entry flow that made it hard to put bad data into the system in the first place — input checks, guardrails, reviews, and validity assessments at the point of capture — alongside monitoring for ingestion accuracy and frequency across all supply chain feeds.
+- Replaced bespoke per-cluster orchestrations in Dagster with a YAML-configured, data-contract-driven ingestion layer. Onboarding a new supply chain went from a custom engineering effort to a configuration task; the contracts made invalid data fail at the boundary instead of polluting downstream tables.
+- Built a data-entry flow that made it hard to put bad data in: input checks, guardrails, and reviews at the point of capture. Plus monitoring for ingestion accuracy and frequency across all supply chain feeds.
 - **Technologies:** React, Next.js, TypeScript, Python, Plotly Dash, Dagster, Kuzu (graph DB), Kotlin, AWS, Kubernetes, Postgres, Ethereum, Airflow.
 
 ### Associate Full-Stack Developer — Redington
@@ -56,9 +56,9 @@ UK investment consultancy. Built and led the frontend on a multi-tenant research
 
 - Co-led frontend architectural decisions on a React and TypeScript dashboard handling sensitive multi-tenant data, where cross-tenant leakage would have been existential to the business.
 - Led a team of 5 engineers focused on frontend feature delivery; consistently the highest-performing team on UI work.
-- Co-led architectural decisions across the frontend codebase and implemented a significant portion of the dynamically configurable dashboard system.
-- Drove introduction of E2E testing with Cypress, improving deployment confidence and reducing release-time human error.
-- Beyond engineering: chaired the Bristol charity committee. Ran a pro-bono engagement with LifeCycle — a charity left dry by multiple high-cost agencies — running a one-day discovery workshop and orchestrating the migration of their database and supporting infrastructure onto Airtable. Successfully pushed for an expansion of company-sponsored charity days and helped colleagues find opportunities.
+- Built much of the dynamically configurable dashboard system that the platform ran on.
+- Introduced Cypress E2E testing across the platform, which raised deployment confidence and cut release-time human error.
+- Beyond engineering: chaired the Bristol charity committee. Ran a pro-bono engagement with LifeCycle — a charity left dry by multiple high-cost agencies — starting with a one-day discovery workshop, then migrating their database and supporting infrastructure onto Airtable. Pushed for more company-sponsored charity days and helped colleagues find their own.
 - **Technologies:** React, TypeScript, MUI, Cypress, Jest, AWS, .NET (C#), PostgreSQL.
 
 ---
@@ -69,7 +69,7 @@ UK investment consultancy. Built and led the frontend on a multi-tenant research
 **September 2014 – June 2017**
 
 - Specialised in Philosophy of Technology
-- Developed the critical thinking, rhetoric, and ability to sit with difficult and ambiguous problems that still shapes how I approach engineering today
+- Trained in rhetoric and sitting with ambiguous problems before answering — still my default mode in engineering
 
 ---
 
@@ -81,7 +81,7 @@ React, Next.js, TypeScript, Node.js, Python, PostgreSQL, AWS
 ### AI / LLM (currently focused)
 - Custom Claude Code harness — hand-built subagents, a session-retrospective workflow that classifies observations against a personal ontology, and a telemetry layer over the CLI
 - LLM-as-judge eval suite for TeacherHub's homework-generation pipeline: 25 CEFR-graded scenarios, 5-dimension rubric (CEFR alignment, instruction adherence, linguistic accuracy, pedagogical value, structural validity), cost-gated runner, plus a sprint-cadence human review with a calibration rule that revises the judge prompt when human-vs-judge delta exceeds 1 point
-- Two LLM-driven side projects in flight, plus a third built end-to-end with LLM tooling (see Projects)
+- Two LLM-driven side projects in flight; a third built with LLM tooling (see Projects)
 - Claude Code and Cursor as daily drivers across paid and side-project work
 - Deepening: OWASP LLM Top 10, prompt injection and jailbreak patterns, agent orchestration, MCP servers
 
@@ -98,7 +98,6 @@ AWS (S3, EKS, EC2, SNS, SQS, Lambda, IAM, RDS, CloudWatch), Terraform, some Azur
 - Led a 5-person frontend team at Redington
 - Completed external senior-IC / principal-engineer leadership training
 - Ran external consulting engagement (LifeCycle) end-to-end
-- Agile delivery
 
 ---
 

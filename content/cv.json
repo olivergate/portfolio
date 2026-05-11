@@ -1,7 +1,7 @@
 {
   "header": {
     "name": "Oliver Kaikane Gate",
-    "tagline": "Senior full-stack engineer (React/TypeScript, Python). Seven years across data platforms, multi-tenant SaaS, and supply-chain analytics. Building with LLMs daily; going deep on agent harness design and prompt security.",
+    "tagline": "Senior full-stack engineer (React/TypeScript, Python). Seven years shipping production. Building with LLMs daily; going deep on agent harness design and prompt security.",
     "location": "Valencia, Spain (remote)",
     "contact": {
       "email": "oliver.kg2@gmail.com",
@@ -11,7 +11,7 @@
   "about": {
     "paragraphs": [
       "Restless, and curious about how things actually work — whether that's a supply chain, a user's mental model, or how an LLM decides to call a tool.",
-      "Came to engineering from Philosophy of Technology seven years ago. That training still shapes how I work: question the framing first, then build. I've shipped across multi-tenant SaaS, data platforms, and sustainability tech, going from junior IC to leading a five-person frontend team.",
+      "Came to engineering from Philosophy of Technology seven years ago. That training still shapes how I work: question the framing first, then build. Junior IC to leading a five-person frontend team along the way.",
       "Right now I'm running a custom Claude Code harness — my own agents, a session-retrospective workflow that classifies observations against a vocabulary I maintain, and a telemetry layer over the CLI — alongside three side projects in flight. The questions I keep returning to: what good orchestration actually looks like, where the security gaps sit, how harnesses should be designed for the next few years."
     ]
   },
@@ -43,11 +43,11 @@
         },
         {
           "id": "opensc-dagster-yaml",
-          "text": "Re-architected supply-chain onboarding in Dagster: replaced bespoke per-cluster orchestrations with a YAML-configured, data-contract-driven ingestion layer. Onboarding a new supply chain went from a custom engineering effort to a configuration task; the contracts made invalid data fail at the boundary instead of polluting downstream tables."
+          "text": "Replaced bespoke per-cluster orchestrations in Dagster with a YAML-configured, data-contract-driven ingestion layer. Onboarding a new supply chain went from a custom engineering effort to a configuration task; the contracts made invalid data fail at the boundary instead of polluting downstream tables."
         },
         {
           "id": "opensc-data-quality-monitoring",
-          "text": "Built the data-entry flow that made it hard to put bad data into the system in the first place — input checks, guardrails, reviews, and validity assessments at the point of capture — alongside monitoring for ingestion accuracy and frequency across all supply chain feeds."
+          "text": "Built a data-entry flow that made it hard to put bad data in: input checks, guardrails, and reviews at the point of capture. Plus monitoring for ingestion accuracy and frequency across all supply chain feeds."
         }
       ],
       "technologies": [
@@ -84,15 +84,15 @@
         },
         {
           "id": "redington-config-dashboards",
-          "text": "Co-led architectural decisions across the frontend codebase and implemented a significant portion of the dynamically configurable dashboard system."
+          "text": "Built much of the dynamically configurable dashboard system that the platform ran on."
         },
         {
           "id": "redington-cypress",
-          "text": "Drove introduction of E2E testing with Cypress, improving deployment confidence and reducing release-time human error."
+          "text": "Introduced Cypress E2E testing across the platform, which raised deployment confidence and cut release-time human error."
         },
         {
           "id": "redington-charity",
-          "text": "Beyond engineering: chaired the Bristol charity committee. Ran a pro-bono engagement with LifeCycle — a charity left dry by multiple high-cost agencies — running a one-day discovery workshop and orchestrating the migration of their database and supporting infrastructure onto Airtable. Successfully pushed for an expansion of company-sponsored charity days and helped colleagues find opportunities."
+          "text": "Beyond engineering: chaired the Bristol charity committee. Ran a pro-bono engagement with LifeCycle — a charity left dry by multiple high-cost agencies — starting with a one-day discovery workshop, then migrating their database and supporting infrastructure onto Airtable. Pushed for more company-sponsored charity days and helped colleagues find their own."
         }
       ],
       "technologies": [
@@ -116,7 +116,7 @@
       "end": "2017-06",
       "notes": [
         "Specialised in Philosophy of Technology",
-        "Developed the critical thinking, rhetoric, and ability to sit with difficult and ambiguous problems that still shapes how I approach engineering today"
+        "Trained in rhetoric and sitting with ambiguous problems before answering — still my default mode in engineering"
       ]
     }
   ],
@@ -125,7 +125,7 @@
     "ai": [
       "Custom Claude Code harness — hand-built subagents, a session-retrospective workflow that classifies observations against a personal ontology, and a telemetry layer over the CLI",
       "LLM-as-judge eval suite for TeacherHub's homework-generation pipeline: 25 CEFR-graded scenarios, 5-dimension rubric (CEFR alignment, instruction adherence, linguistic accuracy, pedagogical value, structural validity), cost-gated runner, plus a sprint-cadence human review with a calibration rule that revises the judge prompt when human-vs-judge delta exceeds 1 point",
-      "Two LLM-driven side projects in flight, plus a third built end-to-end with LLM tooling (see Projects)",
+      "Two LLM-driven side projects in flight; a third built with LLM tooling (see Projects)",
       "Claude Code and Cursor as daily drivers across paid and side-project work",
       "Deepening: OWASP LLM Top 10, prompt injection and jailbreak patterns, agent orchestration, MCP servers"
     ],
@@ -168,8 +168,7 @@
     "leadership": [
       "Led a 5-person frontend team at Redington",
       "Completed external senior-IC / principal-engineer soft-skills training (2024)",
-      "Ran external consulting engagement (LifeCycle) end-to-end",
-      "Agile delivery"
+      "Ran external consulting engagement (LifeCycle) end-to-end"
     ]
   },
   "projects": [
