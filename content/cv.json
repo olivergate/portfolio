@@ -189,7 +189,7 @@
       "id": "teacherhub",
       "title": "TeacherHub",
       "stack": "Next.js 14, Mantine, Supabase (Postgres + RLS), Vercel, OpenAI GPT-4, Whisper, DeepL",
-      "description": "AI-powered language-learning platform built solo. Video lessons with speaker-diarised transcripts, CEFR-aligned homework generation from a multi-stage LLM pipeline (plan → generate → verify), content library, multi-tenant teacher isolation. The eval system is the part I'm proudest of: a Layer-2 LLM-as-judge suite over 25 CEFR-graded scenarios with a 5-dimension rubric, plus a Layer-3 human-review log with a calibration rule that revises the judge prompt when human and judge scores diverge. Pre-POC; current users are me and my Spanish teacher."
+      "description": "Language-learning platform built solo. Video lessons with speaker-diarised transcripts, CEFR-aligned homework generation from a multi-stage LLM pipeline (plan → generate → verify), content library, multi-tenant teacher isolation. The homework generator runs through a Layer-2 LLM-as-judge eval suite — 25 CEFR-graded scenarios, 5-dimension rubric — plus a Layer-3 human-review log with a calibration rule that revises the judge prompt when human and judge scores diverge. Pre-POC; current users are me and my Spanish teacher."
     },
     {
       "id": "habit-forming-app",
