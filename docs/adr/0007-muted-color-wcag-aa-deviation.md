@@ -91,9 +91,11 @@ shipped the JD adapter. `--muted-2: #a39c91` (tier-3 tertiary/disabled, static â
 not lerped like `--muted`) was used in the scrollspy-nav section separators
 (visible "08 / 09 / 10 / 12" digits), JD char-limit text, the JD CTA-strip
 separators, `Chip` metadata, `StretchSlider` labels, and a placeholder colour
-for `.jd-textarea`. Original contrast scored:
+for `.jd-textarea`. Original contrast scored (axe-computed against the
+*rendered* backgrounds â€” values reflect the polish-slider's runtime lerp of
+`--bg` from `#ffffff` toward the `#faf7f2` token, not the token literal):
 
-- 2.62:1 against page background `#fcfbf8`
+- 2.62:1 against page background `#fcfbf8` (rendered `--bg` at default polish)
 - 2.35:1 against `.jd-cta-strip` cream `#f3eee3`
 - 4.4:1 against the scrollspy-nav's translucent-gradient composite `#eae1d4`
   (the nav fades to `color-mix(in oklab, var(--bg) 60%, transparent)` at its
