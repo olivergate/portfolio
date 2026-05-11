@@ -12,17 +12,17 @@
 **Email:** oliver.kg2@gmail.com
 
 **Tagline (under name):**
-Senior full-stack engineer (React/TypeScript, Python). 7+ years across data platforms and consumer products. Building with LLMs and going deep on agentic systems.
+Senior full-stack engineer (React/TypeScript, Python). Seven years across data platforms, multi-tenant SaaS, and supply-chain analytics. Building with LLMs daily; going deep on agent harness design and prompt security.
 
 ---
 
 ## Personal Bio
 
-Curious, restless, and interested in how things work — whether that's a supply chain, a user's mental model, or how an LLM decides to call a tool.
+Restless, and curious about how things actually work — whether that's a supply chain, a user's mental model, or how an LLM decides to call a tool.
 
-Came to engineering from analytical philosophy nearly 8 years ago, which still shapes how I approach problems: question the framing first, then build. I've shipped across multi-tenant SaaS, data platforms, consumer apps, and most recently sustainability tech, with a track record of going from junior IC to leading a team.
+Came to engineering from Philosophy of Technology seven years ago. That training still shapes how I work: question the framing first, then build. I've shipped across multi-tenant SaaS, data platforms, and sustainability tech, going from junior IC to leading a five-person frontend team.
 
-Right now I'm spending most of my time building with LLMs and going deep on agentic systems — what good orchestration looks like, where the security gaps sit, how harnesses should be designed for the next few years of this. Three side projects in flight; daily Claude Code user; gradually building my own agent and telemetry setup.
+Right now I'm running a custom Claude Code harness — my own agents, a session-retrospective workflow that classifies observations against a vocabulary I maintain, and a telemetry layer over the CLI — alongside three side projects in flight. The questions I keep returning to: what good orchestration actually looks like, where the security gaps sit, how harnesses should be designed for the next few years.
 
 Outside of all that: food, cooking, travel, books, chess, and running.
 
@@ -30,7 +30,7 @@ Outside of all that: food, cooking, travel, books, chess, and running.
 
 ## Experience Overview
 
-Full-stack engineer with 7+ years shipping production systems for sustainability impact ventures and financial services. Comfortable across the stack with React and TypeScript on the frontend and Python and Node on the backend; deepest in dashboards, data platforms, and multi-tenant SaaS. Progressed from junior IC to leading a team of five, with experience running external consulting engagements end-to-end. Currently building with LLMs across multiple side projects and training in agentic systems, prompt security (OWASP AI Top 10), and agent orchestration. Looking for roles where full-stack depth meets AI-native product thinking.
+Seven years shipping production systems across sustainability tech and financial services. Strongest in dashboards, data platforms, and multi-tenant SaaS — React/TypeScript on the frontend, Python and Node on the backend. Led a five-person frontend team at Redington; ran an external consulting engagement end-to-end. Now applying that production discipline to LLM systems: TeacherHub (a language-learning platform with an LLM-as-judge eval suite for the homework-generation pipeline), a Flutter habit-forming app driven by LLM check-ins, and a custom Claude Code harness. Going deep on the prompt-security and agent-orchestration surface area I want to own next.
 
 ---
 
@@ -41,21 +41,20 @@ Full-stack engineer with 7+ years shipping production systems for sustainability
 
 Sustainability impact venture co-founded by WWF and BCG, providing supply chain traceability for global brands. Standardised messy first-three-miles farm data into EPCIS, then surfaced it through dashboards used by Nespresso, Austral Fisheries, and internal teams to validate ethical sourcing claims and farmer payments.
 
-- Sole frontend engineer on the main analytics dashboard — built and maintained the entire system end-to-end. Plotly Dash for the analytical core; React and Next.js for the consumer-facing experiences.
+- Sole engineer on the main analytics dashboard — built and maintained the entire system end-to-end. Plotly Dash for the analytical core; React and Next.js for the consumer-facing experiences.
 - Built the traceability and payments validation system used by Nespresso to verify coffee sourcing across Rainforest Alliance and their internal AAA premium-farmer program — including checks that base prices tracked the London robusta price index and that farmer payments matched contracted standards.
-- Surfaced supply chain anomalies — infiltration, exfiltration, breaches of farm productivity capacity, coffee from untraced origins — through graph-based analysis powered by Kuzu.
+- Designed and built graph-based anomaly detection on Kuzu: modelled supply-chain relationships so infiltration, exfiltration, capacity breaches, and untraced-origin coffee became queryable patterns rather than per-supply-chain spot checks.
 - Worked with Austral Fisheries to validate the legal provenance of toothfish and prawn catches.
-- Re-architected supply chain onboarding in Dagster: replaced bespoke per-cluster orchestrations with a YAML-configured, data-contract-driven ingestion layer. Turned onboarding from a custom engineering effort per supply chain into a configuration task.
-- Built monitoring for data quality, ingestion accuracy and frequency across all supply chain feeds.
-- Earlier scope at OpenSC: an internal Android app (Kotlin), document scanning, internal tooling, API design, and orchestration in Airflow.
+- Re-architected supply-chain onboarding in Dagster: replaced bespoke per-cluster orchestrations with a YAML-configured, data-contract-driven ingestion layer. Onboarding a new supply chain went from a custom engineering effort to a configuration task; the contracts made invalid data fail at the boundary instead of polluting downstream tables.
+- Built the data-entry flow that made it hard to put bad data into the system in the first place — input checks, guardrails, reviews, and validity assessments at the point of capture — alongside monitoring for ingestion accuracy and frequency across all supply chain feeds.
 - **Technologies:** React, Next.js, TypeScript, Python, Plotly Dash, Dagster, Kuzu (graph DB), Kotlin, AWS, Kubernetes, Postgres, Ethereum, Airflow.
 
 ### Associate Full-Stack Developer — Redington
 **February 2019 – June 2022**
 
-UK investment consultancy. Built and led the frontend on a multi-tenant research platform used by several thousand consultants across 7+ tenants to track investments and maintain observability across portfolios. Joined as a junior; promoted to leading a frontend team within two years as the company scaled from 10 engineers to 8 teams.
+UK investment consultancy. Built and led the frontend on a multi-tenant research platform used by several thousand consultants across 7 tenants to track investments and maintain observability across portfolios. Joined as a junior; promoted to leading a frontend team within two years as the company scaled from 10 engineers to 8 teams.
 
-- Owned frontend architectural decisions on a React and TypeScript dashboard handling sensitive multi-tenant data, where cross-tenant leakage would have been existential to the business.
+- Co-led frontend architectural decisions on a React and TypeScript dashboard handling sensitive multi-tenant data, where cross-tenant leakage would have been existential to the business.
 - Led a team of 5 engineers focused on frontend feature delivery; consistently the highest-performing team on UI work.
 - Co-led architectural decisions across the frontend codebase and implemented a significant portion of the dynamically configurable dashboard system.
 - Drove introduction of E2E testing with Cypress, improving deployment confidence and reducing release-time human error.
@@ -80,11 +79,11 @@ UK investment consultancy. Built and led the frontend on a multi-tenant research
 React, Next.js, TypeScript, Node.js, Python, PostgreSQL, AWS
 
 ### AI / LLM (currently focused)
-- Daily user of Claude Code and Cursor for the last 3+ months
-- Building 3 production-leaning side projects with LLMs (see Projects)
-- Developing a custom Claude Code setup with agents, skills, and telemetry
-- Maintaining a learnings catalogue via a session retrospective workflow
-- Currently training in: OWASP AI Top 10, prompt injection and jailbreaks, agent orchestration patterns, harness design for agentic systems
+- Custom Claude Code harness — hand-built subagents, a session-retrospective workflow that classifies observations against a personal ontology, and a telemetry layer over the CLI
+- LLM-as-judge eval suite for TeacherHub's homework-generation pipeline: 25 CEFR-graded scenarios, 5-dimension rubric (CEFR alignment, instruction adherence, linguistic accuracy, pedagogical value, structural validity), cost-gated runner, plus a sprint-cadence human review with a calibration rule that revises the judge prompt when human-vs-judge delta exceeds 1 point
+- Two LLM-driven side projects in flight, plus a third built end-to-end with LLM tooling (see Projects)
+- Claude Code and Cursor as daily drivers across paid and side-project work
+- Deepening: OWASP LLM Top 10, prompt injection and jailbreak patterns, agent orchestration, MCP servers
 
 ### Frontend
 React, Next.js, TypeScript, Cypress, Jest, MUI, Chakra, TailwindCSS, Ant Design, Mantine, Redux, React Query, React Hook Form, Kotlin (Android)
@@ -105,17 +104,20 @@ AWS (S3, EKS, EC2, SNS, SQS, Lambda, IAM, RDS, CloudWatch), Terraform, some Azur
 
 ## Projects
 
-### Language Learning App
-Next.js, Supabase. Personal project exploring LLM-driven language acquisition.
+### Personal Claude Code Harness
+Claude CLI, custom subagents and skills, SQLite telemetry. Hand-rolled harness over Claude Code: subagents dispatched by task type, a session-retrospective workflow that classifies observations against an ontology I maintain, and a telemetry layer for token spend and tool usage. The retrospective generator demo on /lab is the public-facing slice of it.
+
+### This Portfolio Site
+Next.js 16, TypeScript strict, Tailwind v4, Anthropic API. What you're reading. Five-page CV-as-portfolio: live UX-style sliders that retheme the page, a JD matcher tuned to surface honest gaps over generous matches, an OWASP LLM Top 10 prompt-safety game, and 31 public ADRs documenting every decision and reversal. Anthropic API server-side only; cost ceiling enforced at the route handler.
+
+### TeacherHub
+Next.js 14, Mantine, Supabase (Postgres + RLS), Vercel, OpenAI GPT-4, Whisper, DeepL. AI-powered language-learning platform built solo. Video lessons with speaker-diarised transcripts, CEFR-aligned homework generation from a multi-stage LLM pipeline (plan → generate → verify), content library, multi-tenant teacher isolation. The eval system is the part I'm proudest of: a Layer-2 LLM-as-judge suite over 25 CEFR-graded scenarios with a 5-dimension rubric, plus a Layer-3 human-review log with a calibration rule that revises the judge prompt when human and judge scores diverge. Pre-POC; current users are me and my Spanish teacher.
 
 ### Habit-Forming App
-Flutter (Dart). Cross-platform mobile, focused on behaviour change loops.
+Flutter (Dart). Cross-platform mobile that uses LLM-driven morning and bedtime check-ins to shape each day's tasks and reminders. Behaviour-change loops with conversation as the primary input.
 
-### Movement-Focused Consumer App
-React Native. Consumer-facing project around physical movement.
-
-### Personal Claude Code Setup
-Custom agents, skills, and telemetry layer over Claude CLI. Retrospective-driven learning catalogue captured after every working session.
+### Daily Movement App
+React Native. An attempt at virality: a consumer app that nudges users to do one movement a day and share it. Loose alpha; vehicle for learning React Native well.
 
 ---
 
