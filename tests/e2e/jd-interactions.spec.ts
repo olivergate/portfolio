@@ -84,10 +84,13 @@ test.describe("JD adapter — sample JD interactions", () => {
 
     await page.getByRole("button", { name: /generous/i }).click();
     await page.waitForTimeout(300);
-    // Generous → all four base-Stretches (r8, r9, r10, r12) become Hit; r11 stays Miss → Stretch.
+    // Generous → three of the four base-Stretches promote to Hit; the fourth
+    // and r11 stay Stretch (the chip data sets generousStatus per-chip so the
+    // honesty-of-the-data is preserved through the slider — see ADR-0017).
+    // r10 ("On-chain provenance / Ethereum") promotes to Hit at generous; the
+    // base-Miss r11 ("AWS deep certifications") snaps to Stretch.
     counts = await chipCounts(page);
-    expect(counts.hits).toBeGreaterThanOrEqual(11);
-    expect(counts.misses).toBe(0);
+    expect(counts).toEqual({ hits: 10, stretches: 2, misses: 0 });
   });
 
   test("switching sample pill updates chip count", async ({ page }) => {
@@ -96,7 +99,7 @@ test.describe("JD adapter — sample JD interactions", () => {
       () => Array.from(document.querySelectorAll("button.chip")).length === 10,
     );
     const counts = await chipCounts(page);
-    expect(counts).toEqual({ hits: 4, stretches: 3, misses: 3 });
+    expect(counts).toEqual({ hits: 3, stretches: 4, misses: 3 });
   });
 
   test("privacy disclosure copy is honest (no false 'private to your browser')", async ({
