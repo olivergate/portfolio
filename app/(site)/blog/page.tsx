@@ -33,7 +33,7 @@ export default function BlogIndexPage() {
   const sorted = [...posts].sort((a, b) => (a.date < b.date ? 1 : -1));
 
   return (
-    <main className="cv-surface">
+    <div className="cv-surface">
       <header className="blog-hero" data-reveal>
         <div className="blog-hero-meta">
           <span>Blog</span>
@@ -68,6 +68,6 @@ export default function BlogIndexPage() {
           </li>
         ))}
       </ul>
-    </main>
+    </div>
   );
 }

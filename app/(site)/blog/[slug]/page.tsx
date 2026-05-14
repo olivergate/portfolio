@@ -99,7 +99,7 @@ export default async function BlogPostPage({ params }: { params: Promise<RoutePa
   const draft = isDraftBody(post.body);
 
   return (
-    <main className="cv-surface">
+    <div className="cv-surface">
       {draft && (
         <div
           role="note"
@@ -142,6 +142,6 @@ export default async function BlogPostPage({ params }: { params: Promise<RoutePa
           ← All posts
         </Link>
       </footer>
-    </main>
+    </div>
   );
 }

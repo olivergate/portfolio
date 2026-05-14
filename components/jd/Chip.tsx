@@ -72,6 +72,10 @@ export function Chip({ chip, index, onActivate, onHoverChange }: Props) {
       }}
       onBlur={() => onHoverChange(null)}
       aria-label={`${s.label}: ${chip.text}`}
+      // Miss chips toggle an expanded gap-framing reveal on click; expose the
+      // disclosure state to SRs. Hit chips activate a CV scroll/pulse and
+      // don't toggle, so we omit aria-expanded entirely on them (Phase 4.5).
+      aria-expanded={isMiss ? expanded : undefined}
       style={{
         position: "relative",
         animationDelay: `${index * 65}ms`,

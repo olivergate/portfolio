@@ -12,6 +12,7 @@ session for the next phase.
 | 2.5 | Pre-written 3-voice CV tone toggle | `/` (CV bullets) | Superseded by ADR-0030 | shipped 2026-05-03, removed 2026-05-05 |
 | 3 | JD adapter | `/jd` | Done | 2026-05-03 |
 | 4 | Lab + Claude Code retro demo | `/lab` | Done | 2026-05-04 |
+| 4.5 | Accessibility foundation | `/accessibility` | Done | 2026-05-14 |
 | 5 | Prompt-safety game scaffolding | `/game` (L-01, L-02) | Not started | — |
 | 6 | Game expansion | `/game` (L-03 → L-05) | Not started | — |
 | 7 | Polish | `/decisions`, `/build`, launch | Not started | — |

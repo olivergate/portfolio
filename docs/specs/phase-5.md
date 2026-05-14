@@ -58,6 +58,9 @@ The design has settled:
    amber accents, message styling, win celebration
 8. Sliders from Phase 1 retheme the page chrome (the terminal panel itself is
    hardcoded — see "design has settled" above)
+9. **Accessibility (Phase 4.5 successor).** The game passes axe Playwright with
+   zero violations at L-01 and L-02 in idle, mid-conversation, and win states.
+   Keyboard-only playthrough recorded as part of `/phase-done`. See task §13.
 
 ## Tasks
 
@@ -248,6 +251,51 @@ tool calls). Phase 6 unlocks them.
 - **ADR-0022: LLM-as-judge for some success checks.** When regex isn't enough,
   defer to a small Anthropic call. Cost implications. (May not be needed for L-01/L-02 but
   Phase 6 levels likely will need it.)
+
+### 13. Accessibility (non-negotiable; Phase 4.5 amendment)
+
+Phase 4.5 lifted the launch-time a11y pass forward so the game is born
+accessible rather than retrofitted. Apply these patterns when building Phase 5
+— they are spec, not advice. The Phase 4.5 contrast safety net, focus ring
+tokens, route-change focus, and Biome a11y rule group are already in place.
+
+- **Landmarks + heading hierarchy.** Page is wrapped by `<main>` (from
+  `app/(site)/layout.tsx`). Use `<h1>` for the page title once; level title is
+  `<h2>`; the terminal panel uses `<h3>` for its own heading. Each chat turn
+  is an `<article>` with a visually-hidden `<h4>` ("Bot reply" / "Your
+  message") so SR users get a structured transcript, not a stream of
+  disconnected announcements.
+- **Terminal panel = `<section aria-label="Prompt-safety game terminal">`.**
+  Within it, the chat history is rendered as
+  `<ol role="log" aria-live="polite" aria-relevant="additions" aria-atomic="false">`.
+  Each `<li>` is a turn. New turns are announced once; do not announce
+  per-token streams.
+- **Input row.** `<label htmlFor>` for the textarea (visually hidden if the
+  design rules out a visible label). Submit button has visible text, not
+  just an icon. Visible `<kbd>` legend reads, e.g.,
+  "Enter to send · Shift+Enter for newline · Esc to clear · ↻ to regenerate
+  secret".
+- **Motion gates.** Scanlines, vertical sweep, blinking caret, message-in
+  stagger, and the win banner letter-spacing animation are all wrapped in
+  `@media (prefers-reduced-motion: no-preference)`. Under reduced motion the
+  game stays fully playable; the win celebration is an instant green flash
+  with the explainer reveal as the announcement (live region updates with
+  "Level 1 complete. Explainer revealed below.").
+- **Reveal-solution button** has `aria-describedby` pointing to a short
+  warning that activating it exits the level without completing it.
+- **Modals.** Any help dialog or ↻-confirmation modal uses the native
+  `<dialog>` element with `showModal()` — it ships focus trap, Escape-to-close,
+  inert background, and a `::backdrop` for free. Phase 5 should not pull in
+  React Aria for a single overlay.
+- **Forced colors.** The terminal panel respects `@media (forced-colors:
+  active)` by dropping scanlines and adopting system colors (Canvas /
+  CanvasText / Highlight). The amber-on-black aesthetic is decorative;
+  legibility comes first.
+- **Slider deck.** Already operable from `/`; nothing to do here except
+  verify it remains usable on `/game`.
+- **axe in CI.** `tests/e2e/a11y.spec.ts` is extended (Phase 4.5 task C3) to
+  include `/game` at L-01 and L-02 across idle / mid-conversation / win
+  states. Keep these green.
 
 ## Out of scope
 

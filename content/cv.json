@@ -203,11 +203,5 @@
       "description": "Do one movement a day, share it. Loose alpha — an attempt at virality, also a way to learn React Native."
     }
   ],
-  "avocations": [
-    "Food and cooking",
-    "Travelling",
-    "Reading",
-    "Chess",
-    "Running"
-  ]
+  "avocations": ["Food and cooking", "Travelling", "Reading", "Chess", "Running"]
 }

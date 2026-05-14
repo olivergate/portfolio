@@ -18,8 +18,8 @@
   --bg-tint:          #f3eee3;   /* slightly darker cream for subtle bands */
   --fg:               #1c1915;   /* near-black, warm tone */
   --fg-soft:          #3a3530;   /* body copy, slightly muted */
-  --muted:            #7a746c;   /* secondary text, mono kickers */
-  --muted-2:          #635e54;   /* tertiary / disabled — darkened from #a39c91 for WCAG AA on cream backgrounds (incl. translucent scrollspy-nav composite), see ADR-0007 */
+  --muted:            #6b645b;   /* secondary text, mono kickers — darkened from #7a746c (≈4.32:1, fails AA) to ≈5.0:1 on cream bg; matches the slider's refined-polish endpoint (ADR-0007 + Phase 4.5) */
+  --muted-2:          #5a544b;   /* tertiary / disabled — darkened from #635e54 to keep the same relative offset from --muted now that --muted itself is darker; preserves visual hierarchy and stays ≥ 4.5:1 on cream */
   --rule:             #c4b9a8;   /* default hairline color */
   --rule-soft:        rgba(28,25,21,0.10);
   --card-bg:          #fbf8f1;
@@ -36,9 +36,9 @@
      :root verbatim. ADR-0007 covers --muted only; --hit and --stretch are NOT covered
      by that ADR, so they stay at the design source values. Earlier desaturated values
      (#5a7a45 / #b8842c) were reverted in fix-up batch 3 to match the design as ground truth. */
-  --hit:              #2f6b3a;   /* deep green — requirement met */
-  --stretch:          #8a5a16;   /* deep amber — requirement plausible */
-  --miss:             #8a8278;   /* warm grey — honest gap */
+  --hit:              #2f6b3a;   /* deep green — requirement met (4.8:1 on chip bg, AA) */
+  --stretch:          #7a4d10;   /* deep amber — requirement plausible. Darkened from #8a5a16 in Phase 4.5: the original hit 4.2:1 against the chip's color-mix(stretch 16%, bg) background, below AA. #7a4d10 measures ≥ 5:1 on both plain --bg and the tinted chip bg. */
+  --miss:             #8a8278;   /* warm grey — honest gap (text color uses --muted; this is decorative chip-bg tint only) */
 
   /* Terminal palette (cv-game.html, cv-lab.html demo) */
   --terminal:         #0f0e0b;
@@ -113,6 +113,14 @@
   /* ─── ELEVATION ─────────────────────────────────────────────────────── */
   --shadow:           none;             /* default — minimal aesthetic */
   --shadow-soft:      0 1px 2px rgba(28,25,21,0.04), 0 4px 12px rgba(28,25,21,0.04);
+
+  /* ─── FOCUS (Phase 4.5) ─────────────────────────────────────────────── */
+  /* Used by the universal :focus-visible rule in globals.css. Token-driven so
+     the slider deck and OS-pref overrides (prefers-contrast, forced-colors)
+     can swap the focus appearance without re-declaring the selector. */
+  --focus-ring:        3px solid var(--accent);
+  --focus-ring-strong: 3px solid #000;
+  --focus-offset:      3px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -122,6 +130,57 @@
     --motion-slow: 0ms !important;
     --motion-display: 0ms !important;
     --stagger: 0ms !important;
+  }
+}
+
+/* ─── OS preference overrides (Phase 4.5) ──────────────────────────────────
+   Per ADR-0032 the slider controls are NOT touched by OS prefs; the cascade
+   wins via these media blocks. On `/` the rethemer's inline-style on <html>
+   has higher specificity than :root rules here, so a user who chose a polish
+   value via the FAB keeps that value — and B1's contrast Vitest guarantees
+   every reachable slider state already meets WCAG AA. The blocks below
+   take effect on the routes that don't run the rethemer bootstrap script
+   (/tone, /jd, /lab, /blog, /accessibility, /game). */
+
+@media (prefers-contrast: more) {
+  :root {
+    --bg: #ffffff;
+    --fg: #000000;
+    --muted: #2a2a2a;
+    --rule: #000000;
+    --rule-soft: rgba(0,0,0,0.5);
+    --card-bg: #ffffff;
+    --card-border: #000000;
+    --card-border-width: 2px;
+    --rule-weight: 2px;
+    --hit: #1a4022;
+    --stretch: #5a3a0e;
+    --miss: #404040;
+  }
+}
+
+/* Forced-colors (Windows High Contrast Mode, Edge devtool emulation). The
+   browser substitutes system colors via `forced-color-adjust: auto` (default)
+   on every painted property regardless of what we set, so this block is
+   primarily informational + a clean mapping for any explicit consumer that
+   reads CSS variables in JS. Decorative surfaces that need to keep brand
+   chrome (rethemer FAB, skip link) opt out via `forced-color-adjust: none`
+   in globals.css. */
+@media (forced-colors: active) {
+  :root {
+    --bg: Canvas;
+    --fg: CanvasText;
+    --accent: LinkText;
+    --muted: GrayText;
+    --rule: CanvasText;
+    --rule-soft: GrayText;
+    --card-bg: Canvas;
+    --card-border: CanvasText;
+    --inverse-bg: CanvasText;
+    --inverse-fg: Canvas;
+    --hit: Highlight;
+    --stretch: Mark;
+    --miss: GrayText;
   }
 }
 

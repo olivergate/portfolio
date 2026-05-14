@@ -17,7 +17,7 @@ export default function HomePage() {
   const projects = getProjects();
 
   return (
-    <main className="cv-surface">
+    <div className="cv-surface">
       <section id="cv">
         <Header header={cv.header} />
         <About about={cv.about} />
@@ -49,6 +49,6 @@ export default function HomePage() {
       <section id="lab" style={{ marginTop: "var(--gap-section)" }}>
         <LabSection projects={projects} />
       </section>
-    </main>
+    </div>
   );
 }

@@ -1,0 +1,12 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`slider state space — WCAG 2.1 contrast safety net (Phase 4.5) > emits a snapshot of the worst-case ratio per pair across the grid 1`] = `
+{
+  "accent / bg": 5.61,
+  "fg / bg": 16.39,
+  "hit / bg": 5.98,
+  "inverse-fg / inverse-bg": 15.41,
+  "muted / bg": 5.46,
+  "stretch / bg": 6.78,
+}
+`;

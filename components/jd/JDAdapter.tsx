@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { HoverData } from "@/components/jd/Chip";
 import { ChipGrid } from "@/components/jd/ChipGrid";
 import {
   type ChipModel,
+  chipCounts,
   parseCite,
   projectMatchedChips,
   projectSampleChips,
@@ -51,6 +52,14 @@ export function JDAdapter({ samples }: Props) {
   const [stretchPosition, setStretchPosition] = useState(0.5);
   const [hoverData, setHoverData] = useState<HoverData | null>(null);
   const [loading, setLoading] = useState<LoadingStage>({ kind: "idle" });
+  /**
+   * Live-region announce text (Phase 4.5). Set imperatively in handleScore at
+   * two points (start → "Analyzing…"; success → summary text). Level-change
+   * rescores don't announce — the StretchSlider's own aria-valuetext signals
+   * that change, and re-announcing on every drag would be chatter. Errors are
+   * announced by the existing role="alert" block below, not by this region.
+   */
+  const [announce, setAnnounce] = useState<string>("");
 
   /** Live state populated only when the visitor pasted a JD and clicked Score. */
   const [live, setLive] = useState<LiveState | null>(null);
@@ -109,17 +118,22 @@ export function JDAdapter({ samples }: Props) {
     setStretchPosition(positionFromLevel("balanced"));
     setLive(null);
     setLoading({ kind: "idle" });
+    // Clear any stale "Scored." announcement from a previous custom run so it
+    // doesn't re-announce when this pre-scored sample's chips render.
+    setAnnounce("");
   };
 
   const handleScore = async () => {
     if (loading.kind === "parsing" || loading.kind === "matching") return;
     if (jdText.trim().length < 20) {
       setLoading({ kind: "error", message: "JD too short — paste at least a paragraph." });
+      setAnnounce("");
       return;
     }
     const myGen = ++genRef.current;
     setLoading({ kind: "parsing" });
     setLive(null);
+    setAnnounce("Analyzing the job description against the CV. This usually takes a few seconds.");
     try {
       const parseResp = await fetch(PARSE_ENDPOINT, {
         method: "POST",
@@ -166,10 +180,18 @@ export function JDAdapter({ samples }: Props) {
       setActiveKey("");
       setScored(true);
       setLoading({ kind: "idle" });
+      // Announce the editorial summary in the same shape SummaryLine renders.
+      // Phase 4.5: never per-token; one announcement on completion.
+      const counts = chipCounts(projectMatchedChips(matchJson.matches, parseJson.requirements));
+      const word = (n: number, s: string, p: string) => `${n} ${n === 1 ? s : p}`;
+      setAnnounce(
+        `Scored. ${word(counts.hit, "hit", "hits")}, ${word(counts.stretch, "stretch", "stretches")}, ${word(counts.miss, "honest gap", "honest gaps")}.`,
+      );
     } catch (err) {
       if (genRef.current !== myGen) return;
       const message = err instanceof Error ? err.message : String(err);
       setLoading({ kind: "error", message: `network: ${message}` });
+      setAnnounce("");
     }
   };
 
@@ -274,10 +296,34 @@ export function JDAdapter({ samples }: Props) {
   const characterCount = jdText.length;
   const charLimit = 10_000;
 
+  // Phase 4.5 a11y: stable ids for label/describedby wiring.
+  const textareaId = useId();
+  const sampleLabelId = useId();
+  const hintId = useId();
+  const charCountId = useId();
+
   return (
     <div>
-      {/* Sample JD pills */}
+      {/*
+        Phase 4.5 live region — persistent in the DOM (must exist on first
+        render for SRs to subscribe), aria-atomic=false so only the changed
+        portion is read. Updated imperatively in handleScore at two points
+        (start + completion); never per-token. Errors are announced by the
+        role="alert" block further down, not by this region.
+      */}
+      <div role="status" aria-live="polite" aria-atomic="false" className="sr-only">
+        {announce}
+      </div>
+
+      {/* Sample JD pills — labelled group so SR users hear "Sample JDs, group"
+          before the first pill (Phase 4.5). The pills aren't form controls so
+          <fieldset>/<legend> would be the wrong shape (and triggers known
+          legend-in-flex layout quirks); ARIA group with aria-labelledby is the
+          right semantics. */}
+      {/* biome-ignore lint/a11y/useSemanticElements: group of action buttons (not form controls); <fieldset> is the wrong semantic and breaks flex layout of <legend>. */}
       <div
+        role="group"
+        aria-labelledby={sampleLabelId}
         style={{
           display: "flex",
           flexWrap: "wrap",
@@ -287,6 +333,7 @@ export function JDAdapter({ samples }: Props) {
         }}
       >
         <span
+          id={sampleLabelId}
           style={{
             fontFamily: "var(--font-mono)",
             fontSize: "0.68rem",
@@ -309,8 +356,14 @@ export function JDAdapter({ samples }: Props) {
         ))}
       </div>
 
-      {/* Textarea */}
+      {/* Textarea — visually-hidden label, plus aria-describedby chaining the
+          privacy hint and the live char count. Placeholder is kept as a hint
+          for sighted users but is not the accessible name. */}
+      <label htmlFor={textareaId} className="sr-only">
+        Paste a job description
+      </label>
       <textarea
+        id={textareaId}
         className="jd-textarea"
         value={jdText}
         onChange={(e) => {
@@ -322,6 +375,7 @@ export function JDAdapter({ samples }: Props) {
         }}
         placeholder="Paste a job description here, or pick a sample above…"
         maxLength={charLimit}
+        aria-describedby={`${hintId} ${charCountId}`}
       />
       <div
         style={{
@@ -337,11 +391,11 @@ export function JDAdapter({ samples }: Props) {
           gap: "0.5rem",
         }}
       >
-        <span style={{ flex: "1 1 360px", minWidth: 0 }}>
+        <span id={hintId} style={{ flex: "1 1 360px", minWidth: 0 }}>
           ↳ pasted JDs are sent to a server route to score against the CV; not stored, not shared,
           not logged
         </span>
-        <span style={{ fontVariantNumeric: "tabular-nums" }}>
+        <span id={charCountId} style={{ fontVariantNumeric: "tabular-nums" }}>
           {characterCount.toLocaleString()}{" "}
           <span style={{ color: "var(--muted-2)" }}>/ {charLimit.toLocaleString()}</span>
         </span>
@@ -393,7 +447,11 @@ export function JDAdapter({ samples }: Props) {
           <div style={{ marginTop: "1.5rem" }}>
             <ChipGrid chips={chips} onActivate={onActivate} onHoverChange={setHoverData} />
           </div>
+          {/* Visual legend only — each Chip already exposes its category via
+              aria-label ("Hit: …", "Stretch: …", "Honest gap: …"), so reading
+              this legend would double-announce. Hidden from SRs (Phase 4.5). */}
           <p
+            aria-hidden="true"
             style={{
               marginTop: "1.25rem",
               fontFamily: "var(--font-mono)",
@@ -404,17 +462,11 @@ export function JDAdapter({ samples }: Props) {
             }}
           >
             <span style={{ color: "var(--hit)" }}>● Hit</span>
-            <span aria-hidden="true" style={{ margin: "0 0.6rem", color: "var(--muted-2)" }}>
-              ·
-            </span>
+            <span style={{ margin: "0 0.6rem", color: "var(--muted-2)" }}>·</span>
             <span style={{ color: "var(--stretch)" }}>◐ Stretch</span>
-            <span aria-hidden="true" style={{ margin: "0 0.6rem", color: "var(--muted-2)" }}>
-              ·
-            </span>
+            <span style={{ margin: "0 0.6rem", color: "var(--muted-2)" }}>·</span>
             <span style={{ color: "var(--muted)" }}>○ Honest gap</span>
-            <span aria-hidden="true" style={{ margin: "0 0.6rem", color: "var(--muted-2)" }}>
-              ·
-            </span>
+            <span style={{ margin: "0 0.6rem", color: "var(--muted-2)" }}>·</span>
             <span>hover for reasoning · click hits to jump · click gaps to expand</span>
           </p>
         </div>

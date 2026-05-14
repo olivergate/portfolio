@@ -417,15 +417,14 @@ function extractRefs(body: string): Array<{ path: string; line: number }> {
     if (!seen.has(path)) seen.set(path, line);
   };
   const linkRe = /\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g;
-  let m: RegExpExecArray | null;
-  while ((m = linkRe.exec(stripped))) {
+  for (const m of stripped.matchAll(linkRe)) {
     add(m[1], lineNumberAt(stripped, m.index));
   }
   const tickRe = /`([^`\n]+)`/g;
-  while ((m = tickRe.exec(stripped))) {
+  for (const m of stripped.matchAll(tickRe)) {
     add(m[1], lineNumberAt(stripped, m.index));
   }
-  while ((m = BARE_REF_RE.exec(stripped))) {
+  for (const m of stripped.matchAll(BARE_REF_RE)) {
     add(m[1], lineNumberAt(stripped, m.index));
   }
   return [...seen.entries()].map(([path, line]) => ({ path, line }));

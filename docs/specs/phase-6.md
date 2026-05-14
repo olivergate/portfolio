@@ -79,11 +79,23 @@ Following the `LevelConfig` interface from Phase 5. One file per level in
 `lib/game/levels/{3,4,5}.ts`. Tests: `tests/game/levels/{n}.test.ts` —
 verify the canonical bypass works against the level's defenses.
 
+**A11y gate (Phase 4.5 amendment).** Each new level must pass axe Playwright
+with zero violations at the same three states Phase 5 covers (idle,
+mid-conversation, win) before it ships. Add a `/game?level=N` route case to
+`tests/e2e/a11y.spec.ts` for each level as it lands.
+
 ### 2. L-04 UI variant
 
 The indirect injection level needs a different chat layout — editable "resume"
 panel + fixed "user message" + bot reply. Build as a `LevelLayout` variant;
 select via level config.
+
+**A11y (Phase 4.5 amendment).** The editable-resume + fixed-user-message UI
+is a form-shaped surface, so wire it as one: a real `<label htmlFor>` for the
+resume textarea (visually hidden if the design forbids it), the fixed user
+message rendered as an `<output>` element associated with the resume via
+`for=`, and the submit button labelled with visible text. Stick to the
+`role="log"` chat pattern from Phase 5 for the reply panel.
 
 ### 3. L-05 simulated tool
 

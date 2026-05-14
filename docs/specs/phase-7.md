@@ -102,15 +102,24 @@ All `/build` numbers come from these. No hardcoded values.
 - Verify `revalidate` and ISR settings are appropriate per route (static is
   fine for everything except the API routes)
 
-### 5. Accessibility pass
+### 5. Accessibility pass — superseded by Phase 4.5
 
-- `@axe-core/playwright` at all 16 corner combinations on `/`; fix violations
-- Focus order + visible focus rings at every polish setting (brutalist must
-  show focus clearly)
-- Screen reader labels on every slider, every interactive element
-- Keyboard navigation for entire page including bottom-sheet on mobile
-- `prefers-reduced-motion` audit across all five pages
-- Color contrast at every polish + page combination; verify all five pages
+The accessibility foundation, slider contrast safety net, axe CI gates,
+Lighthouse a11y budget, `/accessibility` conformance page, and ADR-0032 all
+landed in Phase 4.5 (docs/specs/phase-4.5.md). Phase 5 and Phase 6 inherited
+amendments that require new game surfaces to ship with a11y baked in.
+
+This phase verifies launch-readiness only:
+
+- Run `bun run a11y` end-to-end one final time; confirm all four gates pass
+  (Biome a11y, contrast Vitest, axe Playwright across all routes + slider
+  extremes, Lighthouse CI accessibility = 100)
+- Walk the manual checklist in `docs/runbooks/a11y-manual.md`: keyboard-only,
+  VoiceOver + Safari, NVDA + Firefox, 400% zoom, forced-colors, reduced
+  motion, iOS VoiceOver on real device
+- Refresh the `last-audited` date on `/accessibility`
+- If anything from the manual pass surfaces a gap not caught by automated
+  tooling, treat that as a Phase 7 bug, not a Phase 4.5 deferral
 
 ### 6. Shareable match cards (/jd)
 

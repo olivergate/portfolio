@@ -1,0 +1,23 @@
+{
+  "ci": {
+    "collect": {
+      "url": [
+        "http://localhost:3100/",
+        "http://localhost:3100/jd",
+        "http://localhost:3100/lab",
+        "http://localhost:3100/accessibility"
+      ],
+      "numberOfRuns": 1,
+      "startServerCommand": "bun run start --port 3100",
+      "startServerReadyPattern": "Ready"
+    },
+    "assert": {
+      "assertions": {
+        "categories:accessibility": ["error", { "minScore": 1.0 }]
+      }
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}

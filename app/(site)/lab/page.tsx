@@ -13,7 +13,7 @@ export default function LabPage() {
   const { featured, secondary } = getProjects();
 
   return (
-    <main className="cv-surface">
+    <div className="cv-surface">
       <header className="lab-hero" data-reveal>
         <div className="lab-hero-meta">
           <span>Oliver Kaikane Gate</span>
@@ -47,6 +47,6 @@ export default function LabPage() {
           ))}
         </div>
       </section>
-    </main>
+    </div>
   );
 }

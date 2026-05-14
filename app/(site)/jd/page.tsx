@@ -14,7 +14,7 @@ export default function JDPage() {
   const samples = getSampleJDs();
 
   return (
-    <main>
+    <div>
       <header
         style={{
           paddingBottom: "1.5rem",
@@ -81,6 +81,6 @@ export default function JDPage() {
       </p>
 
       <JDAdapter samples={samples} />
-    </main>
+    </div>
   );
 }

@@ -14,7 +14,7 @@ export default function TonePage() {
   const total = tone.pledges.length;
 
   return (
-    <main className="cv-surface">
+    <div className="cv-surface">
       <header
         style={{
           paddingTop: "clamp(0.5rem, 2vw, 1.5rem)",
@@ -123,6 +123,6 @@ export default function TonePage() {
           {tone.signature.text}
         </p>
       </section>
-    </main>
+    </div>
   );
 }

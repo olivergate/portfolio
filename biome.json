@@ -30,7 +30,20 @@
         "useImportType": "error",
         "useNamingConvention": "off"
       },
-      "suspicious": { "noExplicitAny": "warn" }
+      "suspicious": { "noExplicitAny": "warn" },
+      "a11y": {
+        "recommended": true,
+        "useValidAriaProps": "error",
+        "useAriaPropsForRole": "error",
+        "noRedundantRoles": "error",
+        "useKeyWithClickEvents": "error",
+        "useFocusableInteractive": "error",
+        "noPositiveTabindex": "error",
+        "useAltText": "error",
+        "useButtonType": "error",
+        "useHeadingContent": "error",
+        "useSemanticElements": "error"
+      }
     }
   },
   "javascript": {
