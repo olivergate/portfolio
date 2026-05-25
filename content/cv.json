@@ -1,7 +1,7 @@
 {
   "header": {
     "name": "Oliver Kaikane Gate",
-    "tagline": "Senior full-stack engineer (React/TypeScript, Python). Seven years shipping production. Building with LLMs daily; going deep on agent harness design and prompt security.",
+    "tagline": "Seven years as a full stack developer with a specialisation in all things front end. Right now I'm focusing on agentic engineering practices, figuring out best practices and workflows that are safe, efficient and don't produce spaghetti",
     "location": "Valencia, Spain (remote)",
     "contact": {
       "email": "oliver.kg2@gmail.com",
@@ -10,32 +10,31 @@
   },
   "about": {
     "paragraphs": [
-      "Restless, and curious about how things work.",
-      "Came to engineering from Philosophy of Technology seven years ago. That training taught me to question the framing of a problem before answering it. Junior IC to leading a five-person frontend team along the way.",
-      "Right now I'm running a custom Claude Code harness — subagents I dispatch, a retro workflow that builds a learnings catalogue — plus three side projects. Most of my reading is on agent orchestration and prompt security. That's the work I want next."
+      "Came to engineering from Philosophy of Technology seven years ago. That training taught me to question the framing of a problem before answering it. Junior full stack to leading a five-person feature team along the way.",
+      "I'm a tested full stack developer and I love coding. And now I'm following the times into agentic engineering. My passion is in crafting user experiences."
     ]
   },
-  "experienceOverview": "Seven years shipping production code. React/TypeScript on the frontend, Python and Node on the backend. Three years at Redington (multi-tenant fintech SaaS; led a five-person frontend team), then four years at OpenSC as sole engineer on the supply-chain analytics dashboard. Now mostly on LLMs: TeacherHub (language-learning platform with an LLM-as-judge eval suite over its homework-generation pipeline), a Flutter habit app driven by LLM check-ins, and a custom Claude Code harness.",
+  "experienceOverview": "Seven years shipping production code. React/TypeScript on the frontend, Python, Node, C#, Kotlin on the backend. Three years at Redington (multi-tenant fintech SaaS; led a five-person frontend team), then four years at OpenSC as sole engineer on the supply chain analytics dashboard. I've taken some time to retrain in agentic engineering by building personal projects with a production mindset: TeacherHub (language learning platform with an LLM as judge eval suite over its homework generation pipeline), a Flutter habit app driven by LLM checkins. And a Claude session retrospective skill that allows me to evaluate sessions and perform checks on output over long periods. ",
   "roles": [
     {
       "id": "opensc",
-      "title": "Senior Full-Stack Developer",
+      "title": "Senior Full Stack Developer",
       "company": "OpenSC",
       "start": "2022-07",
       "end": "2026-04",
-      "summary": "Sustainability impact venture co-founded by WWF and BCG, providing supply chain traceability for global brands. Standardised messy first-three-miles farm data into EPCIS, then surfaced it through dashboards used by Nespresso, Austral Fisheries, and internal teams to validate ethical sourcing claims and farmer payments.",
+      "summary": "Sustainability impact venture co-founded by WWF and BCG, providing supply chain traceability for global brands. Standardised messy 'first three miles' farm data into EPCIS, then surfaced it through dashboards used by Nespresso, Austral Fisheries, and internal teams to validate ethical sourcing claims and farmer payments.",
       "bullets": [
         {
           "id": "opensc-sole-frontend",
-          "text": "Sole engineer on the main analytics dashboard — built and maintained the whole thing. Plotly Dash for the analytical core, React and Next.js for the consumer-facing pages."
+          "text": "Sole engineer on the main analytics dashboard. Built and maintained the whole thing. Plotly Dash for the analytical core, React and Next.js for the consumer facing pages."
         },
         {
           "id": "opensc-nespresso-payments",
-          "text": "Built the traceability and payments validation system used by Nespresso to verify coffee sourcing across Rainforest Alliance and their internal AAA premium-farmer program — including checks that base prices tracked the London robusta price index and that farmer payments matched contracted standards."
+          "text": "Built the traceability and payments validation system used by Nespresso to verify coffee sourcing across Rainforest Alliance and their internal AAA premium-farmer program, including checks that base prices tracked the London robusta price index and that farmer payments matched contracted standards."
         },
         {
           "id": "opensc-anomaly-graph",
-          "text": "Designed and built graph-based anomaly detection on Kuzu: modelled supply-chain relationships so infiltration, exfiltration, capacity breaches, and untraced-origin coffee became queryable patterns rather than per-supply-chain spot checks."
+          "text": "Modelled supply-chain relationships so infiltration, exfiltration, capacity breaches, and untraced origin coffee became queryable patterns rather than per supply chain spot checks."
         },
         {
           "id": "opensc-austral-fisheries",
@@ -43,11 +42,11 @@
         },
         {
           "id": "opensc-dagster-yaml",
-          "text": "Replaced bespoke per-cluster orchestrations in Dagster with a YAML-configured, data-contract-driven ingestion layer. New supply chains can be added by config now. Invalid data fails at the boundary rather than corrupting downstream tables."
+          "text": "Replaced bespoke per-cluster orchestrations in Dagster with a YAML-configured, data-contract-driven ingestion layer. New supply chains can be added by config now."
         },
         {
           "id": "opensc-data-quality-monitoring",
-          "text": "Built a data-entry flow that made it hard to put bad data in: input checks, guardrails, and reviews at the point of capture. Plus monitoring for ingestion accuracy and frequency across all supply chain feeds."
+          "text": "Built a data entry flow that made it hard to put bad data in: input checks, guardrails, and reviews at the point of capture. Plus monitoring for ingestion accuracy and frequency across all supply chain feeds."
         }
       ],
       "technologies": [
@@ -68,31 +67,27 @@
     },
     {
       "id": "redington",
-      "title": "Associate Full-Stack Developer",
+      "title": "Associate Full Stack Developer",
       "company": "Redington",
       "start": "2019-02",
       "end": "2022-06",
-      "summary": "UK investment consultancy. Built and led the frontend on a multi-tenant research platform used by several thousand consultants across 7 tenants to track investments and maintain observability across portfolios. Joined as a junior; promoted to leading a frontend team within two years as the company scaled from 10 engineers to 8 teams.",
+      "summary": "UK pensions consultancy. Core contributor on the frontend on a multi-tenant research platform used by several thousand consultants across 7 tenants to track investments and maintain observability across portfolios. Joined as a junior; promoted to leading a frontend team within two years as the company scaled from 10 engineers to 8 teams.",
       "bullets": [
         {
           "id": "redington-frontend-arch",
-          "text": "Co-led frontend architectural decisions on a React and TypeScript multi-tenant dashboard. Sensitive financial data; tenant isolation was the design constraint everything else worked around."
+          "text": "After being key contributor for my junior years, quickly started leading frontend architectural decisions on a React and TypeScript multi-tenant dashboard. Sensitive financial data; tenant isolation was the design constraint everything else worked around."
         },
         {
           "id": "redington-team-lead",
-          "text": "Led a team of 5 engineers focused on frontend feature delivery; consistently the highest-performing team on UI work."
-        },
-        {
-          "id": "redington-config-dashboards",
-          "text": "Built much of the dynamically configurable dashboard system that the platform ran on."
+          "text": "Led a team of 5 engineers focused on frontend feature delivery, consistently the highest performing team on UI work."
         },
         {
           "id": "redington-cypress",
-          "text": "Introduced Cypress E2E testing across the platform, which raised deployment confidence and cut release-time human error."
+          "text": "Introduced Cypress E2E testing across the platform, which raised deployment confidence and cut release time human error."
         },
         {
           "id": "redington-charity",
-          "text": "Chaired the Bristol charity committee. Took on LifeCycle pro-bono — a charity left dry by multiple high-cost agencies. One-day discovery workshop, then migrated their database and supporting infrastructure onto Airtable. Pushed for more company-sponsored charity days and helped colleagues find their own."
+          "text": "Chaired the Bristol charity committee. Helped a charity left dry by multiple high cost agencies. We ran a one day workshop to surface issues, then migrated their database and supporting infrastructure onto Airtable. Pushed for more company sponsored charity days and helped colleagues find their own."
         }
       ],
       "technologies": [
@@ -103,7 +98,9 @@
         "Jest",
         "AWS",
         ".NET (C#)",
-        "PostgreSQL"
+        "PostgreSQL",
+        "DDD",
+        "Event sourcing paradigm"
       ]
     }
   ],
@@ -116,18 +113,21 @@
       "end": "2017-06",
       "notes": [
         "Specialised in Philosophy of Technology",
-        "Rhetoric and structured argument. The habit of restating a question before answering it."
+        "Rhetoric and structured argument. Building a habit of restating a question before answering it",
+        "The skills I learnt at university have sculpted the way I approach design conversations, whether it is UX or technical, getting the most out of each person is tantamount to success"
       ]
     }
   ],
   "skills": {
     "primary": ["React", "Next.js", "TypeScript", "Node.js", "Python", "PostgreSQL", "AWS"],
     "ai": [
-      "Custom Claude Code harness — hand-built subagents, a session-retrospective workflow that classifies observations against a personal ontology, and a telemetry layer over the CLI",
-      "LLM-as-judge eval suite for TeacherHub's homework-generation pipeline: 25 CEFR-graded scenarios, 5-dimension rubric (CEFR alignment, instruction adherence, linguistic accuracy, pedagogical value, structural validity), cost-gated runner, plus a sprint-cadence human review with a calibration rule that revises the judge prompt when human-vs-judge delta exceeds 1 point",
-      "Two LLM-driven side projects in flight; a third built with LLM tooling (see Projects)",
-      "Claude Code and Cursor as daily drivers across paid and side-project work",
-      "Deepening: OWASP LLM Top 10, prompt injection and jailbreak patterns, agent orchestration, MCP servers"
+      "Majority of my Agentic engineering toolkit has been learnt in personal projects (see bottom of page)",
+      "Eval testing",
+      "Agentic harness",
+      "Skills, agents, hooks and strategy for agentic engineering",
+      "MCP servers with Auth0 2.1",
+      "OWASP LLM Top 10, agent orchestration",
+      "Prompt injection and jailbreak patterns"
     ],
     "frontend": [
       "React",
@@ -166,41 +166,47 @@
       "CircleCI"
     ],
     "leadership": [
-      "Led a 5-person frontend team at Redington",
-      "Completed external senior-IC / principal-engineer soft-skills training (2024)",
+      "Led a 5 person frontend team at Redington",
+      "Completed external senior IC / principal-engineer soft-skills training (2024)",
       "Ran external consulting engagement (LifeCycle) end-to-end"
     ]
   },
   "projects": [
     {
       "id": "claude-code-harness",
-      "title": "Personal Claude Code Harness",
+      "title": "Retro Claude",
       "stack": "Claude CLI, custom subagents and skills, SQLite telemetry",
-      "description": "Custom harness on top of the Claude Code CLI: subagents I dispatch by task type, plus a session-retrospective workflow that builds a learnings catalogue against an ontology I maintain. Telemetry tracks token spend and tool usage. The retro generator on /lab is a public slice."
+      "description": "Skill and telemetry store on top of the Claude Code CLI: It's a retro, like the ones we run as a team, but for each session. A workflow that builds a learnings catalogue against an ontology I maintain. Telemetry tracks agent usage, friction, learnings and gotchas over time. The goal is to better the experience of agentic engineering"
     },
     {
       "id": "portfolio-site",
       "title": "This Portfolio Site",
       "stack": "Next.js 16, TypeScript strict, Tailwind v4, Anthropic API",
-      "description": "Five-page CV-as-portfolio. Live UX-style sliders that retheme the page, a JD matcher tuned to surface honest gaps over generous matches, an OWASP LLM Top 10 prompt-safety game, 31 public ADRs documenting every decision and reversal. Anthropic API server-side only; cost ceiling enforced at the route handler."
+      "description": "I was trained in web development and I really enjoy creating user interfaces. As such, why wouldn't I showcase myself here! Live UX-style sliders that retheme the page, a JD matcher tuned to surface gaps matches, a showcase area for my personal projects. One stop shop for all things in my engineering life"
     },
     {
       "id": "teacherhub",
       "title": "TeacherHub",
       "stack": "Next.js 14, Mantine, Supabase (Postgres + RLS), Vercel, OpenAI GPT-4, Whisper, DeepL",
-      "description": "Language-learning platform built solo. Video lessons with speaker-diarised transcripts, CEFR-aligned homework generation from a multi-stage LLM pipeline (plan → generate → verify), content library, multi-tenant teacher isolation. The homework generator runs through a Layer-2 LLM-as-judge eval suite — 25 CEFR-graded scenarios, 5-dimension rubric — plus a Layer-3 human-review log with a calibration rule that revises the judge prompt when human and judge scores diverge. Pre-POC; current users are me and my Spanish teacher."
+      "description": "Language-learning platform to help me get my head around Spanish, 2 active users (my teacher and myself). Video lessons with speaker-diarised transcripts, CEFR-aligned homework generation from a multi-stage LLM pipeline (plan → generate → verify), content library. The homework generator runs through a Layer 2 LLM as judge eval suite. 25 CEFR-graded scenarios, 5 dimension rubric, plus a Layer 3 human-review log with a calibration rule that revises the judge prompt when human and judge scores diverge."
     },
     {
       "id": "habit-forming-app",
       "title": "Habit-Forming App",
       "stack": "Flutter (Dart)",
-      "description": "Cross-platform mobile. LLM-driven morning and bedtime check-ins set each day's tasks and reminders."
+      "description": "Cross-platform mobile. The most advanced TODO list project ever engineered. To create habits, we use an eval tested LLM call to discern habits, projects and quests, their atomic steps and suggests them back to the user. The system takes morning and evening journal entries to suggest things to add to the users day and week so that we are continuously improving."
+    },
+    {
+      "id": "retro-gui-app",
+      "title": "Claude CLI cockpit",
+      "stack": "Electron",
+      "description": "Cockpit for using the Claude CLI with. Shows files touched with a code link to view diffs. Agents in use and their respective prompts. Tool usage. Errors surfaced (i.e. rejected tool calls). It works alongside the retro-spective engine so that you can easily navigate and control Claude Code. The main aim is to reduce the cognitive overhead by improving visibility and operational surface."
     },
     {
       "id": "movement-app",
       "title": "Daily Movement App",
       "stack": "React Native",
-      "description": "Do one movement a day, share it. Loose alpha — an attempt at virality, also a way to learn React Native."
+      "description": "Do one movement a day, share it. Loose POC and an attempt at virality, also a way to learn React Native."
     }
   ],
   "avocations": ["Food and cooking", "Travelling", "Reading", "Chess", "Running"]
