@@ -1,24 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { BlogBlock } from "@/lib/blog-schemas";
+import Markdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
+import remarkGfm from "remark-gfm";
+import { blogSanitizeSchema, rehypePullQuote } from "@/lib/blog-sanitize";
 import { getBlog, getBlogPost } from "@/lib/content";
 
 type RouteParams = { slug: string };
 
 export async function generateStaticParams(): Promise<RouteParams[]> {
   return getBlog().posts.map((p) => ({ slug: p.slug }));
-}
-
-/**
- * Posts whose title still starts with "TODO" are drafts that have been
- * publicly linked (the FAB "About these sliders" link points at one). To
- * avoid leaking the placeholder string into <title> or search engines, we
- * detect TODO posts and substitute a generic draft title + robots:noindex.
- * The page body still renders so the FAB link doesn't 404.
- */
-function isDraftPost(title: string): boolean {
-  return title.trimStart().startsWith("TODO");
 }
 
 export async function generateMetadata({
@@ -29,10 +22,10 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = getBlogPost(slug);
   if (!post) return { title: "Not found" };
-  if (isDraftPost(post.title)) {
+  if (post.status !== "published") {
     return {
       title: "Draft",
-      description: "Draft post — placeholder content.",
+      description: "Draft post — not yet published.",
       robots: { index: false, follow: false },
     };
   }
@@ -60,43 +53,11 @@ function formatDate(iso: string): string {
   return `${months[idx] ?? m} ${Number(d)}, ${y}`;
 }
 
-function Block({ block }: { block: BlogBlock }) {
-  switch (block.kind) {
-    case "p":
-      return <p className="blog-p">{block.text}</p>;
-    case "h2":
-      return <h2 className="blog-h2">{block.text}</h2>;
-    case "list":
-      return (
-        <ul className="blog-list-block">
-          {block.items.map((item, i) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: items are static, ordered prose
-            <li key={i}>{item}</li>
-          ))}
-        </ul>
-      );
-    case "pull":
-      return <blockquote className="blog-pull">{block.text}</blockquote>;
-  }
-}
-
-/**
- * Cheap heuristic: if the first body block is a paragraph that contains the
- * literal "TODO — opening paragraph" placeholder string from the blog content
- * template, the post is unfinished and we render a DRAFT banner above the
- * article.
- */
-function isDraftBody(blocks: readonly BlogBlock[]): boolean {
-  const first = blocks[0];
-  if (!first || first.kind !== "p") return false;
-  return first.text.includes("TODO — opening paragraph");
-}
-
 export default async function BlogPostPage({ params }: { params: Promise<RouteParams> }) {
   const { slug } = await params;
   const post = getBlogPost(slug);
   if (!post) notFound();
-  const draft = isDraftBody(post.body);
+  const draft = post.status !== "published";
 
   return (
     <div className="cv-surface">
@@ -116,7 +77,7 @@ export default async function BlogPostPage({ params }: { params: Promise<RoutePa
             borderBottom: "1px solid var(--accent)",
           }}
         >
-          DRAFT — placeholder content
+          DRAFT — {post.status}
         </div>
       )}
 
@@ -131,10 +92,12 @@ export default async function BlogPostPage({ params }: { params: Promise<RoutePa
       </header>
 
       <article className="blog-post-body">
-        {post.body.map((block, i) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: blocks are static, ordered prose
-          <Block key={i} block={block} />
-        ))}
+        <Markdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeRaw, rehypePullQuote, [rehypeSanitize, blogSanitizeSchema]]}
+        >
+          {post.bodyMd}
+        </Markdown>
       </article>
 
       <footer className="blog-post-footer">

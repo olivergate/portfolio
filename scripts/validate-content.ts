@@ -1,5 +1,7 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
+import matter from "gray-matter";
+import { BlogFrontmatterSchema } from "@/lib/blog-schemas";
 import { SampleJDsSchema, type StretchLevel, statusAtLevel } from "@/lib/jd-schemas";
 import { LabProjects } from "@/lib/retro-schemas";
 import { CVSchema, ToneSchema } from "@/lib/schemas";
@@ -144,6 +146,39 @@ try {
   console.log(
     `content/projects.json OK — featured "${projects.data.featured.slug}" (${projects.data.featured.samples.length} samples), ${projects.data.secondary.length} secondary cards`,
   );
+
+  const blogDir = path.join(process.cwd(), "content", "blog-drafts");
+  const blogFiles = readdirSync(blogDir).filter(
+    (f) => f.endsWith(".md") && f !== "README.md" && !f.startsWith("_"),
+  );
+  const blogSlugs = new Set<string>();
+  for (const file of blogFiles) {
+    const raw = readFileSync(path.join(blogDir, file), "utf8");
+    const { data } = matter(raw);
+    if (data.date instanceof Date) {
+      data.date = data.date.toISOString().slice(0, 10);
+    }
+    const fm = BlogFrontmatterSchema.safeParse(data);
+    if (!fm.success) {
+      console.error(`content/blog-drafts/${file} failed frontmatter validation:`);
+      for (const issue of fm.error.issues) {
+        console.error(`  ${issue.path.join(".") || "<root>"}: ${issue.message}`);
+      }
+      process.exit(1);
+    }
+    if (file !== `${fm.data.slug}.md`) {
+      console.error(
+        `content/blog-drafts/${file}: filename does not match slug "${fm.data.slug}" (expected ${fm.data.slug}.md)`,
+      );
+      process.exit(1);
+    }
+    if (blogSlugs.has(fm.data.slug)) {
+      console.error(`duplicate blog slug: ${fm.data.slug}`);
+      process.exit(1);
+    }
+    blogSlugs.add(fm.data.slug);
+  }
+  console.log(`content/blog-drafts OK — ${blogFiles.length} posts`);
 } catch (err) {
   console.error("content validation crashed:", err);
   process.exit(1);

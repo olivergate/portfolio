@@ -7,26 +7,27 @@ const slug = z
 
 const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "must be YYYY-MM-DD");
 
-const BlogBlock = z.discriminatedUnion("kind", [
-  z.object({ kind: z.literal("p"), text: z.string().min(1) }),
-  z.object({ kind: z.literal("h2"), text: z.string().min(1) }),
-  z.object({ kind: z.literal("list"), items: z.array(z.string().min(1)).min(1) }),
-  z.object({ kind: z.literal("pull"), text: z.string().min(1) }),
-]);
+export const BlogStatusSchema = z.enum(["draft", "review", "published"]);
+export type BlogStatus = z.infer<typeof BlogStatusSchema>;
 
-export const BlogPostSchema = z.object({
+export const BlogFrontmatterSchema = z.object({
   slug,
   title: z.string().min(1),
   date: isoDate,
-  kicker: z.string().min(1).optional(),
+  status: BlogStatusSchema,
   summary: z.string().min(1),
-  body: z.array(BlogBlock).min(1),
+  kicker: z.string().min(1).optional(),
+  length: z.string().min(1).optional(),
+  source_brief: z.string().min(1).optional(),
+  source_data: z.array(z.string().min(1)).optional(),
+  post: z.number().int().positive().optional(),
 });
+export type BlogFrontmatter = z.infer<typeof BlogFrontmatterSchema>;
 
-export const BlogSchema = z.object({
-  posts: z.array(BlogPostSchema),
-});
+export type BlogPost = BlogFrontmatter & {
+  bodyMd: string;
+};
 
-export type BlogPost = z.infer<typeof BlogPostSchema>;
-export type BlogBlock = z.infer<typeof BlogBlock>;
-export type Blog = z.infer<typeof BlogSchema>;
+export type Blog = {
+  posts: BlogPost[];
+};

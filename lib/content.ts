@@ -1,6 +1,7 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
-import { type Blog, type BlogPost, BlogSchema } from "@/lib/blog-schemas";
+import matter from "gray-matter";
+import { type Blog, BlogFrontmatterSchema, type BlogPost } from "@/lib/blog-schemas";
 import { type SampleJDs, SampleJDsSchema } from "@/lib/jd-schemas";
 import { type LabProjects, LabProjects as LabProjectsSchema } from "@/lib/retro-schemas";
 import { type CV, CVSchema, type Tone, ToneSchema } from "@/lib/schemas";
@@ -47,13 +48,35 @@ export function getProjects(): LabProjects {
   return parsed;
 }
 
+const BLOG_DIR = path.join("content", "blog-drafts");
+
 export function getBlog(): Blog {
   if (cachedBlog) return cachedBlog;
-  const filePath = path.join(process.cwd(), "content", "blog.json");
-  const raw = readFileSync(filePath, "utf8");
-  const parsed = BlogSchema.parse(JSON.parse(raw));
-  cachedBlog = parsed;
-  return parsed;
+  const dir = path.join(process.cwd(), BLOG_DIR);
+  const includeDrafts = process.env.NODE_ENV !== "production";
+  const files = readdirSync(dir).filter(
+    (f) => f.endsWith(".md") && f !== "README.md" && !f.startsWith("_"),
+  );
+  const posts: BlogPost[] = [];
+  for (const file of files) {
+    const filePath = path.join(dir, file);
+    const raw = readFileSync(filePath, "utf8");
+    const { data, content } = matter(raw);
+    if (data.date instanceof Date) {
+      data.date = data.date.toISOString().slice(0, 10);
+    }
+    const fm = BlogFrontmatterSchema.parse(data);
+    const expectedFile = `${fm.slug}.md`;
+    if (file !== expectedFile) {
+      throw new Error(
+        `Blog filename ${file} does not match slug ${fm.slug} (expected ${expectedFile})`,
+      );
+    }
+    if (!includeDrafts && fm.status !== "published") continue;
+    posts.push({ ...fm, bodyMd: content });
+  }
+  cachedBlog = { posts };
+  return cachedBlog;
 }
 
 export function getBlogPost(slug: string): BlogPost | null {

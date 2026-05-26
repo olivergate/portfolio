@@ -231,7 +231,12 @@ describe("slider state space — WCAG 2.1 contrast safety net (Phase 4.5)", () =
       { name: "muted / bg", fg: STATIC_ROOT.muted, bg: STATIC_ROOT.bg, min: 4.5 },
       { name: "muted-2 / bg", fg: STATIC_ROOT.muted2, bg: STATIC_ROOT.bg, min: 4.5 },
       { name: "accent / bg", fg: STATIC_ROOT.accent, bg: STATIC_ROOT.bg, min: 4.5 },
-      { name: "inverse-fg / inverse-bg", fg: STATIC_ROOT.inverseFg, bg: STATIC_ROOT.inverseBg, min: 4.5 },
+      {
+        name: "inverse-fg / inverse-bg",
+        fg: STATIC_ROOT.inverseFg,
+        bg: STATIC_ROOT.inverseBg,
+        min: 4.5,
+      },
       { name: "hit / bg", fg: STATIC_ROOT.hit, bg: STATIC_ROOT.bg, min: 4.5 },
       { name: "stretch / bg", fg: STATIC_ROOT.stretch, bg: STATIC_ROOT.bg, min: 4.5 },
       { name: "hit / hit-chip-bg", fg: STATIC_ROOT.hit, bg: hitChipBg, min: 4.5 },

@@ -200,7 +200,7 @@
       "id": "retro-gui-app",
       "title": "Claude CLI cockpit",
       "stack": "Electron",
-      "description": "Cockpit for using the Claude CLI with. Shows files touched with a code link to view diffs. Agents in use and their respective prompts. Tool usage. Errors surfaced (i.e. rejected tool calls). It works alongside the retro-spective engine so that you can easily navigate and control Claude Code. The main aim is to reduce the cognitive overhead by improving visibility and operational surface."
+      "description": "Cockpit for using the Claude CLI with. Shows files touched with a code link to view diffs. Agents in use and their respective prompts. Tool usage. Errors surfaced (i.e. rejected tool calls). It works alongside the retro-claude (project) engine so that you can easily navigate and control Claude Code. The main aim is to reduce the cognitive overhead by improving visibility and operational surface."
     },
     {
       "id": "movement-app",

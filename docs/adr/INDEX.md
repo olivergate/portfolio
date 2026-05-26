@@ -2,7 +2,7 @@
 title: Architectural Decision Records — Index
 purpose: Authoritative list of all Accepted, Proposed, and Superseded ADRs for this project.
 audience: humans + agents
-last_verified: 2026-05-04
+last_verified: 2026-05-26
 canonical_for: [architectural-decisions, adr-process]
 ---
 
@@ -75,6 +75,8 @@ Rule of thumb: if the edit would change what a reader believes we chose or why, 
 | [0029](./0029-jd-no-duplicate-cv.md) | JD adapter no longer renders a duplicate CV; chip evidence resolves to canonical CV bullets | Accepted | 2026-05-04 | — | — |
 | [0030](./0030-remove-live-cv-tone-toggle.md) | Remove the live CV tone toggle; CV ships single-voice | Accepted | 2026-05-05 | 0013 | — |
 | [0031](./0031-manifesto-pledges-single-voice.md) | Manifesto rewritten as six pledges, single-voice | Accepted | 2026-05-06 | — | — |
+| [0032](./0032-accessibility-approach.md) | Accessibility approach (WCAG 2.2 AA across all pages and slider states) | Accepted | 2026-05-14 | — | — |
+| [0033](./0033-blog-markdown-pipeline.md) | Blog rendering pipeline (markdown source over blog.json) | Accepted | 2026-05-26 | — | — |
 
 <!--
   Add one row per ADR as you author them. Format:
