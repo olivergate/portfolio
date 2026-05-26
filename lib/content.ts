@@ -1,10 +1,18 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { type Blog, BlogFrontmatterSchema, type BlogPost } from "@/lib/blog-schemas";
 import { type SampleJDs, SampleJDsSchema } from "@/lib/jd-schemas";
-import { type LabProjects, LabProjects as LabProjectsSchema } from "@/lib/retro-schemas";
+import {
+  type LabProjects,
+  LabProjects as LabProjectsSchema,
+  type Project,
+} from "@/lib/retro-schemas";
 import { type CV, CVSchema, type Tone, ToneSchema } from "@/lib/schemas";
+
+export type ProjectPage = {
+  bodyMd: string;
+};
 
 let cachedCV: CV | null = null;
 let cachedTone: Tone | null = null;
@@ -81,4 +89,27 @@ export function getBlog(): Blog {
 
 export function getBlogPost(slug: string): BlogPost | null {
   return getBlog().posts.find((p) => p.slug === slug) ?? null;
+}
+
+export function getProject(slug: string): Project | null {
+  return getProjects().projects.find((p) => p.slug === slug) ?? null;
+}
+
+const PROJECTS_DIR = path.join("content", "projects");
+
+function readProjectMarkdown(filePath: string): ProjectPage | null {
+  if (!existsSync(filePath)) return null;
+  const raw = readFileSync(filePath, "utf8");
+  const { content } = matter(raw);
+  return { bodyMd: content };
+}
+
+export function getProjectPage(slug: string): ProjectPage | null {
+  const filePath = path.join(process.cwd(), PROJECTS_DIR, slug, "index.md");
+  return readProjectMarkdown(filePath);
+}
+
+export function getProjectSubPage(slug: string, sub: string): ProjectPage | null {
+  const filePath = path.join(process.cwd(), PROJECTS_DIR, slug, `${sub}.md`);
+  return readProjectMarkdown(filePath);
 }

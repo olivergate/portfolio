@@ -171,43 +171,6 @@
       "Ran external consulting engagement (LifeCycle) end-to-end"
     ]
   },
-  "projects": [
-    {
-      "id": "claude-code-harness",
-      "title": "Retro Claude",
-      "stack": "Claude CLI, custom subagents and skills, SQLite telemetry",
-      "description": "Skill and telemetry store on top of the Claude Code CLI: It's a retro, like the ones we run as a team, but for each session. A workflow that builds a learnings catalogue against an ontology I maintain. Telemetry tracks agent usage, friction, learnings and gotchas over time. The goal is to better the experience of agentic engineering"
-    },
-    {
-      "id": "portfolio-site",
-      "title": "This Portfolio Site",
-      "stack": "Next.js 16, TypeScript strict, Tailwind v4, Anthropic API",
-      "description": "I was trained in web development and I really enjoy creating user interfaces. As such, why wouldn't I showcase myself here! Live UX-style sliders that retheme the page, a JD matcher tuned to surface gaps matches, a showcase area for my personal projects. One stop shop for all things in my engineering life"
-    },
-    {
-      "id": "teacherhub",
-      "title": "TeacherHub",
-      "stack": "Next.js 14, Mantine, Supabase (Postgres + RLS), Vercel, OpenAI GPT-4, Whisper, DeepL",
-      "description": "Language-learning platform to help me get my head around Spanish, 2 active users (my teacher and myself). Video lessons with speaker-diarised transcripts, CEFR-aligned homework generation from a multi-stage LLM pipeline (plan → generate → verify), content library. The homework generator runs through a Layer 2 LLM as judge eval suite. 25 CEFR-graded scenarios, 5 dimension rubric, plus a Layer 3 human-review log with a calibration rule that revises the judge prompt when human and judge scores diverge."
-    },
-    {
-      "id": "habit-forming-app",
-      "title": "Habit-Forming App",
-      "stack": "Flutter (Dart)",
-      "description": "Cross-platform mobile. The most advanced TODO list project ever engineered. To create habits, we use an eval tested LLM call to discern habits, projects and quests, their atomic steps and suggests them back to the user. The system takes morning and evening journal entries to suggest things to add to the users day and week so that we are continuously improving."
-    },
-    {
-      "id": "retro-gui-app",
-      "title": "Claude CLI cockpit",
-      "stack": "Electron",
-      "description": "Cockpit for using the Claude CLI with. Shows files touched with a code link to view diffs. Agents in use and their respective prompts. Tool usage. Errors surfaced (i.e. rejected tool calls). It works alongside the retro-claude (project) engine so that you can easily navigate and control Claude Code. The main aim is to reduce the cognitive overhead by improving visibility and operational surface."
-    },
-    {
-      "id": "movement-app",
-      "title": "Daily Movement App",
-      "stack": "React Native",
-      "description": "Do one movement a day, share it. Loose POC and an attempt at virality, also a way to learn React Native."
-    }
-  ],
+  "projectSlugs": ["teacherhub", "claude-gui", "blob-life", "retro-claude"],
   "avocations": ["Food and cooking", "Travelling", "Reading", "Chess", "Running"]
 }

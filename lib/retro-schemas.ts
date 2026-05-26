@@ -82,24 +82,43 @@ export const FeaturedProject = z.object({
 });
 export type FeaturedProject = z.infer<typeof FeaturedProject>;
 
-export const SecondaryProject = z.object({
+export const ProjectLink = z.object({
+  label: z.string().min(1).max(40),
+  url: z.string().min(1),
+});
+export type ProjectLink = z.infer<typeof ProjectLink>;
+
+export const ProjectSubPage = z.object({
+  slug: slug,
+  title: z.string().min(1).max(80),
+});
+export type ProjectSubPage = z.infer<typeof ProjectSubPage>;
+
+export const ProjectGradient = z.object({
+  from: z.string().min(1),
+  via: z.string().min(1).optional(),
+  to: z.string().min(1),
+});
+
+export const Project = z.object({
   slug: slug,
   title: z.string().min(1),
-  blurb: z.string().min(1),
-  techPills: z.array(TechPill).min(1).max(6),
-  glyph: z.string().min(1).max(4),
-  gradient: z.object({
-    from: z.string().min(1),
-    via: z.string().min(1).optional(),
-    to: z.string().min(1),
+  summary: z.string().min(1),
+  stack: z.string().min(1),
+  techPills: z.array(TechPill).min(1).max(8),
+  glyph: z.string().min(1).max(4).optional(),
+  gradient: ProjectGradient.optional(),
+  links: z.array(ProjectLink).default([]),
+  subPages: z.array(ProjectSubPage).default([]),
+  showOn: z.object({
+    cv: z.boolean().default(true),
+    lab: z.boolean().default(true),
   }),
-  ctaLabel: z.string().min(1).max(40),
-  ctaUrl: z.string().min(1),
 });
-export type SecondaryProject = z.infer<typeof SecondaryProject>;
+export type Project = z.infer<typeof Project>;
 
 export const LabProjects = z.object({
   featured: FeaturedProject,
-  secondary: z.array(SecondaryProject).min(1).max(6),
+  projects: z.array(Project).min(1).max(8),
 });
 export type LabProjects = z.infer<typeof LabProjects>;

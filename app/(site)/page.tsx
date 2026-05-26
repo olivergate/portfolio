@@ -24,7 +24,7 @@ export default function HomePage() {
         <Experience overview={cv.experienceOverview} roles={cv.roles} />
         <Education education={cv.education} />
         <Skills skills={cv.skills} />
-        <Projects projects={cv.projects} />
+        <Projects projectSlugs={cv.projectSlugs} allProjects={projects.projects} />
         <Avocations avocations={cv.avocations} />
       </section>
 

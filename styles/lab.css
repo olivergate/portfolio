@@ -489,6 +489,19 @@
   text-wrap: pretty;
 }
 
+/* On narrow viewports the nowrap title chip + description body don't fit
+   side-by-side without crushing the prose to ~30% column width. Stack
+   them vertically so the description reads naturally. */
+@media (max-width: 720px) {
+  .lab-retro-addition {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+  .lab-retro-addition code {
+    justify-self: start;
+  }
+}
+
 .lab-retro-caption {
   margin: 1.5rem 0 0;
   font-family: var(--font-mono);

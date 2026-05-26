@@ -40,7 +40,7 @@ try {
   }
 
   console.log(
-    `content/cv.json OK — ${cv.data.roles.length} roles, ${cv.data.projects.length} projects, ${cv.data.education.length} education entries`,
+    `content/cv.json OK — ${cv.data.roles.length} roles, ${cv.data.projectSlugs.length} project slugs, ${cv.data.education.length} education entries`,
   );
 
   const toneRaw = readFileSync(tonePath, "utf8");
@@ -78,7 +78,7 @@ try {
   for (const role of cv.data.roles) {
     for (const b of role.bullets) roleBulletIds.add(b.id);
   }
-  const projectIds = new Set(cv.data.projects.map((p) => p.id));
+  const projectIds = new Set<string>(cv.data.projectSlugs);
 
   for (const jd of sampleJDs.data) {
     const chipIds = new Set<string>();
@@ -134,17 +134,26 @@ try {
     sampleIds.add(s.id);
   }
 
-  const secondaryIds = new Set<string>();
-  for (const p of projects.data.secondary) {
-    if (secondaryIds.has(p.slug)) {
-      console.error(`duplicate secondary project slug: ${p.slug}`);
+  const projectSlugs = new Set<string>();
+  for (const p of projects.data.projects) {
+    if (projectSlugs.has(p.slug)) {
+      console.error(`duplicate project slug: ${p.slug}`);
       process.exit(1);
     }
-    secondaryIds.add(p.slug);
+    projectSlugs.add(p.slug);
+  }
+
+  for (const slug of cv.data.projectSlugs) {
+    if (!projectSlugs.has(slug)) {
+      console.error(
+        `cv.json projectSlugs references "${slug}" but no project with that slug exists in projects.json`,
+      );
+      process.exit(1);
+    }
   }
 
   console.log(
-    `content/projects.json OK — featured "${projects.data.featured.slug}" (${projects.data.featured.samples.length} samples), ${projects.data.secondary.length} secondary cards`,
+    `content/projects.json OK — featured "${projects.data.featured.slug}" (${projects.data.featured.samples.length} samples), ${projects.data.projects.length} projects`,
   );
 
   const blogDir = path.join(process.cwd(), "content", "blog-drafts");

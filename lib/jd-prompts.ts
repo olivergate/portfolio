@@ -117,8 +117,8 @@ Example 4 — Miss stays Miss across levels:
 
 Example 5 — project-cited Hit:
   Requirement: "Personal mobile side-project work"
-  CV project: "[project:habit-forming-app] Habit-Forming App — Cross-platform mobile, focused on behaviour change loops..."
-  Output: { status: "hit", cite: ["project:habit-forming-app"], reasoning: "Cross-platform mobile habit-forming app in TestFlight — direct match." }
+  CV project: "[project:blob-life] BlobLife — Cross-platform mobile, gamified habit tracker for people with ADHD..."
+  Output: { status: "hit", cite: ["project:blob-life"], reasoning: "BlobLife is a cross-platform mobile habit-tracking app — direct match." }
 
 Example 6 — Stretch with no cite (skill-list adjacency):
   Requirement: "Familiarity with prompt injection / OWASP AI Top 10"

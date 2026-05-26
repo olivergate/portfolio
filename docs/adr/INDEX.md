@@ -77,6 +77,7 @@ Rule of thumb: if the edit would change what a reader believes we chose or why, 
 | [0031](./0031-manifesto-pledges-single-voice.md) | Manifesto rewritten as six pledges, single-voice | Accepted | 2026-05-06 | — | — |
 | [0032](./0032-accessibility-approach.md) | Accessibility approach (WCAG 2.2 AA across all pages and slider states) | Accepted | 2026-05-14 | — | — |
 | [0033](./0033-blog-markdown-pipeline.md) | Blog rendering pipeline (markdown source over blog.json) | Accepted | 2026-05-26 | — | — |
+| [0034](./0034-project-pages-pipeline.md) | Project pages pipeline (unified projects list + markdown bodies) | Accepted | 2026-05-26 | — | — |
 
 <!--
   Add one row per ADR as you author them. Format:

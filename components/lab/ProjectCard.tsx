@@ -1,32 +1,33 @@
 import Link from "next/link";
-import type { SecondaryProject } from "@/lib/retro-schemas";
+import type { Project } from "@/lib/retro-schemas";
 
 type Props = {
-  project: SecondaryProject;
+  project: Project;
 };
 
 /**
- * Server component card for the three side projects on /lab. Gradient hero
- * with glyph + "project / personal" pill, body with title + tech pills + blurb,
- * mono CTA with arrow that translates on hover. Linkout-only by design
- * (ADR-0024) — the card is the link, no embedded screens.
- *
- * External URLs (anything starting with "http") get target=_blank +
- * rel=noopener,noreferrer. Internal/anchor URLs stay in-tab.
+ * Server component card for the project linkouts on /lab. Gradient hero with
+ * glyph + "project / personal" pill, body with title + tech pills + summary,
+ * mono CTA with arrow that translates on hover. Links to /projects/[slug]
+ * (ADR-0034) where the full page lives.
  */
 export function ProjectCard({ project }: Props) {
-  const isExternal = /^https?:/.test(project.ctaUrl);
-  const gradient = project.gradient.via
-    ? `linear-gradient(135deg, ${project.gradient.from} 0%, ${project.gradient.via} 60%, ${project.gradient.to} 100%)`
-    : `linear-gradient(135deg, ${project.gradient.from} 0%, ${project.gradient.to} 100%)`;
+  const gradient = project.gradient
+    ? project.gradient.via
+      ? `linear-gradient(135deg, ${project.gradient.from} 0%, ${project.gradient.via} 60%, ${project.gradient.to} 100%)`
+      : `linear-gradient(135deg, ${project.gradient.from} 0%, ${project.gradient.to} 100%)`
+    : "linear-gradient(135deg, var(--muted-2) 0%, var(--card-border) 100%)";
   const titleId = `lab-card-title-${project.slug}`;
+  const ctaLabel = project.subPages.length > 0 ? "Open project" : "Read writeup";
 
-  const inner = (
-    <>
+  return (
+    <Link className="lab-card" href={`/projects/${project.slug}`} aria-labelledby={titleId}>
       <div className="lab-card-hero" style={{ background: gradient }}>
-        <span className="glyph" aria-hidden="true">
-          {project.glyph}
-        </span>
+        {project.glyph && (
+          <span className="glyph" aria-hidden="true">
+            {project.glyph}
+          </span>
+        )}
         <span className="pill">Project / personal</span>
       </div>
       <div className="lab-card-body">
@@ -36,37 +37,12 @@ export function ProjectCard({ project }: Props) {
             <span key={t}>{t}</span>
           ))}
         </div>
-        <p className="lab-card-blurb">{project.blurb}</p>
+        <p className="lab-card-blurb">{project.summary}</p>
         <span className="lab-card-cta" aria-hidden="true">
-          {project.ctaLabel}
+          {ctaLabel}
           <span className="lab-card-cta-arrow">→</span>
         </span>
       </div>
-    </>
-  );
-
-  // aria-labelledby points the screen reader at the project title alone, so
-  // the link's accessible name is "Language Learning App" rather than the
-  // 30-word concatenation of glyph + pill + title + every tech tag + blurb +
-  // CTA. Tech pills + CTA are aria-hidden because the title carries the
-  // semantic; visually the rest stays.
-  if (isExternal) {
-    return (
-      <a
-        className="lab-card"
-        href={project.ctaUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-labelledby={titleId}
-      >
-        {inner}
-      </a>
-    );
-  }
-
-  return (
-    <Link className="lab-card" href={project.ctaUrl} aria-labelledby={titleId}>
-      {inner}
     </Link>
   );
 }

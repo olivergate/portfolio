@@ -1,14 +1,23 @@
 import "server-only";
 import { createHash } from "node:crypto";
+import type { Project } from "@/lib/retro-schemas";
 import type { CV } from "@/lib/schemas";
 import { stableStringify } from "@/lib/stable-stringify";
+
+function resolveProjects(cv: CV, projects: Project[]): Project[] {
+  const bySlug = new Map(projects.map((p) => [p.slug, p]));
+  return cv.projectSlugs.map((s) => bySlug.get(s)).filter((p): p is Project => p !== undefined);
+}
 
 /**
  * Stable hash over the CV evidence the matcher reads — bullet IDs,
  * bullet text, and project metadata. The CV is now single-voice
  * (ADR-0030 retired the live tone toggle), so the hash is just the prose.
+ * Projects are resolved through the canonical projects list (ADR-0034) so
+ * the hash covers their current title/summary/stack.
  */
-export function computeCVHash(cv: CV): string {
+export function computeCVHash(cv: CV, projects: Project[]): string {
+  const resolved = resolveProjects(cv, projects);
   const evidence = {
     name: cv.header.name,
     tagline: cv.header.tagline,
@@ -23,11 +32,11 @@ export function computeCVHash(cv: CV): string {
       bullets: r.bullets.map((b) => ({ id: b.id, text: b.text })),
       technologies: r.technologies,
     })),
-    projects: cv.projects.map((p) => ({
-      id: p.id,
+    projects: resolved.map((p) => ({
+      slug: p.slug,
       title: p.title,
       stack: p.stack,
-      description: p.description,
+      summary: p.summary,
     })),
     skills: cv.skills,
     education: cv.education.map((e) => ({
@@ -45,9 +54,11 @@ export function computeCVHash(cv: CV): string {
 /**
  * Compact, prompt-ready representation of the CV's matchable evidence.
  * Each role is rendered as a heading + bullet list with explicit IDs so the
- * matcher can cite "role:opensc-1" etc. Projects render with project: prefix.
+ * matcher can cite "role:opensc-sole-frontend" etc. Projects render with
+ * project:<slug> prefix (ADR-0034).
  */
-export function formatCVForPrompt(cv: CV): string {
+export function formatCVForPrompt(cv: CV, projects: Project[]): string {
+  const resolved = resolveProjects(cv, projects);
   const lines: string[] = [];
   lines.push(`# ${cv.header.name}`);
   lines.push(cv.header.tagline);
@@ -68,8 +79,8 @@ export function formatCVForPrompt(cv: CV): string {
   }
   lines.push("");
   lines.push("## Projects");
-  for (const p of cv.projects) {
-    lines.push(`- [project:${p.id}] ${p.title} — ${p.stack}. ${p.description}`);
+  for (const p of resolved) {
+    lines.push(`- [project:${p.slug}] ${p.title} — ${p.stack}. ${p.summary}`);
   }
   lines.push("");
   lines.push("## Education");

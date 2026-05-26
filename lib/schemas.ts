@@ -55,13 +55,6 @@ const Skills = z.object({
   leadership: z.array(z.string().min(1)),
 });
 
-const Project = z.object({
-  id: slug,
-  title: z.string().min(1),
-  stack: z.string().min(1),
-  description: z.string().min(1),
-});
-
 export const CVSchema = z.object({
   header: Header,
   about: About,
@@ -69,14 +62,13 @@ export const CVSchema = z.object({
   roles: z.array(Role).min(1),
   education: z.array(Education).min(1),
   skills: Skills,
-  projects: z.array(Project).min(1),
+  projectSlugs: z.array(slug).min(1),
   avocations: z.array(z.string().min(1)),
 });
 
 export type CV = z.infer<typeof CVSchema>;
 export type CVRole = z.infer<typeof Role>;
 export type CVBullet = z.infer<typeof Bullet>;
-export type CVProject = z.infer<typeof Project>;
 export type CVEducation = z.infer<typeof Education>;
 export type CVSkills = z.infer<typeof Skills>;
 

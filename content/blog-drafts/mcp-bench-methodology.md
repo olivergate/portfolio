@@ -77,7 +77,12 @@ That's the result. The interesting part is what's wrong with it.
 
 Single git checkout. The only thing that changed between arms was the `.mcp.json` configuration — whether the MCP server was registered for that session. Same repo, same task list, same AGENTS.md, same CLAUDE.md.
 
-The first version of this used two git worktrees and tried to use AGENTS.md as the arm variable. It didn't work. The CLAUDE.md context bled across worktrees, and conventions the agent picked up in one arm carried into the other. The arms were correlated by everything except what I was trying to vary. Single-checkout with `.mcp.json` as the only delta was the version that actually isolated the variable.
+The first version of this used two git worktrees and tried to use AGENTS.md as the arm variable. It didn't work. The CLAUDE.md context bled across worktrees, and conventions the agent picked up in one arm carried into the other.
+
+> [!pull]
+> The arms were correlated by everything except what I was trying to vary.
+
+Single-checkout with `.mcp.json` as the only delta was the version that actually isolated the variable.
 
 I also added permission denies on `Bash(grep|rg|ag|ack|find:*)` on the MCP arms. Prose alone hadn't been enough — the first MCP-tool arm I ran was contaminated, because the AGENTS.md said "prefer the MCP tool; do not use bash grep" and the agent complied roughly half the time, especially under load. Once the deny was in place, compliance jumped sharply. Not perfectly though: about a third of the way through round two I noticed the agent had worked out that `awk '/pattern/' file` is a search tool, and the deny list didn't cover awk or sed. I upgraded the extractor to retroactively reclassify the eight leaked calls as bash-search rather than letting them sit in the generic bash bucket; the raw cost data didn't change, the classification did.
 
@@ -163,9 +168,15 @@ I'd model operator pacing in the protocol rather than letting it sit in the nois
 
 I'd keep prose-mandate documentation and permission-deny enforcement together by default, and I'd make the deny list more exhaustive than feels necessary. The prose trains the agent on cases the deny doesn't cover; the deny makes the rule true. But the deny only covers the tools it names — if you deny grep, deny awk and sed too, because the agent will find any adjacent tool that does the same job.
 
-I'd treat failed arms as deliverables. The Serena v1 incident was the single most actionable finding in round two. If I'd overwritten it with v2 the moment the DoD failed, the post wouldn't have it. Audit-trail preservation costs almost nothing and produces the kind of finding that helps the next user instead of just settling a horse race.
+I'd treat failed arms as deliverables. The Serena v1 incident was the single most actionable finding in round two. If I'd overwritten it with v2 the moment the DoD failed, the post wouldn't have it.
 
-I'd be careful what number I shipped. The cumulative headline is the one the reader will quote, screenshot, and propagate. If the headline doesn't carry the cohort context, the workload-shape context, and the pacing context, then publishing it does the opposite of what a benchmark is for.
+> [!pull]
+> Audit-trail preservation costs almost nothing and produces the kind of finding that helps the next user instead of just settling a horse race.
+
+I'd be careful what number I shipped. The cumulative headline is the one the reader will quote, screenshot, and propagate.
+
+> [!pull]
+> If the headline doesn't carry the cohort context, the workload-shape context, and the pacing context, then publishing it does the opposite of what a benchmark is for.
 
 ## What I might be wrong about
 

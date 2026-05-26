@@ -1,24 +1,28 @@
+import Link from "next/link";
 import { SectionHeader } from "@/components/cv/SectionHeader";
-import type { CV } from "@/lib/schemas";
+import type { Project } from "@/lib/retro-schemas";
 
-type Props = { projects: CV["projects"] };
+type Props = {
+  projectSlugs: readonly string[];
+  allProjects: readonly Project[];
+};
 
-export function Projects({ projects }: Props) {
+export function Projects({ projectSlugs, allProjects }: Props) {
+  const bySlug = new Map(allProjects.map((p) => [p.slug, p]));
+  const resolved = projectSlugs
+    .map((s) => bySlug.get(s))
+    .filter((p): p is Project => p !== undefined);
+
   return (
     <section id="projects" style={{ marginTop: "var(--gap-section)" }}>
       <SectionHeader number="06" title="Projects" />
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(var(--proj-cols, 1), minmax(0, 1fr))",
-          gap: "var(--gap-block)",
-        }}
-      >
-        {projects.map((project, i) => (
-          <article
-            key={project.id}
+      <div className="cv-projects-grid">
+        {resolved.map((project, i) => (
+          <Link
+            key={project.slug}
+            href={`/projects/${project.slug}`}
             data-reveal
-            data-project-id={project.id}
+            data-project-id={project.slug}
             className="cv-card"
             style={{
               background: "var(--card-bg)",
@@ -29,6 +33,8 @@ export function Projects({ projects }: Props) {
               display: "flex",
               flexDirection: "column",
               gap: "0.5rem",
+              textDecoration: "none",
+              color: "inherit",
             }}
           >
             <div
@@ -75,9 +81,22 @@ export function Projects({ projects }: Props) {
                 margin: 0,
               }}
             >
-              {project.description}
+              {project.summary}
             </p>
-          </article>
+            <span
+              aria-hidden="true"
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "var(--size-meta)",
+                letterSpacing: "var(--tracking-meta)",
+                textTransform: "uppercase",
+                color: "var(--accent)",
+                marginTop: "0.5rem",
+              }}
+            >
+              Read more →
+            </span>
+          </Link>
         ))}
       </div>
     </section>

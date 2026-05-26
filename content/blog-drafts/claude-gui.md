@@ -46,7 +46,8 @@ Then, before committing to any of them, I ran `ls ~/.claude/projects/` for unrel
 
 Per-subagent traces. JSONL. The model name, the prompt, the tool calls, the full transcript, sitting on disk in a directory structure Claude Code was already maintaining for its own purposes. The detection problem dissolves. I do not need to detect that a review happened. I need to point at the trace and say "that one, the one that ran the reviewer prompt, give me its output."
 
-The lesson: if you're enumerating strategies that all require a contract somewhere, you're probably solving the wrong problem. Check the substrate. It's often already doing what you wanted.
+> [!pull]
+> The lesson: if you're enumerating strategies that all require a contract somewhere, you're probably solving the wrong problem. Check the substrate. It's often already doing what you wanted.
 
 This will sound trivial when I say it out loud. It is trivial. It is also the move I see missed most consistently in agent-tooling work. People build clever model contracts on top of platforms that are already writing the data to disk for them. I have done it. I will do it again. The discipline is checking first.
 
@@ -54,7 +55,8 @@ This will sound trivial when I say it out loud. It is trivial. It is also the mo
 
 Second move, briefly, because the principle generalises. Sonnet writes the review in prose, because Sonnet writes good reviews in prose. But a human reading prose is exactly what we are trying to avoid. So I have Haiku read Sonnet's prose and convert it to JSON. `{file, severity, title, description}`, one row per finding. Only findings that name a specific file. Praise gets dropped. Process notes get dropped. What lands in the Review panel is structured, sortable, and clickable.
 
-You get Sonnet's judgment and Haiku's discipline. The cost is pennies.
+> [!pull]
+> You get Sonnet's judgment and Haiku's discipline. The cost is pennies.
 
 ## What might be wrong here
 

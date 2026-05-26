@@ -34,7 +34,12 @@ Retro-claude's substrate is a closed-set ontology. Six axes (`session_mode`, `co
 
 That `forced` field is the one that makes the ontology evolve. When five or more forced entries share a theme, the tag splits. When three or more `other` entries share a theme, a new tag gets added. When a tag goes unused across two review cycles, it gets retired. The ontology is meant to drift, deliberately, under pressure from the data. The current version is v0.2, cut early at N=3 sessions because two of those three had about 25% forced/other density — well above the implicit threshold for "the vocabulary isn't keeping up."
 
-The single biggest bias reducer in the design is the `evidence_refs` requirement. Every self-assessment entry has to cite specific turn IDs or event IDs from the session. The schema rejects empty `evidence_refs`. The principle behind this is the cleanest line in the whole project: the agent can rationalise an interpretation, but it cannot fabricate a turn that does not exist. A self-rating without evidence is invalid by schema. The agent's narrative still gets to be the agent's narrative; it just has to point at the artefacts.
+The single biggest bias reducer in the design is the `evidence_refs` requirement. Every self-assessment entry has to cite specific turn IDs or event IDs from the session. The schema rejects empty `evidence_refs`.
+
+> [!pull]
+> The agent can rationalise an interpretation, but it cannot fabricate a turn that does not exist.
+
+A self-rating without evidence is invalid by schema. The agent's narrative still gets to be the agent's narrative; it just has to point at the artefacts.
 
 ## What the corpus looks like
 
@@ -54,7 +59,10 @@ Three named behaviour changes from the corpus, each anchored to a specific sessi
 
 **Named the deferral-on-scope-addition rule.** The 2026-05-03 portfolio Phase-3 session ran 285 minutes, included three distinct mid-stream scope additions, and produced an agent self-rating of 4/5 against a user rating of 2/5. The +2 gap is the largest divergence in the corpus to date. The session's commits all passed typecheck and lint. The work shipped clean. But the *shape* of the session was the failure. After that retro I wrote a deferral rule into the project's collaboration direction: when the user adds scope mid-session, the agent must offer to defer to a fresh session rather than silently absorbing the new work. Sessions over 120 minutes get an explicit pause-point check. Both rules came directly out of one retro yaml's `gap_self_minus_user: 2` field.
 
-In each case the corpus didn't generate the rule. It surfaced the pattern with enough citation density that the rule became unignorable. The retro yaml is the substrate. The rule is what you do once the substrate has accumulated enough evidence to point at.
+> [!pull]
+> The corpus didn't generate the rule. It surfaced the pattern with enough citation density that the rule became unignorable.
+
+The retro yaml is the substrate. The rule is what you do once the substrate has accumulated enough evidence to point at.
 
 ## Where measurement isn't enough
 
@@ -66,7 +74,10 @@ The structural answer to verification-skipped-self turned out not to be a measur
 
 The 4/5 vs 2/5 case is the cleanest example of the same limit. The agent rated the session 4/5 on outcome and confidence-drift. The user rated it 2/5 on felt-quality. The agent was rating outputs. The user was rating experience. Both ratings were correct. The corpus captures both numbers and the gap between them. The corpus has no field for "the agent should have noticed it was running too long" because that judgement lives outside any individual artefact. It's about the shape of the whole session, not the shape of any commit or any decision.
 
-Structured measurement gets you to the gap. It does not, by itself, close the gap. The closing has to happen in workflow design — the deferral rule, the pause-point check, the reviewer scopes. The data tells you where to look. It does not tell you what to do once you've looked.
+> [!pull]
+> Structured measurement gets you to the gap. It does not, by itself, close the gap.
+
+The closing has to happen in workflow design — the deferral rule, the pause-point check, the reviewer scopes. The data tells you where to look. It does not tell you what to do once you've looked.
 
 ## What I might be wrong about
 

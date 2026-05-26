@@ -5,7 +5,8 @@ import type { LabProjects } from "@/lib/retro-schemas";
 type Props = { projects: LabProjects };
 
 export function LabSection({ projects }: Props) {
-  const { featured, secondary } = projects;
+  const { featured, projects: allProjects } = projects;
+  const labProjects = allProjects.filter((p) => p.showOn.lab);
 
   return (
     <>
@@ -19,8 +20,8 @@ export function LabSection({ projects }: Props) {
           Things I'm building <em>with LLMs</em>
         </h2>
         <p>
-          A working space. One live demo at the top, three side projects below. None of it is
-          finished — that's deliberate.
+          A working space. One live demo at the top, the side projects below. None of it is finished
+          — that's deliberate.
         </p>
       </header>
 
@@ -35,7 +36,7 @@ export function LabSection({ projects }: Props) {
           <span className="meta">linkouts, not demos</span>
         </header>
         <div className="lab-secondary-grid">
-          {secondary.map((p) => (
+          {labProjects.map((p) => (
             <ProjectCard key={p.slug} project={p} />
           ))}
         </div>

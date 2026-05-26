@@ -10,7 +10,8 @@ export const metadata: Metadata = {
 };
 
 export default function LabPage() {
-  const { featured, secondary } = getProjects();
+  const { featured, projects } = getProjects();
+  const labProjects = projects.filter((p) => p.showOn.lab);
 
   return (
     <div className="cv-surface">
@@ -42,7 +43,7 @@ export default function LabPage() {
           <span className="meta">linkouts, not demos</span>
         </header>
         <div className="lab-secondary-grid">
-          {secondary.map((p) => (
+          {labProjects.map((p) => (
             <ProjectCard key={p.slug} project={p} />
           ))}
         </div>

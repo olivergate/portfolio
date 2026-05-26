@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAnthropicClient } from "@/lib/anthropic";
 import { checkCostCeiling } from "@/lib/check-cost-ceiling";
-import { getCV } from "@/lib/content";
+import { getCV, getProjects } from "@/lib/content";
 import { logCost } from "@/lib/cost-log";
 import { computeCVHash, formatCVForPrompt } from "@/lib/cv-evidence";
 import {
@@ -43,7 +43,8 @@ export async function POST(req: Request): Promise<NextResponse<SuccessResponse |
   }
 
   const cv = getCV();
-  const cvHash = computeCVHash(cv);
+  const projects = getProjects().projects;
+  const cvHash = computeCVHash(cv, projects);
 
   // F2.5: jdHash is intentionally NOT in the cache key. The full `requirements`
   // array is the real entropy — a buggy/malicious client could send a mismatched
@@ -103,7 +104,7 @@ export async function POST(req: Request): Promise<NextResponse<SuccessResponse |
     );
   }
 
-  const cvText = formatCVForPrompt(cv);
+  const cvText = formatCVForPrompt(cv, projects);
   const userMessage = [
     "## CV evidence",
     "",
@@ -189,7 +190,7 @@ export async function POST(req: Request): Promise<NextResponse<SuccessResponse |
     );
   }
 
-  const validation = validateMatches(matchesParsed.data, body.requirements, cv);
+  const validation = validateMatches(matchesParsed.data, body.requirements, cv, projects);
   if (!validation.ok) {
     return NextResponse.json(
       { ok: false, stage: "honesty-validate", detail: validation.detail },
@@ -220,11 +221,12 @@ function validateMatches(
   matches: import("@/lib/jd-schemas").Match[],
   requirements: import("@/lib/jd-schemas").ParsedRequirement[],
   cv: import("@/lib/schemas").CV,
+  projects: import("@/lib/retro-schemas").Project[],
 ): { ok: true } | { ok: false; detail: string } {
   const reqIds = new Set(requirements.map((r) => r.id));
   const roleBulletIds = new Set<string>();
   for (const r of cv.roles) for (const b of r.bullets) roleBulletIds.add(b.id);
-  const projectIds = new Set(cv.projects.map((p) => p.id));
+  const projectIds = new Set(cv.projectSlugs.filter((s) => projects.some((p) => p.slug === s)));
 
   const seenReqs = new Set<string>();
   for (const m of matches) {
