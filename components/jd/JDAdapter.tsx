@@ -126,7 +126,7 @@ export function JDAdapter({ samples }: Props) {
   const handleScore = async () => {
     if (loading.kind === "parsing" || loading.kind === "matching") return;
     if (jdText.trim().length < 20) {
-      setLoading({ kind: "error", message: "JD too short — paste at least a paragraph." });
+      setLoading({ kind: "error", message: "JD too short; paste at least a paragraph." });
       setAnnounce("");
       return;
     }
@@ -409,9 +409,7 @@ export function JDAdapter({ samples }: Props) {
           onClick={handleScore}
           disabled={loading.kind === "parsing" || loading.kind === "matching" || isSamplePicked}
           aria-label="Score this JD"
-          title={
-            isSamplePicked ? "Sample JDs are pre-scored — paste a custom JD to score live" : ""
-          }
+          title={isSamplePicked ? "Sample JDs are pre-scored; paste a custom JD to score live" : ""}
         >
           {loading.kind === "parsing"
             ? "Parsing…"

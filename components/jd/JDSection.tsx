@@ -20,8 +20,8 @@ export function JDSection({ samples }: Props) {
       >
         Paste a JD. The chips below highlight which requirements I&rsquo;d land cleanly, where
         I&rsquo;d stretch, and where I&rsquo;d be honest about a gap. Click a Hit chip to jump to
-        the cited bullet up-page in the CV. The slider tunes the matching threshold &mdash; if
-        you&rsquo;re reading conservatively, drag it left.
+        the cited bullet up-page in the CV. The slider tunes the matching threshold; if you&rsquo;re
+        reading conservatively, drag it left.
       </p>
 
       <JDAdapter samples={samples} />

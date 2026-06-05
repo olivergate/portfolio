@@ -69,7 +69,7 @@ export default function AccessibilityPage() {
       >
         <p style={{ fontSize: "var(--size-tagline)", textWrap: "pretty" }}>
           This site targets <strong>WCAG 2.2 Level AA</strong> across every page and every reachable
-          slider state. The conformance claim is self-assessed — no third-party VPAT, no signed
+          slider state. The conformance claim is self-assessed: no third-party VPAT, no signed
           audit. It&rsquo;s the bar that&rsquo;s automated in CI, walked manually before each
           release, and listed honestly with its limits below.
         </p>
@@ -88,26 +88,26 @@ export default function AccessibilityPage() {
           }}
         >
           <li>
-            <strong>axe-core via Playwright</strong> — tagged at WCAG 2.0/2.1/2.2 levels A and AA,
+            <strong>axe-core via Playwright</strong>: tagged at WCAG 2.0/2.1/2.2 levels A and AA,
             run on every route at five representative slider positions plus the JD adapter across
             idle, typed-in, scored, and expanded-miss states.
           </li>
           <li>
-            <strong>Contrast snapshot</strong> — a Vitest enumerates the four-slider grid at step
-            0.1 (11⁴ = 14,641 combinations) and asserts ≥ 4.5:1 on every load-bearing pair.
-            Worst-case ratios snapshot so regressions surface as diffs.
+            <strong>Contrast snapshot</strong>: a Vitest enumerates the four-slider grid at step 0.1
+            (11⁴ = 14,641 combinations) and asserts ≥ 4.5:1 on every load-bearing pair. Worst-case
+            ratios snapshot so regressions surface as diffs.
           </li>
           <li>
-            <strong>Lighthouse CI</strong> — accessibility score = 100 on <code>/</code>,{" "}
+            <strong>Lighthouse CI</strong>: accessibility score = 100 on <code>/</code>,{" "}
             <code>/jd</code>, <code>/lab</code>, and <code>/accessibility</code> at default slider
             state.
           </li>
           <li>
-            <strong>Biome a11y rule group</strong> — recommended set enabled at error level on every{" "}
+            <strong>Biome a11y rule group</strong>: recommended set enabled at error level on every{" "}
             <code>.tsx</code> in CI.
           </li>
           <li>
-            <strong>Manual walkthrough</strong> — keyboard-only, VoiceOver + Safari, NVDA + Firefox,
+            <strong>Manual walkthrough</strong>: keyboard-only, VoiceOver + Safari, NVDA + Firefox,
             400% browser zoom, OS-level reduced motion, OS-level high contrast / forced colors, iOS
             VoiceOver on a real device. Checklist at <code>docs/runbooks/a11y-manual.md</code>.
           </li>
@@ -135,20 +135,20 @@ export default function AccessibilityPage() {
           </li>
           <li>
             <strong>The rethemer panel is dark by design.</strong> The slider deck pill and panel
-            are hardcoded chrome — they don&rsquo;t re-theme with the page, and under Windows High
+            are hardcoded chrome; they don&rsquo;t re-theme with the page, and under Windows High
             Contrast Mode they opt out of system-color substitution to stay visually distinct. The
             interactive controls inside (native <code>&lt;input type=&quot;range&quot;&gt;</code>)
             remain keyboard-operable and labelled.
           </li>
           <li>
             <strong>OS prefs win via cascade only.</strong> When <code>prefers-contrast: more</code>{" "}
-            or <code>forced-colors: active</code> are on, the page restyles via CSS — but the slider
+            or <code>forced-colors: active</code> are on, the page restyles via CSS, but the slider
             position you chose is preserved. The contrast Vitest guarantees AA is held at every
             slider state, so OS prefs and slider state coexist without forcing a choice.
           </li>
           <li>
             <strong>Self-assessed claim, no VPAT.</strong> No third-party audit has been
-            commissioned. If anything below the floor is found, please report — see contact below.
+            commissioned. If anything below the floor is found, please report; see contact below.
           </li>
         </ul>
       </section>
@@ -183,8 +183,8 @@ export default function AccessibilityPage() {
           >
             oliver.kg2@gmail.com
           </a>
-          . Honest gap reports are welcome — that&rsquo;s the same posture the JD adapter takes
-          about itself.
+          . Honest gap reports are welcome; that&rsquo;s the same posture the JD adapter takes about
+          itself.
         </p>
         <p
           style={{

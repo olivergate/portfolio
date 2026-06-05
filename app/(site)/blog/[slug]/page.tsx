@@ -25,7 +25,7 @@ export async function generateMetadata({
   if (post.status !== "published") {
     return {
       title: "Draft",
-      description: "Draft post — not yet published.",
+      description: "Draft post, not yet published.",
       robots: { index: false, follow: false },
     };
   }

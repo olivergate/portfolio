@@ -38,7 +38,7 @@
     {
       "slug": "claude-gui",
       "title": "Claude CLI cockpit",
-      "summary": "Multi-window Electron cockpit for the Claude CLI — files touched, agents in use, tool calls, rejected calls, and structured review findings, all on one surface.",
+      "summary": "Multi-window Electron cockpit for the Claude CLI: files touched, agents in use, tool calls, rejected calls, and structured review findings, all on one surface.",
       "stack": "Electron, TypeScript, React",
       "techPills": ["Electron", "TypeScript", "Anthropic SDK"],
       "glyph": "◧",

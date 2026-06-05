@@ -20,7 +20,7 @@ source_data:
 
 I wrote a tool because I couldn't trust my agent's retro on its own work.
 
-An agent that just ran a session has investment in its decisions, recency framing, and a coherent narrative it will defend. Ask it "did this work?" and you get systematically optimistic answers — the answers you'd expect from someone who spent three hours building an interpretation of what they did.
+An agent that just ran a session has investment in its decisions, recency framing, and a coherent narrative it will defend. Ask it "did this work?" and you get systematically optimistic answers: the answers you'd expect from someone who spent three hours building an interpretation of what they did.
 
 So for six weeks I've ended every Claude Code session with a slash command, `/clear-review`. It captures a structured retro into YAML, against a closed-set ontology, with mandatory evidence citations on every self-assessment. The corpus stands at 74 sessions. It has changed how I work in three named ways, and it has shown me exactly where measurement stops helping. This post is both halves.
 
@@ -30,7 +30,7 @@ The retro moment is the only point in the lifecycle where four things hold at on
 
 I did the retro by hand for a month before building anything; a month of that teaches you what the command should be. When the retro became daily work, I built the tool.
 
-Underneath is a closed-set ontology. Six axes (`session_mode`, `correction_type`, `direction_angle`, `capability_angle`, `surface`, `user_flags`), each a finite enum. Every entry carries a `fit_confidence` of `high`, `forced`, or `other`. No tag fits? Use `other` with a mandatory free-text note. A tag fits badly? Mark it `forced`. Those two fields are what let the vocabulary evolve under pressure from the data: five forced entries sharing a theme split a tag, three `other` entries sharing a theme add one, a tag unused across two review cycles retires. The current version is v0.2, cut early at N=3 sessions because two of those three ran about 25% forced/other density — the vocabulary wasn't keeping up.
+Underneath is a closed-set ontology. Six axes (`session_mode`, `correction_type`, `direction_angle`, `capability_angle`, `surface`, `user_flags`), each a finite enum. Every entry carries a `fit_confidence` of `high`, `forced`, or `other`. No tag fits? Use `other` with a mandatory free-text note. A tag fits badly? Mark it `forced`. Those two fields are what let the vocabulary evolve under pressure from the data: five forced entries sharing a theme split a tag, three `other` entries sharing a theme add one, a tag unused across two review cycles retires. The current version is v0.2, cut early at N=3 sessions because two of those three ran about 25% forced/other density. The vocabulary wasn't keeping up.
 
 The single biggest bias reducer is the `evidence_refs` requirement. Every self-assessment has to cite specific turn IDs or event IDs from the session, and the schema rejects empty refs.
 
@@ -41,13 +41,13 @@ The narrative stays the agent's narrative. It just has to point at the artefacts
 
 ## The corpus, week six
 
-74 retros. 873 entries classified at `fit_confidence: high`, 44 at `forced`, 7 at `other` — about 5% forced/other across the corpus, which is how I know the v0.2 cut is holding. v0.1 had hovered near 25% on the sessions that triggered it.
+74 retros. 873 entries classified at `fit_confidence: high`, 44 at `forced`, 7 at `other`. That's about 5% forced/other across the corpus, which is how I know the v0.2 cut is holding. v0.1 had hovered near 25% on the sessions that triggered it.
 
 One signal dominates by frequency: `verification-skipped-self`, 199 occurrences across the 74 sessions. By some distance the most-recurring observation in the data. Hold that number. It is both the strongest evidence the tool produces and the clearest mark of its limit.
 
 ## Three changes the data forced
 
-**Codified reviewer scopes.** The corpus showed parallel reviewer fanout catching blockers that single-agent review and unit tests both missed. The Phase 0.6 portfolio session surfaced the pattern with enough density to act on: eight reviewer dispatches across two waves, three real defects the implementer's self-review had not found. After that session I wrote the four standing scopes into `docs/process/reviewer-scopes.md` — security, framework, ops, corpus-audit. They now fire automatically on changed-files density at the `/clear-review` pre-flight gate (ADR-0014), not on my remembering.
+**Codified reviewer scopes.** The corpus showed parallel reviewer fanout catching blockers that single-agent review and unit tests both missed. The Phase 0.6 portfolio session surfaced the pattern with enough density to act on: eight reviewer dispatches across two waves, three real defects the implementer's self-review had not found. After that session I wrote the four standing scopes into `docs/process/reviewer-scopes.md`: security, framework, ops, corpus-audit. They now fire automatically on changed-files density at the `/clear-review` pre-flight gate (ADR-0014), not on my remembering.
 
 **Added the corpus-audit lens.** A two-round adversarial review on the 2026-05-12 retro-claude session caught the lint and typecheck issues on its first pass and still missed an ADR contradiction (ADR-0007 vs ADR-0015) that only became visible by reading the corpus rather than the diff. Finding it second, post-commit, was uncomfortable. That same week, reviewer briefs stopped being "read the diff": at least one reviewer now reads the documented record alongside the change and flags contradictions between the two.
 
@@ -64,7 +64,7 @@ The retro yaml is the raw material. The rule is what you write once the evidence
 
 The needle moved when the workflow changed: reviewer fanout, the four scopes above. Independent readers catch what a single self-reviewing agent misses. The corpus said verification was being skipped. It could not say "dispatch reviewers in parallel." That move came from outside the schema.
 
-The 4/5-versus-2/5 session is the same limit, cleaner. The agent rated outputs. The user rated experience. Both ratings were correct. The corpus records both numbers and the gap between them — and it has no field for "the agent should have noticed the session was running too long," because that judgement is about the whole session, not about any commit or decision inside it.
+The 4/5-versus-2/5 session is the same limit, cleaner. The agent rated outputs. The user rated experience. Both ratings were correct. The corpus records both numbers and the gap between them. It has no field for "the agent should have noticed the session was running too long," because that judgement is about the whole session, not about any commit or decision inside it.
 
 > [!pull]
 > Structured measurement gets you to the gap. It does not, by itself, close the gap.
@@ -81,4 +81,4 @@ And the three changes above are each anchored to a specific session, but I can't
 
 One other person has now started running the tool against their own work. Whether they reproduce my three changes or find different ones will say more than another six weeks of my own data could.
 
-What is measurable is improvable — but measurement, by itself, improves nothing. The honest post is both halves.
+What is measurable is improvable, but measurement, by itself, improves nothing. The honest post is both halves.

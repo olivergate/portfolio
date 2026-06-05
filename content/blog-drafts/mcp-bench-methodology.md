@@ -4,7 +4,7 @@ slug: mcp-bench-methodology
 status: draft
 date: 2026-05-25
 title: "Five things I learned trying to benchmark MCP search tools"
-summary: "I benchmarked three MCP search tools against bash-grep across eight tasks. The baseline won — and the result is the least interesting part. The methodology traps are the story."
+summary: "I benchmarked three MCP search tools against bash-grep across eight tasks. The baseline won, and the result is the least interesting part. The methodology traps are the story."
 kicker: "Benchmarking"
 length: "~1600 words"
 source_brief: "content/_six-post-roadmap-2026-05-25.md"
@@ -75,7 +75,7 @@ That's the result. The interesting part is what's wrong with it.
 
 ## Methodology
 
-Single git checkout. The only thing that changed between arms was the `.mcp.json` configuration — whether the MCP server was registered for that session. Same repo, same task list, same AGENTS.md, same CLAUDE.md.
+Single git checkout. The only thing that changed between arms was the `.mcp.json` configuration: whether the MCP server was registered for that session. Same repo, same task list, same AGENTS.md, same CLAUDE.md.
 
 The first version used two git worktrees with AGENTS.md as the arm variable. It didn't work. The CLAUDE.md context bled across worktrees, and conventions the agent picked up in one arm carried into the other.
 
@@ -84,11 +84,11 @@ The first version used two git worktrees with AGENTS.md as the arm variable. It 
 
 Single-checkout with `.mcp.json` as the only delta was the version that actually isolated the variable.
 
-I also added permission denies on `Bash(grep|rg|ag|ack|find:*)` on the MCP arms. Prose alone hadn't been enough — the first MCP arm I ran was contaminated, because the AGENTS.md said "prefer the MCP tool; do not use bash grep" and the agent complied roughly half the time, especially under load. With the deny in place, compliance jumped sharply. Not perfectly: a third of the way through round two I noticed the agent had worked out that `awk '/pattern/' file` is a search tool, and the deny list covered neither awk nor sed. I upgraded the extractor to retroactively reclassify the eight leaked calls as bash-search. The raw cost data didn't change; the classification did.
+I also added permission denies on `Bash(grep|rg|ag|ack|find:*)` on the MCP arms. Prose alone hadn't been enough. The first MCP arm I ran was contaminated, because the AGENTS.md said "prefer the MCP tool; do not use bash grep" and the agent complied roughly half the time, especially under load. With the deny in place, compliance jumped sharply. Not perfectly: a third of the way through round two I noticed the agent had worked out that `awk '/pattern/' file` is a search tool, and the deny list covered neither awk nor sed. I upgraded the extractor to retroactively reclassify the eight leaked calls as bash-search. The raw cost data didn't change; the classification did.
 
-Eight tasks per arm, `/cost` snapshot before and after each, per-task delta computed from the snapshots. The tasks: a small refactor (env-var swap), a bug fix (interval overlap), a wide-shallow refactor (FullCalendar removal), a feature add (auth listener), a Zod boundary refactor, a `(supabase as any)` cleanup, a self-review pass, and an RLS Q&A — a deliberate mix, chosen to surface where each retrieval mechanism wins and loses.
+Eight tasks per arm, `/cost` snapshot before and after each, per-task delta computed from the snapshots. The tasks: a small refactor (env-var swap), a bug fix (interval overlap), a wide-shallow refactor (FullCalendar removal), a feature add (auth listener), a Zod boundary refactor, a `(supabase as any)` cleanup, a self-review pass, and an RLS Q&A: a deliberate mix, chosen to surface where each retrieval mechanism wins and loses.
 
-Per-arm runs went onto local-only git branches (`bench/2026-05-08-baseline-run`, `bench/2026-05-08-grepai-run`, `bench/2026-05-08-serena-run-v2`, and so on), so each arm accumulated its own auditable commit history without polluting origin. The /cost snapshots and per-task deltas landed in a local SQLite store at `~/.claude/transcripts/2026-05-08-mcp-search-bench/bench.sqlite`, with per-task JSONL checkpoints alongside as replayable raw input — which is what made the mid-arc classifier upgrade possible without re-running anything.
+Per-arm runs went onto local-only git branches (`bench/2026-05-08-baseline-run`, `bench/2026-05-08-grepai-run`, `bench/2026-05-08-serena-run-v2`, and so on), so each arm accumulated its own auditable commit history without polluting origin. The /cost snapshots and per-task deltas landed in a local SQLite store at `~/.claude/transcripts/2026-05-08-mcp-search-bench/bench.sqlite`, with per-task JSONL checkpoints alongside as replayable raw input, which is what made the mid-arc classifier upgrade possible without re-running anything.
 
 One detail about my setup matters more than it looks. My Claude Code account is on a cohort that swaps native `Grep`/`Glob` for a bash-shell substitute (`tengu_pewter_kestrel.BashSearchTool=20000`). The vendor's reference account presumably isn't. "Baseline" in my bench and "baseline" in the vendor's number are not necessarily the same underlying tool. More on this below.
 
@@ -100,7 +100,7 @@ Four things are wrong with the headline result, or at least demand a flag.
 
 **Cohort comparability.** As above: my baseline routes through `bash:grep`, the vendor's likely through native `Grep`. The published vendor number and my measurement aren't strictly comparable, and there is currently no surface where vendors disclose which cohort their bench account was in. Worth knowing before composing any vendor's MCP benchmark with your own.
 
-**Operator pacing.** This one surprised me. On T6 — pure-recall self-review, zero tool calls — I got a $1.27 cost swing between two arms whose only meaningful difference was whether I'd taken a coffee break first.
+**Operator pacing.** This one surprised me. On T6 (pure-recall self-review, zero tool calls) I got a $1.27 cost swing between two arms whose only meaningful difference was whether I'd taken a coffee break first.
 
 <svg viewBox="0 0 600 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="cache_w tokens on T6 across four arms. Baseline 2k, grepai 1.6k, Serena v2 211k, hist-Semble 280k.">
   <style>
@@ -154,7 +154,7 @@ Four things are wrong with the headline result, or at least demand a flag.
 
 Claude Code's prompt cache has a five-minute TTL. Any idle gap longer than that forces a full re-cache when the next prompt fires, and on a heavy-MCP arm with a 200K+ prefix the rewrite costs real money. Grepai's T6 cost $0.46 because I ran the tasks back-to-back. Serena's T6 cost $1.73 because T8 had run overnight and part of the prefix had aged past TTL. Same prefix weight, different cache state. A bench harness that doesn't model operator pacing has pacing variance sitting in its cumulative number as silent noise.
 
-**The Serena v1 incident.** Serena reported T1 complete at $0.62, against grepai's $1.02 — a 40% win on direct find-and-replace, apparently. The task was to replace every hardcoded `deepl.com` URL with an env-var read. There are three call sites. The agent ran `find_symbol("deepl")` and `find_symbol("DeepL")`, both of which correctly returned nothing, because "DeepL" isn't a symbol — it lives in string literals. The agent edited the two sites it could infer from filenames and reported done. The third, `spell-check.ts:93`, was never touched. I caught it on a post-task disk check.
+**The Serena v1 incident.** Serena reported T1 complete at $0.62 against grepai's $1.02, a 40% win on direct find-and-replace, apparently. The task was to replace every hardcoded `deepl.com` URL with an env-var read. There are three call sites. The agent ran `find_symbol("deepl")` and `find_symbol("DeepL")`, both of which correctly returned nothing, because "DeepL" isn't a symbol; it lives in string literals. The agent edited the two sites it could infer from filenames and reported done. The third, `spell-check.ts:93`, was never touched. I caught it on a post-task disk check.
 
 The cause was structural. Serena's `--context claude-code` default tool list doesn't expose `search_for_pattern`, assuming users can fall through to native `Grep` when symbol search isn't enough. My account doesn't have native `Grep` (see the cohort note), and the bench denies blocked bash grep. The agent had no string-literal search path at all. One line of YAML in `.serena/project.yml` (`included_optional_tools: [search_for_pattern]`) closed the gap; v2 with the patch cost $1.03, essentially tied with grepai. The 40% win was incomplete coverage masquerading as efficiency. I kept v1 on its branch rather than overwriting it, and ran v2 on a sibling.
 
@@ -166,7 +166,7 @@ The cohort check goes in the pre-flight. Snapshot whatever the account exposes a
 
 Pacing goes in the protocol, not the noise floor. Run all tasks back-to-back inside one cache-TTL window, or introduce idle gaps deliberately and report cache state at each task's start, or run replicates across pacing profiles and report the variance. Any of those beats what I did, which was paste the next prompt when I felt like it.
 
-Prose mandates and permission denies travel together. The prose trains the agent on cases the deny doesn't cover; the deny makes the rule true. And the deny list should be more exhaustive than feels necessary — deny grep and the agent finds awk.
+Prose mandates and permission denies travel together. The prose trains the agent on cases the deny doesn't cover; the deny makes the rule true. And the deny list should be more exhaustive than feels necessary: deny grep and the agent finds awk.
 
 Failed arms are deliverables. The Serena v1 incident was the single most actionable finding in round two. Overwrite v1 the moment the DoD fails and the post doesn't have it. Preserving the audit trail cost almost nothing and produced the one finding that helps the next user instead of just settling a horse race.
 
@@ -183,6 +183,6 @@ Cohort exposure may not be widespread. I have no data on cohort distribution acr
 
 Operator pacing is a variable on my workload. If yours has no idle gaps above five minutes, the cache-TTL mechanism never fires and pacing collapses to noise. The lesson holds only for harnesses trying to model real sessions.
 
-The v1-preservation principle has a judgment call inside it. It earns its keep when the failure points at a structural property of the tool. When the failure is operator error — wrong API key, wrong working directory — preserving the arm is clutter. The question is whether the next user would hit the same wall.
+The v1-preservation principle has a judgment call inside it. It earns its keep when the failure points at a structural property of the tool. When the failure is operator error (wrong API key, wrong working directory), preserving the arm is clutter. The question is whether the next user would hit the same wall.
 
 What would change my mind on any of this: a cohort-controlled, multi-codebase, multi-operator benchmark that holds workload shape and pacing constant and still produces a stable per-task win profile. I haven't seen one. If it exists, send it.

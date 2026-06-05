@@ -6,7 +6,7 @@ import { getCV, getSampleJDs } from "@/lib/content";
 export const metadata: Metadata = {
   title: "JD adapter",
   description:
-    "Paste a job description, get a chip grid of hits, stretches, and honest gaps. Conservative-bias matching — every Hit cites the supporting bullet.",
+    "Paste a job description, get a chip grid of hits, stretches, and honest gaps. Conservative-bias matching: every Hit cites the supporting bullet.",
 };
 
 export default function JDPage() {
@@ -77,7 +77,7 @@ export default function JDPage() {
       >
         Paste a JD. The page will highlight which requirements I&rsquo;d land cleanly, where
         I&rsquo;d stretch, and where I&rsquo;d be honest about a gap. The slider tunes the matching
-        threshold &mdash; if you&rsquo;re reading conservatively, drag it left.
+        threshold; if you&rsquo;re reading conservatively, drag it left.
       </p>
 
       <JDAdapter samples={samples} />

@@ -46,7 +46,7 @@ export function SummaryLine({ chips }: Props) {
           color: "var(--muted)",
         }}
       >
-        Conservative matching — when uncertain, defaults to stretch over hit.
+        Conservative matching: when uncertain, defaults to stretch over hit.
       </p>
     </div>
   );

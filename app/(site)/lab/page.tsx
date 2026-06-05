@@ -6,7 +6,7 @@ import { getProjects } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Lab",
   description:
-    "Things I'm building with LLMs — featured Claude Code retrospective demo plus three side projects.",
+    "Things I'm building with LLMs: featured Claude Code retrospective demo plus three side projects.",
 };
 
 export default function LabPage() {
