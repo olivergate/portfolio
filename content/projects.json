@@ -2,7 +2,7 @@
   "featured": {
     "slug": "claude-code-retro",
     "title": "Session retrospective generator",
-    "blurb": "Paste a Claude Code transcript and the demo synthesises a retro: what went well, what slowed things down, learnings catalogue entries, and suggested skills to add. The same shape my real retros take after every working session.",
+    "blurb": "Paste a Claude Code transcript and the demo synthesises a retro: what went well, what slowed things down, learnings catalogue entries, and suggested skills to add. The same format my real retros take after every working session.",
     "techPills": ["Claude API", "Anthropic SDK", "tool use", "Next.js"],
     "samples": [
       {

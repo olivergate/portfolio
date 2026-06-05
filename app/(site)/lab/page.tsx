@@ -28,7 +28,7 @@ export default function LabPage() {
         </h1>
         <p>
           A working space. One live demo at the top, three side projects below. None of it is
-          finished — that's deliberate.
+          finished.
         </p>
       </header>
 

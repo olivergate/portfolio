@@ -1,7 +1,7 @@
 {
   "header": {
     "name": "Oliver Kaikane Gate",
-    "tagline": "Seven years as a full stack developer with a specialisation in all things front end. Right now I'm focusing on agentic engineering practices, figuring out best practices and workflows that are safe, efficient and don't produce spaghetti",
+    "tagline": "Seven years as a full stack developer, specialising in all things front end. Right now I'm focused on agentic engineering: working out the practices and workflows that are safe, efficient, and don't produce spaghetti.",
     "location": "Valencia, Spain (remote)",
     "contact": {
       "email": "oliver.kg2@gmail.com",
@@ -10,11 +10,11 @@
   },
   "about": {
     "paragraphs": [
-      "Came to engineering from Philosophy of Technology seven years ago. That training taught me to question the framing of a problem before answering it. Junior full stack to leading a five-person feature team along the way.",
-      "I'm a tested full stack developer and I love coding. And now I'm following the times into agentic engineering. My passion is in crafting user experiences."
+      "Came to engineering from Philosophy of Technology. That training taught me to question the framing of a problem before answering it. Junior full stack to leading a five-person frontend team along the way.",
+      "I'm a tested full stack developer and I love coding. Right now that means agentic engineering. My passion is crafting user experiences."
     ]
   },
-  "experienceOverview": "Seven years shipping production code. React/TypeScript on the frontend, Python, Node, C#, Kotlin on the backend. Three years at Redington (multi-tenant fintech SaaS; led a five-person frontend team), then four years at OpenSC as sole engineer on the supply chain analytics dashboard. I've taken some time to retrain in agentic engineering by building personal projects with a production mindset: TeacherHub (language learning platform with an LLM as judge eval suite over its homework generation pipeline), a Flutter habit app driven by LLM checkins. And a Claude session retrospective skill that allows me to evaluate sessions and perform checks on output over long periods. ",
+  "experienceOverview": "React/TypeScript on the frontend; Python, Node, C#, Kotlin on the backend. Three years at Redington (multi-tenant fintech SaaS; led a five-person frontend team), then four years at OpenSC as sole engineer on the supply chain analytics dashboard. I've taken some time to retrain in agentic engineering by building personal projects with a production mindset: TeacherHub (language-learning platform with an LLM-as-judge eval suite over its homework-generation pipeline), a Flutter habit app driven by LLM check-ins, and a Claude session retrospective skill that evaluates each session and tracks output quality over time.",
   "roles": [
     {
       "id": "opensc",
@@ -26,7 +26,7 @@
       "bullets": [
         {
           "id": "opensc-sole-frontend",
-          "text": "Sole engineer on the main analytics dashboard. Built and maintained the whole thing. Plotly Dash for the analytical core, React and Next.js for the consumer facing pages."
+          "text": "Sole engineer on the main analytics dashboard. Built and maintained the whole thing. Plotly Dash for the analytical core, React and Next.js for the consumer-facing pages."
         },
         {
           "id": "opensc-nespresso-payments",
@@ -34,7 +34,7 @@
         },
         {
           "id": "opensc-anomaly-graph",
-          "text": "Modelled supply-chain relationships so infiltration, exfiltration, capacity breaches, and untraced origin coffee became queryable patterns rather than per supply chain spot checks."
+          "text": "Modelled supply-chain relationships so infiltration, exfiltration, capacity breaches, and untraced origin coffee became queryable patterns rather than per-supply-chain spot checks."
         },
         {
           "id": "opensc-austral-fisheries",
@@ -71,19 +71,19 @@
       "company": "Redington",
       "start": "2019-02",
       "end": "2022-06",
-      "summary": "UK pensions consultancy. Core contributor on the frontend on a multi-tenant research platform used by several thousand consultants across 7 tenants to track investments and maintain observability across portfolios. Joined as a junior; promoted to leading a frontend team within two years as the company scaled from 10 engineers to 8 teams.",
+      "summary": "UK pensions consultancy. Core contributor on the frontend of a multi-tenant research platform used by several thousand consultants across 7 tenants to track investments and maintain observability across portfolios. Joined as a junior; promoted to leading a frontend team within two years as the company scaled from 10 engineers to 8 teams.",
       "bullets": [
         {
           "id": "redington-frontend-arch",
-          "text": "After being key contributor for my junior years, quickly started leading frontend architectural decisions on a React and TypeScript multi-tenant dashboard. Sensitive financial data; tenant isolation was the design constraint everything else worked around."
+          "text": "Key contributor through my junior years, then led frontend architectural decisions on a React and TypeScript multi-tenant dashboard. Sensitive financial data; tenant isolation was the design constraint everything else worked around."
         },
         {
           "id": "redington-team-lead",
-          "text": "Led a team of 5 engineers focused on frontend feature delivery, consistently the highest performing team on UI work."
+          "text": "Led a five-person frontend team focused on feature delivery, consistently the highest-performing team on UI work."
         },
         {
           "id": "redington-cypress",
-          "text": "Introduced Cypress E2E testing across the platform, which raised deployment confidence and cut release time human error."
+          "text": "Introduced Cypress E2E testing across the platform, which raised deployment confidence and cut human error at release time."
         },
         {
           "id": "redington-charity",
@@ -113,20 +113,20 @@
       "end": "2017-06",
       "notes": [
         "Specialised in Philosophy of Technology",
-        "Rhetoric and structured argument. Building a habit of restating a question before answering it",
-        "The skills I learnt at university have sculpted the way I approach design conversations, whether it is UX or technical, getting the most out of each person is tantamount to success"
+        "Rhetoric and structured argument: built the habit of restating a question before answering it",
+        "The skills I learnt at university shaped how I approach design conversations, whether UX or technical. Getting the most out of each person is what makes those conversations succeed"
       ]
     }
   ],
   "skills": {
     "primary": ["React", "Next.js", "TypeScript", "Node.js", "Python", "PostgreSQL", "AWS"],
     "ai": [
-      "Majority of my Agentic engineering toolkit has been learnt in personal projects (see bottom of page)",
       "Eval testing",
       "Agentic harness",
       "Skills, agents, hooks and strategy for agentic engineering",
-      "MCP servers with Auth0 2.1",
-      "OWASP LLM Top 10, agent orchestration",
+      "MCP servers with OAuth 2.1",
+      "OWASP LLM Top 10",
+      "Agent orchestration",
       "Prompt injection and jailbreak patterns"
     ],
     "frontend": [
@@ -166,7 +166,7 @@
       "CircleCI"
     ],
     "leadership": [
-      "Led a 5 person frontend team at Redington",
+      "Led a five-person frontend team at Redington",
       "Completed external senior IC / principal-engineer soft-skills training (2024)",
       "Ran external consulting engagement (LifeCycle) end-to-end"
     ]

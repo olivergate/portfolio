@@ -45,10 +45,7 @@ export default function BlogIndexPage() {
         <h1>
           Notes <em>in flight</em>
         </h1>
-        <p>
-          Working notes on UX, AI tooling, and the build process behind this portfolio. Everything
-          here is a draft until it isn&rsquo;t.
-        </p>
+        <p>Working notes on UX, AI tooling, and the build process behind this portfolio.</p>
       </header>
 
       <ul className="blog-list">

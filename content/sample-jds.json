@@ -15,11 +15,7 @@
         "id": "r2",
         "text": "React + TypeScript, dashboard-grade",
         "baseStatus": "hit",
-        "cite": [
-          "role:opensc-sole-frontend",
-          "role:redington-frontend-arch",
-          "role:redington-config-dashboards"
-        ],
+        "cite": ["role:opensc-sole-frontend", "role:redington-frontend-arch"],
         "reasoning": "Sole frontend on the OpenSC analytics dashboard; owned architectural decisions on the Redington multi-tenant TS dashboard."
       },
       {
@@ -72,7 +68,7 @@
         "baseStatus": "stretch",
         "strictStatus": "stretch",
         "generousStatus": "hit",
-        "cite": ["role:opensc-sole-frontend", "role:redington-config-dashboards"],
+        "cite": ["role:opensc-sole-frontend", "role:redington-frontend-arch"],
         "reasoning": "Sole frontend engineer at OpenSC + co-led architectural decisions at Redington both involved direction-setting under ambiguity, but neither role formally carried 'set technical direction for the company'."
       },
       {
@@ -249,7 +245,7 @@
         "id": "f7",
         "text": "Architecture ownership",
         "baseStatus": "hit",
-        "cite": ["role:redington-frontend-arch", "role:redington-config-dashboards"],
+        "cite": ["role:redington-frontend-arch"],
         "reasoning": "Owned + co-led architectural decisions on the Redington frontend."
       },
       {
