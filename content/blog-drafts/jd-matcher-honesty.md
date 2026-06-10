@@ -21,7 +21,7 @@ The difference isn't accuracy. Both tools do their jobs within the constraints t
 
 ## The market sells optimism
 
-Walk the output of any popular CV-vs-JD tool and the pattern repeats. The headline is a number, and the number is high. Weak matches score as Hits. Adjacent skills inflate into direct experience. The interface invites you to screenshot and share.
+Look at the output of any popular CV-vs-JD tool and the pattern repeats. The headline is a number, and the number is high. Weak matches score as Hits. Adjacent skills inflate into direct experience. The interface invites you to screenshot and share.
 
 There are honest reasons for this. Candidates are the customers, and candidates prefer tools that make them feel hireable. Recruiters scroll fast, and "92% match" cues "worth opening." Keyword stuffing on the candidate side rewards optimism on the matcher side, and the loop tightens. The market converges on shareable numbers.
 

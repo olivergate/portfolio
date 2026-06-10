@@ -76,7 +76,7 @@ export function RetroDemo({ featured }: Props) {
   const runRetro = async () => {
     if (loading.kind === "running") return;
     if (text.trim().length < 20) {
-      setLoading({ kind: "error", message: "Transcript too short; paste at least a paragraph." });
+      setLoading({ kind: "error", message: "Transcript too short. Paste at least a paragraph." });
       return;
     }
     const myGen = ++genRef.current;

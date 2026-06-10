@@ -14,7 +14,7 @@
       "I'm a tested full stack developer and I love coding. Right now that means agentic engineering. My passion is crafting user experiences."
     ]
   },
-  "experienceOverview": "React/TypeScript on the frontend; Python, Node, C#, Kotlin on the backend. Three years at Redington (multi-tenant fintech SaaS; led a five-person frontend team), then four years at OpenSC as sole engineer on the supply chain analytics dashboard. I've taken some time to retrain in agentic engineering by building personal projects with a production mindset: TeacherHub (language-learning platform with an LLM-as-judge eval suite over its homework-generation pipeline), a Flutter habit app driven by LLM check-ins, and a Claude session retrospective skill that evaluates each session and tracks output quality over time.",
+  "experienceOverview": "React/TypeScript on the frontend; Python, Node, C#, Kotlin on the backend. Three years at Redington (multi-tenant fintech SaaS; led a five-person frontend team), then four years at OpenSC as sole engineer on the supply chain analytics dashboard. Since leaving OpenSC I've gone full-time on agentic engineering, building personal projects with a production mindset: TeacherHub (language-learning platform with an LLM-as-judge eval suite over its homework-generation pipeline), a Flutter habit app driven by LLM check-ins, and a Claude session retrospective skill that evaluates each session and tracks output quality over time.",
   "roles": [
     {
       "id": "opensc",
@@ -87,7 +87,7 @@
         },
         {
           "id": "redington-charity",
-          "text": "Chaired the Bristol charity committee. Helped a charity left dry by multiple high cost agencies. We ran a one day workshop to surface issues, then migrated their database and supporting infrastructure onto Airtable. Pushed for more company sponsored charity days and helped colleagues find their own."
+          "text": "Chaired the Bristol charity committee. Helped a charity left dry by multiple high-cost agencies. We ran a one-day workshop to surface issues, then migrated their database and supporting infrastructure onto Airtable. Pushed for more company-sponsored charity days and helped colleagues find their own."
         }
       ],
       "technologies": [
@@ -122,6 +122,7 @@
     "primary": ["React", "Next.js", "TypeScript", "Node.js", "Python", "PostgreSQL", "AWS"],
     "ai": [
       "Eval testing",
+      "LLM pipelines across OpenAI and Anthropic APIs (GPT-4, Whisper, Claude)",
       "Agentic harness",
       "Skills, agents, hooks and strategy for agentic engineering",
       "MCP servers with OAuth 2.1",

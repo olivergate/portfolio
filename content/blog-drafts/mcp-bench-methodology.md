@@ -86,7 +86,7 @@ Single-checkout with `.mcp.json` as the only delta was the version that actually
 
 I also added permission denies on `Bash(grep|rg|ag|ack|find:*)` on the MCP arms. Prose alone hadn't been enough. The first MCP arm I ran was contaminated, because the AGENTS.md said "prefer the MCP tool; do not use bash grep" and the agent complied roughly half the time, especially under load. With the deny in place, compliance jumped sharply. Not perfectly: a third of the way through round two I noticed the agent had worked out that `awk '/pattern/' file` is a search tool, and the deny list covered neither awk nor sed. I upgraded the extractor to retroactively reclassify the eight leaked calls as bash-search. The raw cost data didn't change; the classification did.
 
-Eight tasks per arm, `/cost` snapshot before and after each, per-task delta computed from the snapshots. The tasks: a small refactor (env-var swap), a bug fix (interval overlap), a wide-shallow refactor (FullCalendar removal), a feature add (auth listener), a Zod boundary refactor, a `(supabase as any)` cleanup, a self-review pass, and an RLS Q&A: a deliberate mix, chosen to surface where each retrieval mechanism wins and loses.
+Eight tasks per arm, `/cost` snapshot before and after each, per-task delta computed from the snapshots. The tasks: a small refactor (env-var swap), a bug fix (interval overlap), a wide-shallow refactor (FullCalendar removal), a feature add (auth listener), a Zod boundary refactor, a `(supabase as any)` cleanup, a self-review pass, and an RLS Q&A. A deliberate mix, chosen to surface where each retrieval mechanism wins and loses.
 
 Per-arm runs went onto local-only git branches (`bench/2026-05-08-baseline-run`, `bench/2026-05-08-grepai-run`, `bench/2026-05-08-serena-run-v2`, and so on), so each arm accumulated its own auditable commit history without polluting origin. The /cost snapshots and per-task deltas landed in a local SQLite store at `~/.claude/transcripts/2026-05-08-mcp-search-bench/bench.sqlite`, with per-task JSONL checkpoints alongside as replayable raw input, which is what made the mid-arc classifier upgrade possible without re-running anything.
 
@@ -183,6 +183,6 @@ Cohort exposure may not be widespread. I have no data on cohort distribution acr
 
 Operator pacing is a variable on my workload. If yours has no idle gaps above five minutes, the cache-TTL mechanism never fires and pacing collapses to noise. The lesson holds only for harnesses trying to model real sessions.
 
-The v1-preservation principle has a judgment call inside it. It earns its keep when the failure points at a structural property of the tool. When the failure is operator error (wrong API key, wrong working directory), preserving the arm is clutter. The question is whether the next user would hit the same wall.
+The v1-preservation principle has a judgment call inside it. It pays off when the failure points at a structural property of the tool. When the failure is operator error (wrong API key, wrong working directory), preserving the arm is clutter. The question is whether the next user would hit the same wall.
 
 What would change my mind on any of this: a cohort-controlled, multi-codebase, multi-operator benchmark that holds workload shape and pacing constant and still produces a stable per-task win profile. I haven't seen one. If it exists, send it.

@@ -6,7 +6,7 @@ import { getProjects } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Lab",
   description:
-    "Things I'm building with LLMs: featured Claude Code retrospective demo plus three side projects.",
+    "Things I'm building with LLMs: a featured Claude Code retrospective demo plus the side projects around it.",
 };
 
 export default function LabPage() {
@@ -27,7 +27,7 @@ export default function LabPage() {
           Things I'm building <em>with LLMs</em>
         </h1>
         <p>
-          A working space. One live demo at the top, three side projects below. None of it is
+          A working space. One live demo at the top, the side projects below. None of it is
           finished.
         </p>
       </header>
