@@ -5,7 +5,7 @@ import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
-import { ProjectSidebar } from "@/components/projects/ProjectSidebar";
+import { ProjectTabs } from "@/components/projects/ProjectTabs";
 import { blogSanitizeSchema, rehypePullQuote } from "@/lib/blog-sanitize";
 import { getProject, getProjectPage, getProjects } from "@/lib/content";
 
@@ -32,8 +32,6 @@ export default async function ProjectPage({ params }: { params: Promise<RoutePar
   if (!project) notFound();
   const page = getProjectPage(slug);
 
-  const hasSidebar = project.subPages.length > 0;
-
   return (
     <div className="cv-surface">
       <header className="blog-post-header" data-reveal>
@@ -46,45 +44,36 @@ export default async function ProjectPage({ params }: { params: Promise<RoutePar
         <p className="blog-post-summary">{project.summary}</p>
       </header>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: hasSidebar ? "minmax(0, 1fr) 18rem" : "minmax(0, 1fr)",
-          gap: "var(--gap-block)",
-          alignItems: "start",
-          marginTop: "var(--gap-section)",
-        }}
-      >
-        <article className="blog-post-body">
-          {page ? (
-            <Markdown
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[rehypeRaw, rehypePullQuote, [rehypeSanitize, blogSanitizeSchema]]}
-            >
-              {page.bodyMd}
-            </Markdown>
-          ) : (
-            <p>Coming soon.</p>
-          )}
+      <ProjectTabs project={project} />
 
-          {project.links.length > 0 && (
-            <section style={{ marginTop: "var(--gap-block)" }}>
-              <h2 className="blog-h2">Links</h2>
-              <ul>
-                {project.links.map((link) => (
-                  <li key={link.url}>
-                    <a href={link.url} target="_blank" rel="noopener noreferrer">
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-        </article>
+      <article className="blog-post-body" style={{ marginTop: "var(--gap-block)" }}>
+        {page ? (
+          <Markdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeRaw, rehypePullQuote, [rehypeSanitize, blogSanitizeSchema]]}
+          >
+            {page.bodyMd}
+          </Markdown>
+        ) : (
+          <p>Coming soon.</p>
+        )}
 
-        {hasSidebar && <ProjectSidebar project={project} />}
-      </div>
+        {project.links.length > 0 && (
+          <section style={{ marginTop: "var(--gap-block)" }}>
+            <h2 className="blog-h2">Links</h2>
+            <ul>
+              {project.links.map((link) => (
+                <li key={link.url}>
+                  <a href={link.url} target="_blank" rel="noopener noreferrer">
+                    {link.label}
+                  </a>
+                  {link.note && <span style={{ color: "var(--muted)" }}> — {link.note}</span>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </article>
 
       <footer className="blog-post-footer">
         <Link href="/#projects" className="blog-post-back">

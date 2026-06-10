@@ -85,6 +85,8 @@ export type FeaturedProject = z.infer<typeof FeaturedProject>;
 export const ProjectLink = z.object({
   label: z.string().min(1).max(40),
   url: z.string().min(1),
+  // Shown alongside the link — e.g. "Private repo: ask for view access".
+  note: z.string().min(1).max(120).optional(),
 });
 export type ProjectLink = z.infer<typeof ProjectLink>;
 

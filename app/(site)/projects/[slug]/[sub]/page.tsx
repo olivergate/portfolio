@@ -5,7 +5,7 @@ import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
-import { ProjectSidebar } from "@/components/projects/ProjectSidebar";
+import { ProjectTabs } from "@/components/projects/ProjectTabs";
 import { blogSanitizeSchema, rehypePullQuote } from "@/lib/blog-sanitize";
 import { getProject, getProjectSubPage, getProjects } from "@/lib/content";
 
@@ -56,30 +56,20 @@ export default async function ProjectSubPage({ params }: { params: Promise<Route
         <h1 className="blog-post-title">{subPage.title}</h1>
       </header>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "minmax(0, 1fr) 18rem",
-          gap: "var(--gap-block)",
-          alignItems: "start",
-          marginTop: "var(--gap-section)",
-        }}
-      >
-        <article className="blog-post-body">
-          {page ? (
-            <Markdown
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[rehypeRaw, rehypePullQuote, [rehypeSanitize, blogSanitizeSchema]]}
-            >
-              {page.bodyMd}
-            </Markdown>
-          ) : (
-            <p>Coming soon.</p>
-          )}
-        </article>
+      <ProjectTabs project={project} activeSub={sub} />
 
-        <ProjectSidebar project={project} activeSub={sub} />
-      </div>
+      <article className="blog-post-body" style={{ marginTop: "var(--gap-block)" }}>
+        {page ? (
+          <Markdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeRaw, rehypePullQuote, [rehypeSanitize, blogSanitizeSchema]]}
+          >
+            {page.bodyMd}
+          </Markdown>
+        ) : (
+          <p>Coming soon.</p>
+        )}
+      </article>
 
       <footer className="blog-post-footer">
         <Link href={`/projects/${project.slug}`} className="blog-post-back">

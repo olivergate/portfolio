@@ -857,6 +857,58 @@ html {
   /* :focus-visible outline painted by the universal rule (Phase 4.5). */
 }
 
+/* ─── Project pages ──────────────────────────────────────────────────────── */
+
+/* Horizontal section tabs on /projects/[slug] — links to real sub-routes,
+   not client tab state (ADR-0035). Scrolls sideways on narrow screens. */
+.project-tabs {
+  display: flex;
+  gap: 1.25rem;
+  margin-top: var(--gap-section);
+  border-bottom: var(--rule-weight) solid var(--rule);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: var(--size-meta);
+  letter-spacing: var(--tracking-meta);
+  text-transform: uppercase;
+}
+.project-tab {
+  padding: 0.5rem 0 0.6rem;
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: calc(var(--rule-weight) * -1);
+  white-space: nowrap;
+  transition: color var(--motion-base), border-color var(--motion-base);
+}
+.project-tab:hover,
+.project-tab:focus-visible {
+  color: var(--fg);
+}
+.project-tab[aria-current="page"] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* Screenshots inside project/blog markdown bodies. */
+.blog-post-body img {
+  max-width: 100%;
+  height: auto;
+  border: var(--card-border-width) solid var(--card-border);
+  border-radius: var(--radius);
+  display: block;
+}
+.blog-post-body figure {
+  margin: 0.5rem 0;
+}
+.blog-post-body figcaption {
+  margin-top: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: var(--size-meta);
+  letter-spacing: var(--tracking-meta);
+  color: var(--muted);
+}
+
 /* ─── Toast ──────────────────────────────────────────────────────────────── */
 
 @keyframes toast-in {

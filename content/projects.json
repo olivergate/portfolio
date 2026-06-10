@@ -27,48 +27,89 @@
       "slug": "teacherhub",
       "title": "TeacherHub",
       "summary": "Language-learning platform with a CEFR-aligned LLM-as-judge eval suite over its homework-generation pipeline.",
-      "stack": "Next.js 14, Mantine, Supabase (Postgres + RLS), Vercel, OpenAI GPT-4, Whisper, DeepL",
+      "stack": "Next.js 15, Mantine, Supabase (Postgres + RLS), Vercel, OpenAI GPT-4o, DeepL, Capacitor",
       "techPills": ["Next.js", "Supabase", "OpenAI", "Eval suite"],
       "glyph": "あ",
       "gradient": { "from": "#f4d35e", "via": "#e26d5a", "to": "#5a3a3a" },
-      "links": [],
-      "subPages": [],
+      "links": [
+        {
+          "label": "GitHub",
+          "url": "https://github.com/olivergate/TeacherHub",
+          "note": "Private repo. Ask me and I'll grant view access."
+        }
+      ],
+      "subPages": [
+        { "slug": "features", "title": "Features" },
+        { "slug": "technology", "title": "Technology" },
+        { "slug": "evals", "title": "Evals & testing" },
+        { "slug": "philosophy", "title": "Philosophy" }
+      ],
       "showOn": { "cv": true, "lab": true }
     },
     {
       "slug": "claude-gui",
       "title": "Claude CLI cockpit",
-      "summary": "Multi-window Electron cockpit for the Claude CLI: files touched, agents in use, tool calls, rejected calls, and structured review findings, all on one surface.",
-      "stack": "Electron, TypeScript, React",
-      "techPills": ["Electron", "TypeScript", "Anthropic SDK"],
+      "summary": "Multi-window Electron cockpit for the Claude Code CLI: files touched, agents in use, tool calls, rejected calls, and structured review findings, all on one surface.",
+      "stack": "Electron, node-pty + xterm.js, SQLite, Anthropic SDK",
+      "techPills": ["Electron", "node-pty", "SQLite", "Anthropic SDK"],
       "glyph": "◧",
       "gradient": { "from": "#cdd6e0", "via": "#5a6c84", "to": "#1f2933" },
-      "links": [],
-      "subPages": [],
+      "links": [
+        {
+          "label": "GitHub",
+          "url": "https://github.com/olivergate/claude-gui",
+          "note": "Private repo. Ask me and I'll grant view access."
+        }
+      ],
+      "subPages": [
+        { "slug": "features", "title": "Features" },
+        { "slug": "technology", "title": "Technology" },
+        { "slug": "philosophy", "title": "Philosophy" }
+      ],
       "showOn": { "cv": true, "lab": true }
     },
     {
       "slug": "blob-life",
       "title": "BlobLife",
       "summary": "Gamified habit-tracking app for people with ADHD. Four phases of the day, a blob companion that reflects how it's going, and a habitat that grows with consistency.",
-      "stack": "Flutter (Dart), Riverpod",
-      "techPills": ["Flutter", "Dart", "Riverpod"],
+      "stack": "Flutter (Dart), Riverpod, Drift (SQLite), Claude Haiku via Supabase Edge Functions",
+      "techPills": ["Flutter", "Riverpod", "Drift", "Claude Haiku"],
       "glyph": "◐",
       "gradient": { "from": "#cde4d3", "via": "#6b8a7a", "to": "#2c3e36" },
-      "links": [],
-      "subPages": [],
+      "links": [
+        {
+          "label": "GitHub",
+          "url": "https://github.com/olivergate/blob-life",
+          "note": "Private repo. Ask me and I'll grant view access."
+        }
+      ],
+      "subPages": [
+        { "slug": "features", "title": "Features" },
+        { "slug": "technology", "title": "Technology" },
+        { "slug": "philosophy", "title": "Philosophy" }
+      ],
       "showOn": { "cv": true, "lab": true }
     },
     {
       "slug": "retro-claude",
       "title": "Retro Claude",
       "summary": "Skill and telemetry store on top of the Claude Code CLI: per-session retros classified against a personal ontology, telemetry over agent usage, friction, learnings, and gotchas.",
-      "stack": "Claude CLI, custom subagents and skills, SQLite telemetry",
-      "techPills": ["Claude CLI", "SQLite", "Subagents"],
+      "stack": "Claude Code CLI, custom skills and subagents, YAML session records, Supabase telemetry",
+      "techPills": ["Claude Code", "Subagents", "Supabase", "Ontology"],
       "glyph": "↻",
       "gradient": { "from": "#e8d8c4", "via": "#a17b50", "to": "#3a2a1f" },
-      "links": [],
-      "subPages": [],
+      "links": [
+        {
+          "label": "GitHub",
+          "url": "https://github.com/olivergate/retro-claude",
+          "note": "Private repo. Ask me and I'll grant view access."
+        }
+      ],
+      "subPages": [
+        { "slug": "features", "title": "Features" },
+        { "slug": "technology", "title": "Technology" },
+        { "slug": "philosophy", "title": "Philosophy" }
+      ],
       "showOn": { "cv": true, "lab": true }
     }
   ]

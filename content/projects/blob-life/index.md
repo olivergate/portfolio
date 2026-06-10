@@ -1,10 +1,17 @@
 ---
 slug: blob-life
-status: draft
+status: published
 ---
 
-BlobLife is a gamified habit-tracking app designed for people with ADHD. It splits the day into four phases (Morning, Work, Cool-down, Life) and rewards consistency with XP, cosmetics, and a growing habitat garden. At the centre is a blob companion that reflects how the day is going.
+Habit apps are built for people whose executive function shows up on time. BlobLife is a Flutter habit tracker designed for people with ADHD, which means it externalises structure instead of assuming it: the day is split into four phases (Morning, Work, Cool-down, Life), each habit lives in one, and the app only ever asks about the phase you're in.
 
-An eval-tested LLM call reads morning and evening journal entries, picks out habits, projects, and quests, breaks them into atomic steps, and hands them back as suggestions for the day and week.
+At the centre is a blob companion whose mood and energy reflect how things are going, and an emoji habitat that grows through five stages as habits get completed, and gently fades when they don't. Consistency earns XP and coins; coins buy cosmetics; nothing about progress is ever taken away.
 
-> TODO: expand. Sections to consider: the four-phase day model, the habit economy (XP, coins, streaks), the habitat growth loop, the LLM check-in pipeline, hosted-emulator demo. Each can become a sub-page.
+<figure>
+<img src="/projects/blob-life/home.png" alt="BlobLife design mockup of the morning home screen with a soft check-in prompt and a list of today's intentions such as glass of water and morning stretch" />
+<figcaption>Design mockup of the home screen: today's intentions, filtered to the current phase.</figcaption>
+</figure>
+
+The AI layer is small and priced like it: type "I want to go to the gym 4 times a week" and a Claude Haiku call via a Supabase Edge Function shapes it into a scheduled habit with tiny ordered steps. Suggestions are rate-limited, cached, and backed by a local catalogue when offline.
+
+Everything else is offline-first by design: Drift (SQLite) on the device, no server sync, the entire phase state machine computed locally. The repo carries 48 ADRs and 78 test files, with Maestro driving end-to-end flows on an emulator.
