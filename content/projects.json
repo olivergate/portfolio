@@ -111,6 +111,33 @@
         { "slug": "philosophy", "title": "Philosophy" }
       ],
       "showOn": { "cv": true, "lab": true }
+    },
+    {
+      "slug": "owasp-trainer",
+      "title": "OWASP Top 10 Trainer",
+      "summary": "Interactive trainer for the OWASP Top 10:2025 and the LLM Top 10. Learn a risk, take a quiz, then patch vulnerable code and prove the fix against live exploit tests that run in your browser.",
+      "stack": "React + TypeScript + Vite, Web Worker + Pyodide sandboxes, Vercel Functions, Upstash Redis, Resend",
+      "techPills": ["React", "Vite", "Pyodide", "Vercel Functions", "Upstash"],
+      "glyph": "⛉",
+      "gradient": { "from": "#d6e0f0", "via": "#5566a8", "to": "#1c1f33" },
+      "links": [
+        {
+          "label": "Live demo",
+          "url": "https://owasp-tester.vercel.app",
+          "note": "Runs entirely in your browser; nothing you type is uploaded."
+        },
+        {
+          "label": "GitHub",
+          "url": "https://github.com/olivergate/owasp-tester",
+          "note": "Public repo."
+        }
+      ],
+      "subPages": [
+        { "slug": "features", "title": "Features" },
+        { "slug": "technology", "title": "Technology" },
+        { "slug": "philosophy", "title": "Philosophy" }
+      ],
+      "showOn": { "cv": true, "lab": true }
     }
   ]
 }

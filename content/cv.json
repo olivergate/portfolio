@@ -172,6 +172,6 @@
       "Ran external consulting engagement (LifeCycle) end-to-end"
     ]
   },
-  "projectSlugs": ["teacherhub", "claude-gui", "blob-life", "retro-claude"],
+  "projectSlugs": ["teacherhub", "claude-gui", "blob-life", "retro-claude", "owasp-trainer"],
   "avocations": ["Food and cooking", "Travelling", "Reading", "Chess", "Running"]
 }

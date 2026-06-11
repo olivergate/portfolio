@@ -79,6 +79,7 @@ Rule of thumb: if the edit would change what a reader believes we chose or why, 
 | [0033](./0033-blog-markdown-pipeline.md) | Blog rendering pipeline (markdown source over blog.json) | Accepted | 2026-05-26 | — | — |
 | [0034](./0034-project-pages-pipeline.md) | Project pages pipeline (unified projects list + markdown bodies) | Accepted | 2026-05-26 | — | — |
 | [0035](./0035-project-tabs-and-private-repo-links.md) | Project pages: horizontal tabs, recruiter-shaped sections, private-repo links | Accepted | 2026-06-10 | — | — |
+| [0036](./0036-owasp-trainer-external-live-deploy.md) | OWASP trainer as project #5, featured via an external live deploy | Accepted | 2026-06-11 | — | — |
 
 <!--
   Add one row per ADR as you author them. Format:
