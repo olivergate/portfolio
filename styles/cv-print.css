@@ -1,0 +1,31 @@
+/* Print/PDF surface for the downloadable CV (app/cv/print).
+   Loaded only on that route. ATS-clean: single column, A4 page box,
+   roles kept off page breaks. See docs/specs/2026-06-04-cv-pdf-distribution.md. */
+
+@page {
+  size: A4;
+  margin: 11mm 13mm;
+}
+
+.cv-print {
+  max-width: none;
+  margin: 0;
+}
+
+/* Keep a role / project card from splitting across a page, but DO let the page
+   break between them — a blanket section-level avoid wastes whole pages. */
+.cv-print .cv-card,
+.cv-print [data-role] {
+  break-inside: avoid;
+}
+
+.cv-print .cv-projects-grid {
+  grid-template-columns: 1fr;
+}
+
+/* Section-header rule line carries a fixed 0.85rem padding-bottom on the live
+   site (×7 sections ≈ 95px). A class rule, so — unlike the components' inline
+   styles — print CSS can override it. The single highest-leverage page reclaim. */
+.cv-print .section-header {
+  padding-bottom: 0.35rem;
+}

@@ -1,13 +1,18 @@
 import type { CV } from "@/lib/schemas";
 
-type Props = { header: CV["header"] };
+// "web" = the public, crawlable CV page; "print" = the /cv/print surface the PDF is
+// snapshotted from. The phone is intentionally PDF-only (privacy: a crawlable number
+// is a scraper magnet — see docs/specs/2026-06-04-cv-pdf-distribution.md), and the
+// "Download PDF" affordance only makes sense on the web page, not inside the PDF.
+type Props = { header: CV["header"]; variant?: "web" | "print" };
 
-export function Header({ header }: Props) {
+export function Header({ header, variant = "web" }: Props) {
   const { name, tagline, location, contact } = header;
+  const isPrint = variant === "print";
   return (
     <header
       style={{
-        paddingTop: "clamp(0.5rem, 2vw, 1.5rem)",
+        paddingTop: isPrint ? "0" : "clamp(0.5rem, 2vw, 1.5rem)",
         paddingBottom: "var(--gap-block)",
         borderBottom: "var(--rule-weight) solid var(--rule)",
       }}
@@ -20,7 +25,7 @@ export function Header({ header }: Props) {
           letterSpacing: "var(--tracking-meta)",
           textTransform: "uppercase",
           color: "var(--muted)",
-          marginBottom: "0.85rem",
+          marginBottom: isPrint ? "0.5rem" : "0.85rem",
           display: "flex",
           gap: "0.75rem 1.25rem",
           flexWrap: "wrap",
@@ -53,7 +58,7 @@ export function Header({ header }: Props) {
       <p
         data-reveal
         style={{
-          marginTop: "1.25rem",
+          marginTop: isPrint ? "0.6rem" : "1.25rem",
           fontFamily: "var(--font-body)",
           fontSize: "var(--size-tagline)",
           lineHeight: "var(--line)",
@@ -69,7 +74,7 @@ export function Header({ header }: Props) {
       <div
         data-reveal
         style={{
-          marginTop: "1.5rem",
+          marginTop: isPrint ? "0.7rem" : "1.5rem",
           display: "flex",
           gap: "0.5rem 2rem",
           flexWrap: "wrap",
@@ -85,10 +90,20 @@ export function Header({ header }: Props) {
             {contact.email}
           </a>
         </span>
-        <span>
-          <span style={{ color: "var(--muted)" }}>tel </span>
-          {contact.phone}
-        </span>
+        {isPrint ? (
+          <span>
+            <span style={{ color: "var(--muted)" }}>tel </span>
+            {contact.phone}
+          </span>
+        ) : (
+          <a
+            href="/oliver-gate-cv.pdf"
+            download
+            style={{ color: "var(--accent)", textUnderlineOffset: "0.2em" }}
+          >
+            Download PDF ↓
+          </a>
+        )}
       </div>
     </header>
   );

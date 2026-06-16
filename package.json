@@ -13,6 +13,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "content:validate": "bun scripts/validate-content.ts",
+    "cv:pdf": "next build && bun scripts/generate-cv-pdf.ts",
     "doc-lint": "tsx tools/doc-lint/doc-lint.ts",
     "doc-lint:changed": "tsx tools/doc-lint/doc-lint.ts --changed",
     "a11y:lhci": "lhci autorun --config=lighthouserc.json",

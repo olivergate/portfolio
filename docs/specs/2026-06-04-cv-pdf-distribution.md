@@ -1,10 +1,11 @@
 # CV PDF distribution + recruiter/AI legibility
 
-**Status:** PAUSED — Oliver decided (2026-06-04) not to take the site public yet;
-all distribution work waits on that. Research complete, decisions taken, build not
-started. The PDF spike (Phase 1) is local-only and could run any time; *distributing*
-a PDF that points at olivergate.com cannot happen until the domain is connected.
-**Date:** 2026-06-04
+**Status:** ACTIVE (2026-06-15) — Oliver reversed the 2026-06-04 pause: going live +
+building the PDF now. `olivergate.com` + `www` added to the Vercel `portfolio`
+project; awaiting GoDaddy DNS (A `@`/`www` → 76.76.21.21) + Deployment-Protection
+toggle to make it resolve. PDF spike (Phase 1) starting in parallel. Research
+complete, decisions taken.
+**Date:** 2026-06-04 (research); 2026-06-15 (build started)
 **Origin:** multi-agent research workflow (31 agents, 6 web dimensions + repo scout,
 22 load-bearing claims adversarially fact-checked, ~half corrected). This doc is the
 durable digest; raw findings lived in an ephemeral task artifact.
@@ -29,6 +30,10 @@ without ever crossing the honesty guardrails.
 4. **Headline title: "Senior Full Stack Developer"** — exactly consistent with the
    role history in `cv.json`; frontend/AI focus carried by the summary line, not the
    title (parsed-profile internal consistency matters to ATS/LLM screeners).
+5. **Phone: PDF only, hidden on the public site** (2026-06-15). `cv.json` keeps the
+   phone as the single source; the public CV page (and any future JSON-LD/`/cv.md`)
+   must omit it, the print/PDF route includes it. Privacy: a crawlable phone is a
+   scraper magnet; the hand-delivered PDF is not.
 
 ## Verified findings the plan rests on
 
@@ -85,45 +90,72 @@ Fact-checked; corrections from the adversarial pass folded in.
 
 ## Plan
 
-### Phase 1 — Spike (~1h, do first)
+### Phase 1 — Spike — ✅ DONE (2026-06-15). Plan A confirmed.
 
-Minimal `app/(site)/cv/print/page.tsx`: single-column, pinned default theme, no
-FAB/rethemer/scrollspy, contact block at top of body. Playwright `page.pdf({format:
-'A4', printBackground: true, preferCSSPageSize: true})` against it. Then:
+Built `app/cv/print/page.tsx` (a route group OUTSIDE `(site)`, so no
+Nav/Footer/FAB/rethemer/scrollspy — inherits only the root layout), reusing the
+existing CV server components pinned to `DEFAULT_STYLE`; `styles/cv-print.css` +
+`scripts/generate-cv-pdf.ts` (Playwright `chromium.launch()` → `page.pdf({format:
+'A4', printBackground:true, preferCSSPageSize:true})`). Generated
+`public/oliver-gate-cv.pdf`, extracted with `pdftotext -layout` (installed poppler).
 
-- `pdftotext -layout` → name, "Valencia", email, site URL, React/TypeScript/Next.js
-  survive **in reading order**
-- Does the full `cv.json` (roles + bullets + 4 skill categories + projects +
-  education) fit 2 pages single-column? If not, content-cut decisions go to Oliver —
-  honesty guardrails apply to what gets dropped.
-- Eyeball fidelity → pick Plan A (print route, site typography) vs Plan B
-  (`@react-pdf/renderer`, deliberately plain). Known react-pdf caveats if B: TTF/WOFF
-  only (no WOFF2/variable fonts), run in a standalone Bun build script, never in the
-  Next runtime (React-19/Next-16 crash issues #2966/#2994/#3285), pin the version.
+**Results:**
+- **Text layer: excellent.** Every load-bearing element extracts as selectable text
+  in perfect reading order — name, "Valencia, Spain", email, phone, all three links,
+  the funnel line, both role titles + dates, full skills, projects, avocations.
+  Confirms `page.pdf()` is the right mechanism; **no need for `@react-pdf/renderer`**
+  (Plan B) or a second rendering model.
+- **Fidelity vs length is the real tension, and it's solved by tokens.** A faithful
+  render at the site's native screen spacing was **8 pages**. Because the components
+  are token-driven (inline styles read `var(--size-h1)`, `var(--gap-section)`, …) and
+  inline styles outrank class rules, the fix is to merge a compact print scale into
+  the inline token object (`PRINT_SCALE` in the page). That + dropping the blanket
+  `section { break-inside: avoid }` → **3 pages**, with fidelity to the site's
+  Fraunces/Inter typography intact.
+- **The remaining page-3 overflow is one block: the Projects section** (5 full cards,
+  each with a web-only "READ MORE →"). Everything else — header, both roles,
+  education, full skills — fits in 2 pages.
 
-### Phase 2 — Build (own session, ADR-0035)
+**Decision: Plan A.** Reuses every CV component (single source of truth), keeps the
+site's typography, excellent ATS text layer. Plan B (`@react-pdf/renderer`) is
+rejected — its React-19/Next-16 crash risk and second layout model buy nothing now
+that page.pdf is proven.
 
-- **Links in content** (prerequisite for everything): extend `lib/schemas.ts` header
-  with `links {website, linkedin, github?, jdMatcher}` (validated URLs), populate
-  `content/cv.json`, `bun run content:validate`. ⚠ Blocked on Oliver providing real
-  URLs; omit GitHub from PDF/sameAs if it's sparse — a weak GitHub linked from a
-  senior CV undercuts the pitch.
-- **PDF pipeline** per spike outcome, build-time generation →
-  `public/oliver-gate-cv.pdf`. Decide committed-vs-build-generated during the spike
-  (staleness guard either way: CI assert extracted PDF text matches current cv.json).
-- **Download button**: `<a download>` in `components/cv/Header.tsx` (+ footer).
-- **Funnel copy** in the PDF: hook line top-of-body, bare URLs everywhere.
-- **CI parse-safety gate**: pdftotext assert (name/Valencia/email/URL/stack in
-  reading order) + page-count ≤ 2. Operationalizes the honesty guardrail and the ATS
-  requirement in one check.
-- **Quick wins**: `app/robots.ts` (allow GPTBot, OAI-SearchBot, ChatGPT-User,
-  ClaudeBot, PerplexityBot, Google-Extended, Applebot; keep blog `index:false`),
-  `app/sitemap.ts` (all routes), OG/Twitter metadata in `app/layout.tsx`
-  (`type:'profile'`; custom 1200×630 `opengraph-image.tsx` can follow later).
-- **ADR-0035**: the PDF is a deliberately ATS-plain *new surface*, not a render of
-  the locked site design; record the deceptive tactics considered and rejected
-  (hidden text, keyword stuffing, injection) — the rejection is part of the public
-  build story.
+**To land the ≤2-page norm (build phase), pick one — Oliver's call:**
+- Compact print-only Projects treatment (title — stack — one-line blurb, drop "READ
+  MORE →" which is meaningless in a PDF). Keeps all 5; ~⅓ page. *Recommended.*
+- Trim the PDF to the top 3–4 projects (content decision).
+- Further token tightening (diminishing returns; risks cramping).
+
+### Phase 2 — Build — ✅ DONE (2026-06-16, ADR-0037)
+
+(ADR ended up **0037**, not the spec-assumed 0035/0036 — both were already taken.)
+
+- ✅ **Links in content**: optional `links {website, linkedin, github}` added to
+  `lib/schemas.ts` header + `content/cv.json` (real URLs: olivergate.com, the
+  LinkedIn vanity-pending URL, github.com/olivergate). `content:validate` green.
+- ✅ **PDF pipeline**: `app/cv/print/page.tsx` (outside `(site)`, `DEFAULT_STYLE`,
+  `PRINT_SCALE` token overrides + `.section-header` reclaim) → `bun run cv:pdf`
+  (`next build` + self-bootstrapping `scripts/generate-cv-pdf.ts`) →
+  `public/oliver-gate-cv.pdf`. **2 pages**, 247 KB, committed static asset.
+  `components/cv/ProjectsPrint.tsx` = compact print-only projects (kept all 5, each
+  with its `olivergate.com/projects/<slug>` funnel URL).
+- ✅ **Download button**: `Header variant="web"` shows "Download PDF ↓"; `variant=
+  "print"` shows the phone instead. Privacy split implemented — phone PDF-only,
+  hidden on the crawlable site; `/cv/print` is `noindex` + robots-`Disallow`.
+- ✅ **Funnel copy**: bare URLs + "paste your role at olivergate.com/jd…" line at the
+  top of the PDF body. Verified extractable via `pdftotext`.
+- ✅ **Quick wins**: `app/robots.ts` (welcomes GPTBot/OAI-SearchBot/ChatGPT-User/
+  ClaudeBot/PerplexityBot/Google-Extended/Applebot-Extended; disallows `/api/` +
+  `/cv/print`), `app/sitemap.ts` (public routes + project pages; blog excluded per
+  its `noindex` constraint), OG/Twitter metadata in `app/layout.tsx`.
+- ✅ **ADR-0037** written — print route as a deliberate ATS-plain new surface;
+  rejected deceptive tactics recorded.
+- ⏳ **CI parse-safety gate** — a `pdftotext` assert (key terms in order + ≤2 pages)
+  was run manually and passes; wiring it into CI is the one carried-over follow-up
+  (poppler-in-CI vs a JS extractor — see ADR-0037 staleness note).
+
+Checks at completion: `next build` ✓, `typecheck` ✓, `biome` ✓, 110 unit tests ✓.
 
 ### Phase 3 — Deferred (separate session, own ADR)
 

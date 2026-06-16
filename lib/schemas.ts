@@ -10,11 +10,20 @@ const Contact = z.object({
   phone: z.string().min(1),
 });
 
+// Public, canonical profile links. Optional so existing content stays valid;
+// feeds the PDF contact block, the funnel, and (later) JSON-LD sameAs.
+const Links = z.object({
+  website: z.string().url(),
+  linkedin: z.string().url(),
+  github: z.string().url().optional(),
+});
+
 const Header = z.object({
   name: z.string().min(1),
   tagline: z.string().min(1),
   location: z.string().min(1),
   contact: Contact,
+  links: Links.optional(),
 });
 
 const About = z.object({
