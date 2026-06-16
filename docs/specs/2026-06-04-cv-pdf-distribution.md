@@ -172,7 +172,10 @@ never).
       curation: fix display name ("Don Oliver Gate" → match CV), bio + blog field →
       olivergate.com, pin `portfolio`+`clipfix`, add profile README. Optional
       upgrade: make TeacherHub and/or retro-claude public. Old practice repos stay.
-- [x] LinkedIn: `https://www.linkedin.com/in/oliver-gate-28953b182/` (2026-06-04).
+- [x] LinkedIn: vanity URL claimed → `https://www.linkedin.com/in/olivergate/`
+      (2026-06-16). Spain-resident, so HSM sponsorship is genuinely required; the
+      header availability line states it (relocation broadened to Amsterdam + The
+      Hague).
 - [x] olivergate.com check (2026-06-04): **FAILED — the site is not publicly
       reachable anywhere.** olivergate.com serves a GoDaddy "Próximo lanzamiento"
       placeholder (domain never connected to Vercel; `vercel domains ls` → 0
