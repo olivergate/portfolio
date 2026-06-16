@@ -7,7 +7,7 @@ import type { CV } from "@/lib/schemas";
 type Props = { header: CV["header"]; variant?: "web" | "print" };
 
 export function Header({ header, variant = "web" }: Props) {
-  const { name, tagline, location, contact } = header;
+  const { name, tagline, location, contact, availability, links } = header;
   const isPrint = variant === "print";
   return (
     <header
@@ -71,6 +71,27 @@ export function Header({ header, variant = "web" }: Props) {
         {tagline}
       </p>
 
+      {/* Relocation + work-authorization stated up front: a recruiter who can't tell
+          whether you'll move or need sponsorship skips you to avoid the hassle.
+          Accent-coloured so it reads as a deliberate availability signal, not a
+          muted aside. Renders in both the web CV and the PDF. */}
+      {availability ? (
+        <p
+          data-reveal
+          style={{
+            marginTop: isPrint ? "0.55rem" : "1rem",
+            marginBottom: 0,
+            fontFamily: "var(--font-mono)",
+            fontSize: "var(--size-meta)",
+            letterSpacing: "0.05em",
+            color: "var(--accent)",
+            fontWeight: 500,
+          }}
+        >
+          {availability}
+        </p>
+      ) : null}
+
       <div
         data-reveal
         style={{
@@ -90,6 +111,11 @@ export function Header({ header, variant = "web" }: Props) {
             {contact.email}
           </a>
         </span>
+        {!isPrint && links?.linkedin ? (
+          <a href={links.linkedin} style={{ color: "inherit" }}>
+            <span style={{ color: "var(--muted)" }}>linkedin </span>↗
+          </a>
+        ) : null}
         {isPrint ? (
           <span>
             <span style={{ color: "var(--muted)" }}>tel </span>

@@ -3,6 +3,7 @@
     "name": "Oliver Kaikane Gate",
     "tagline": "Seven years as a full stack developer, specialising in all things front end. Right now I'm focused on agentic engineering: working out the practices and workflows that are safe, efficient, and don't produce spaghetti.",
     "location": "Valencia, Spain (remote)",
+    "availability": "Open to relocation to The Hague · Highly Skilled Migrant sponsorship",
     "contact": {
       "email": "oliver.kg2@gmail.com",
       "phone": "+34 633 861 683"
@@ -19,7 +20,7 @@
       "I'm a tested full stack developer and I love coding. Right now that means agentic engineering. My passion is crafting user experiences."
     ]
   },
-  "experienceOverview": "React/TypeScript on the frontend; Python, Node, C#, Kotlin on the backend. Three years at Redington (multi-tenant fintech SaaS; led a five-person frontend team), then four years at OpenSC as sole engineer on the supply chain analytics dashboard. Since leaving OpenSC I've gone full-time on agentic engineering, building personal projects with a production mindset: TeacherHub (language-learning platform with an LLM-as-judge eval suite over its homework-generation pipeline), a Flutter habit app driven by LLM check-ins, and a Claude session retrospective skill that evaluates each session and tracks output quality over time.",
+  "experienceOverview": "Most of my bandwidth now goes to agentic engineering, built to a production standard. TeacherHub is the clearest proof: a language-learning platform whose homework-generation pipeline runs under a CEFR-aligned LLM-as-judge eval suite I built, so shipping an AI feature meant measuring whether it actually holds up. That sits on seven years of production engineering: three years at Redington leading a five-person frontend team on a multi-tenant fintech platform, then four years at OpenSC owning the supply chain analytics dashboard end to end for customers like Nespresso and Austral Fisheries. React/TypeScript on the frontend; Python, Node, C#, Kotlin on the backend.",
   "roles": [
     {
       "id": "opensc",
@@ -128,11 +129,11 @@
     "ai": [
       "Eval testing",
       "LLM pipelines across OpenAI and Anthropic APIs (GPT-4, Whisper, Claude)",
+      "Agent orchestration",
       "Agentic harness",
       "Skills, agents, hooks and strategy for agentic engineering",
       "MCP servers with OAuth 2.1",
       "OWASP LLM Top 10",
-      "Agent orchestration",
       "Prompt injection and jailbreak patterns"
     ],
     "frontend": [

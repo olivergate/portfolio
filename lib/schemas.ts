@@ -22,6 +22,10 @@ const Header = z.object({
   name: z.string().min(1),
   tagline: z.string().min(1),
   location: z.string().min(1),
+  // Relocation + work-authorization statement (e.g. "Open to relocation to The
+  // Hague · Highly Skilled Migrant sponsorship"). Optional; rendered prominently
+  // when present, in both the web CV and the PDF.
+  availability: z.string().min(1).optional(),
   contact: Contact,
   links: Links.optional(),
 });
