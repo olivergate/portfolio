@@ -1,23 +1,23 @@
 import { expect, test } from "@playwright/test";
 
 // Phase 4 — locks the /lab contract end-to-end:
-// - Page header renders with the italic-rust "with LLMs" accent
+// - Page header renders with the italic-rust "Demo" accent
 // - Featured demo is mounted with the live badge + sample pills + transcript
 // - Clicking a sample populates the transcript
 // - Clicking Run retro shows the 4-step pipeline, then the structured output
 //   (route handler is intercepted with a deterministic fallback payload so
 //   the test never depends on a live Anthropic call)
-// - Three secondary cards render with their gradients and link out
+// /lab is demo-only: projects live in the CV's 06 Projects section (ADR-0040),
+// so there is no longer a side-projects grid here.
 
-test.describe("/lab — Claude Code retro demo + side projects", () => {
-  test("page renders with hero, featured demo, three secondary cards", async ({ page }) => {
+test.describe("/lab — Claude Code retro demo", () => {
+  test("page renders with hero and featured demo, no side-projects grid", async ({ page }) => {
     await page.goto("/lab");
-    await expect(page.locator(".lab-hero h2")).toContainText("Things I'm building");
-    await expect(page.locator(".lab-hero h2 em")).toContainText("with LLMs");
+    await expect(page.locator(".lab-hero h1")).toContainText("Retro Claude");
+    await expect(page.locator(".lab-hero h1 em")).toContainText("Demo");
     await expect(page.locator(".lab-demo-shell h2")).toBeVisible();
     await expect(page.locator(".lab-live-badge")).toBeVisible();
-    const cards = page.locator(".lab-card");
-    await expect(cards).toHaveCount(3);
+    await expect(page.locator(".lab-card")).toHaveCount(0);
   });
 
   test("clicking a sample pill populates the transcript editor", async ({ page }) => {
