@@ -2,14 +2,20 @@
    Loaded only on that route. ATS-clean: single column, A4 page box,
    roles kept off page breaks. See docs/specs/2026-06-04-cv-pdf-distribution.md. */
 
+/* Zero the page margin so the warm-cream page background (propagated from
+   `body` to the print canvas) bleeds to all four paper edges instead of
+   leaving a white border. The content inset that used to live in the @page
+   margin moves to padding on .cv-print below — same text position, cream
+   right out to the edge. */
 @page {
   size: A4;
-  margin: 11mm 13mm;
+  margin: 0;
 }
 
 .cv-print {
   max-width: none;
   margin: 0;
+  padding: 11mm 13mm;
 }
 
 /* Keep a role / project card from splitting across a page, but DO let the page
