@@ -102,6 +102,15 @@ export const ProjectGradient = z.object({
   to: z.string().min(1),
 });
 
+// Card hero screenshot. When present the card leads with the image instead of
+// the gradient/glyph (ADR-0039). `src` is a public-relative path; `alt` is the
+// real description (the card is link-labelled by its title, but the screenshot
+// still carries information, so it is not decorative).
+export const ProjectImage = z.object({
+  src: z.string().min(1),
+  alt: z.string().min(1).max(200),
+});
+
 export const Project = z.object({
   slug: slug,
   title: z.string().min(1),
@@ -110,6 +119,7 @@ export const Project = z.object({
   techPills: z.array(TechPill).min(1).max(8),
   glyph: z.string().min(1).max(4).optional(),
   gradient: ProjectGradient.optional(),
+  image: ProjectImage.optional(),
   links: z.array(ProjectLink).default([]),
   subPages: z.array(ProjectSubPage).default([]),
   showOn: z.object({

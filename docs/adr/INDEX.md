@@ -81,6 +81,8 @@ Rule of thumb: if the edit would change what a reader believes we chose or why, 
 | [0035](./0035-project-tabs-and-private-repo-links.md) | Project pages: horizontal tabs, recruiter-shaped sections, private-repo links | Accepted | 2026-06-10 | — | — |
 | [0036](./0036-owasp-trainer-external-live-deploy.md) | OWASP trainer as project #5, featured via an external live deploy | Accepted | 2026-06-11 | — | — |
 | [0037](./0037-cv-pdf-print-surface.md) | Downloadable CV PDF via a dedicated `/cv/print` surface snapshotted with Playwright `page.pdf()` | Accepted | 2026-06-16 | — | — |
+| [0038](./0038-projects-shown-once-cv-section.md) | Projects shown once on the home page (CV 06 section, gradient cards); home Lab trimmed to the featured demo | Accepted | 2026-06-17 | — | — |
+| [0039](./0039-home-nav-and-project-card-screenshots.md) | Nav: Projects replaces Lab in the menu + external OWASP Trainer link; project cards lead with screenshots (gradient fallback) | Accepted | 2026-06-17 | — | — |
 
 <!--
   Add one row per ADR as you author them. Format:

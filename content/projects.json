@@ -31,6 +31,10 @@
       "techPills": ["Next.js", "Supabase", "OpenAI", "Eval suite"],
       "glyph": "あ",
       "gradient": { "from": "#f4d35e", "via": "#e26d5a", "to": "#5a3a3a" },
+      "image": {
+        "src": "/projects/teacherhub/teacher-dashboard.png",
+        "alt": "TeacherHub teacher dashboard: lesson schedule, a review queue, and tabs for students and content library"
+      },
       "links": [
         {
           "label": "GitHub",
@@ -54,6 +58,10 @@
       "techPills": ["Electron", "node-pty", "SQLite", "Anthropic SDK"],
       "glyph": "◧",
       "gradient": { "from": "#cdd6e0", "via": "#5a6c84", "to": "#1f2933" },
+      "image": {
+        "src": "/projects/claude-gui/cockpit-live.png",
+        "alt": "Claude CLI cockpit: the Claude Code terminal on the left with live panels for files touched and tool calls on the right"
+      },
       "links": [
         {
           "label": "GitHub",
@@ -76,6 +84,10 @@
       "techPills": ["Flutter", "Riverpod", "Drift", "Claude Haiku"],
       "glyph": "◐",
       "gradient": { "from": "#cde4d3", "via": "#6b8a7a", "to": "#2c3e36" },
+      "image": {
+        "src": "/projects/blob-life/home.png",
+        "alt": "BlobLife morning home screen with a soft check-in prompt and a list of today's intentions"
+      },
       "links": [
         {
           "label": "GitHub",
@@ -120,6 +132,10 @@
       "techPills": ["React", "Vite", "Pyodide", "Vercel Functions", "Upstash"],
       "glyph": "⛉",
       "gradient": { "from": "#d6e0f0", "via": "#5566a8", "to": "#1c1f33" },
+      "image": {
+        "src": "/projects/owasp-trainer/lab.png",
+        "alt": "The OWASP trainer code lab: a vulnerable getDocument function in an editor with a brief and a Run exploit tests button"
+      },
       "links": [
         {
           "label": "Live demo",

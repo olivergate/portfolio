@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { SectionHeader } from "@/components/cv/SectionHeader";
+import { ProjectCard } from "@/components/lab/ProjectCard";
 import type { Project } from "@/lib/retro-schemas";
 
 type Props = {
@@ -7,6 +7,14 @@ type Props = {
   allProjects: readonly Project[];
 };
 
+/**
+ * CV section 06. Renders the same gradient ProjectCard treatment used on /lab
+ * (ADR-0038) so projects appear once on the home page — the Lab section at the
+ * foot of the page no longer duplicates the grid. The cards opt into
+ * `citeTarget` so the JD matcher's project chips still scroll to and pulse the
+ * canonical card here (ADR-0029). The grid stays `cv-projects-grid` so the
+ * density slider keeps driving its column count.
+ */
 export function Projects({ projectSlugs, allProjects }: Props) {
   const bySlug = new Map(allProjects.map((p) => [p.slug, p]));
   const resolved = projectSlugs
@@ -17,86 +25,8 @@ export function Projects({ projectSlugs, allProjects }: Props) {
     <section id="projects" style={{ marginTop: "var(--gap-section)" }}>
       <SectionHeader number="06" title="Projects" />
       <div className="cv-projects-grid">
-        {resolved.map((project, i) => (
-          <Link
-            key={project.slug}
-            href={`/projects/${project.slug}`}
-            data-reveal
-            data-project-id={project.slug}
-            className="cv-card"
-            style={{
-              background: "var(--card-bg)",
-              border: "var(--card-border-width) solid var(--card-border)",
-              borderRadius: "var(--radius)",
-              padding: "var(--pad-card)",
-              boxShadow: "var(--shadow)",
-              display: "flex",
-              flexDirection: "column",
-              gap: "0.5rem",
-              textDecoration: "none",
-              color: "inherit",
-            }}
-          >
-            <div
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "var(--size-meta)",
-                letterSpacing: "var(--tracking-meta)",
-                textTransform: "uppercase",
-                color: "var(--muted)",
-                fontVariantNumeric: "tabular-nums",
-              }}
-            >
-              {String(i + 1).padStart(2, "0")} / project
-            </div>
-            <h3
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "var(--size-h3)",
-                fontWeight: "var(--weight-h3)",
-                textTransform: "var(--case-h3)",
-                color: "var(--fg)",
-                margin: 0,
-                lineHeight: 1.2,
-              }}
-            >
-              {project.title}
-            </h3>
-            <div
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "var(--size-meta)",
-                color: "var(--muted)",
-                letterSpacing: "0.04em",
-              }}
-            >
-              {project.stack}
-            </div>
-            <p
-              style={{
-                fontSize: "var(--size-body)",
-                lineHeight: "var(--line)",
-                color: "var(--fg)",
-                textWrap: "pretty",
-                margin: 0,
-              }}
-            >
-              {project.summary}
-            </p>
-            <span
-              aria-hidden="true"
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "var(--size-meta)",
-                letterSpacing: "var(--tracking-meta)",
-                textTransform: "uppercase",
-                color: "var(--accent)",
-                marginTop: "0.5rem",
-              }}
-            >
-              Read more →
-            </span>
-          </Link>
+        {resolved.map((project) => (
+          <ProjectCard key={project.slug} project={project} citeTarget reveal />
         ))}
       </div>
     </section>

@@ -249,6 +249,21 @@ html {
   border-bottom-color: var(--accent);
 }
 
+/* External-route marker (e.g. the OWASP Trainer live demo). Small, muted, and
+   nudged up so it reads as an "opens elsewhere" cue without competing with the
+   label. */
+.scrollspy-ext {
+  margin-left: 0.25em;
+  font-size: 0.85em;
+  color: var(--muted-2);
+  vertical-align: super;
+  line-height: 1;
+}
+.scrollspy-link:hover .scrollspy-ext,
+.scrollspy-link:focus-visible .scrollspy-ext {
+  color: var(--accent);
+}
+
 @media print {
   .scrollspy-nav { display: none; }
 }
