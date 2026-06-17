@@ -6,7 +6,7 @@ import { getProjects } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Lab",
   description:
-    "Things I'm building with LLMs: a featured Claude Code retrospective demo plus the side projects around it.",
+    "Lab: a featured Claude Code retrospective demo. See side projects I'm building above. ",
 };
 
 export default function LabPage() {
@@ -24,11 +24,12 @@ export default function LabPage() {
           <span>Updated weekly</span>
         </div>
         <h1>
-          Things I'm building <em>with LLMs</em>
+          Retro Claude <em>Demo</em>
         </h1>
         <p>
-          A working space. One live demo at the top, the side projects below. None of it is
-          finished.
+          This formed the basis of my work on claude gui. An attempt to understand deeply how I work
+          with LLM's and how I can improve either my prompt writing or the harnass of LLMs in my
+          work.
         </p>
       </header>
 

@@ -13,27 +13,27 @@
     {
       "number": 2,
       "title": "Framing is first",
-      "text": "I push on definitions before estimates. Most of the engineering disasters I've watched were technically clean — written well, shipped on time — and answering the wrong question. A week spent on the framing is usually worth a quarter of misdirected building."
+      "text": "I push on definitions before estimates. Most of the engineering disasters I've watched were technically clean, written well, shipped on time, but were answering the wrong question. Time spent on the framing is costs less than misdirected building, builds trust and team cohesion."
     },
     {
       "number": 3,
       "title": "Documentation and clear decisions",
-      "text": "I keep an ADR log on every project of meaningful size. This site has thirty-one so far, including the ones that document deviations and reversals. The point is being able to argue with a past decision when context shifts. Retros are the same habit at session-scale: write down what surprised me, see what comes up more than once."
+      "text": "Keeping a log of architectural decisions is now more than just good practice for future engineers. It's core to the agentic approach. This site has thirty-one so far, including the ones that document deviations and reversals. The point is being able to argue with a past decision when context shifts and keep the LLMs in the loop on why."
     },
     {
       "number": 4,
       "title": "Right-aligned development",
-      "text": "Before picking up new work, I scan the board right-to-left. Looking for: someone who needs a review, someone stuck on something I have context on, someone working in an area I'm about to touch. Usually one of those is a cheaper unblock than starting on my own next thing. I've been calling it right-aligned development."
+      "text": "Before picking up new work, scan the board right-to-left. Looking for: someone who needs a review, someone stuck on something I have context on, someone working in an area I'm about to touch. Usually one of those is a cheaper unblock than starting new work. I've been calling it right-aligned development (RAD)."
     },
     {
       "number": 5,
       "title": "Honesty over polish",
-      "text": "I'd rather a CV bullet or an ADR read truthfully than impressively. The JD matcher on this site is tuned to flag my own gaps as honest gaps rather than stretch them into matches. The ADR log includes one where I had to darken a cream against the original design system to clear WCAG AA — uncomfortable to admit, worth admitting."
+      "text": "I'd rather a CV bullet or an ADR read truthfully than impressively. The JD matcher on this site is tuned to flag my own gaps as honest gaps rather than stretch them into matches."
     },
     {
       "number": 6,
       "title": "No absolutism in technological choices",
-      "text": "My default criteria for tech choices: SOLID, maintainability, and agentic readiness — tools and structures an LLM can reason about. I'll break any of them deliberately when the product needs a different balance, provided I write down why. ADR-0001 picks Next.js over the design's recommended Astro. ADR-0007 darkens a cream to clear WCAG AA, against the design system as written."
+      "text": "My default criteria for tech choices: SOLID, maintainability, and agentic readiness — tools and structures an LLM can reason about. I'll break any of them deliberately when the product needs a different balance, provided I write down why. For example, ADR-0001 picks Next.js over the LLM design's recommended Astro."
     }
   ],
   "signature": {
