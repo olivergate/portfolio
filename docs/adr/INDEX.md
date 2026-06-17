@@ -84,6 +84,7 @@ Rule of thumb: if the edit would change what a reader believes we chose or why, 
 | [0038](./0038-projects-shown-once-cv-section.md) | Projects shown once on the home page (CV 06 section, gradient cards); home Lab trimmed to the featured demo | Accepted | 2026-06-17 | — | — |
 | [0039](./0039-home-nav-and-project-card-screenshots.md) | Nav: Projects replaces Lab in the menu + external OWASP Trainer link; project cards lead with screenshots (gradient fallback) | Accepted | 2026-06-17 | — | — |
 | [0040](./0040-lab-route-demo-only.md) | /lab is demo-only; side-projects grid removed (projects live solely in section 06) — reverses the /lab consequence of 0038 | Accepted | 2026-06-17 | — | — |
+| [0041](./0041-favicon-fraunces-g.md) | Favicon: cream Fraunces italic "G" on a rust tile (icon.png/apple-icon.png/favicon.ico), replacing the stock Next default | Accepted | 2026-06-17 | — | — |
 
 <!--
   Add one row per ADR as you author them. Format:
