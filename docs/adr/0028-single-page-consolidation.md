@@ -62,6 +62,15 @@ Implementation:
 - `app/(site)/page.tsx` mounts all four `<section id="…">` blocks in order.
 - `app/(site)/jd/`, `app/(site)/tone/`, `app/(site)/lab/` directories
   deleted.
+
+  > **Amended 2026-06-24:** these standalone `page.tsx` files were
+  > accidentally reintroduced after this ADR (the `/lab` page alongside
+  > ADR-0040, and `/jd`/`/tone` with it) while the 308 redirects above
+  > stayed in place — leaving them unreachable dead code shadowed by the
+  > redirects. They have been re-removed to restore the decided state. The
+  > live surfaces are the `#jd`/`#tone`/`#lab` sections on `/`
+  > (`JDSection`/`ToneSection`/`LabSection`); `app/sitemap.ts` no longer
+  > lists the redirect-source paths.
 - New nav: `components/layout/ScrollSpyNav.tsx` (client). A minimal mono
   strip, sticky to top, four labels separated by `·`. The active label
   underlines using an `IntersectionObserver` with a middle-band rootMargin;
