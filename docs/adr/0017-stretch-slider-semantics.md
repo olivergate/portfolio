@@ -97,3 +97,9 @@ Quick-snap buttons set the thumb to {0.15, 0.5, 0.85}. The slider call to
 - Conservative-bias matcher: ADR-0016
 - Two-stage pipeline: ADR-0015
 - Design source: `design-references/source/cv-jd.html` (`levelLabel`, `levelToValue`)
+- **Transport superseded by ADR-0042:** the API no longer receives a discrete
+  level and the slider no longer refetches — the matcher scores all three
+  readings in one call and the slider projects them client-side. The honesty
+  principle above (the slider never moves the Stretch/Miss floor; a Miss is a
+  Miss at every reading) is retained and now enforced structurally by that
+  single reasoning pass plus the server validator.

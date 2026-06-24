@@ -28,7 +28,7 @@ test.describe("JD adapter — sample JD interactions", () => {
     expect(text).not.toMatch(/\d+\/\d+/);
 
     const honestyKicker = page.getByText(
-      /Conservative matching — when uncertain, defaults to stretch over hit/i,
+      /Conservative matching: when uncertain, defaults to stretch over hit/i,
     );
     await expect(honestyKicker).toBeVisible();
   });
@@ -68,29 +68,30 @@ test.describe("JD adapter — sample JD interactions", () => {
     expect(bullets[0]).toBe("opensc-sole-frontend");
   });
 
-  test("stretch slider strict snap re-colors chips (Sustainability r10 → Miss)", async ({
+  test("stretch slider keeps the Miss floor fixed across readings (ADR-0017 / ADR-0042)", async ({
     page,
   }) => {
-    // Default = balanced → 7 hits, 4 stretches, 1 miss.
+    // Default = balanced → 7 hits, 4 stretches, 1 honest gap.
     let counts = await chipCounts(page);
     expect(counts).toEqual({ hits: 7, stretches: 4, misses: 1 });
 
     await page.getByRole("button", { name: /strict/i }).click();
     await page.waitForTimeout(300);
 
-    // Strict → r10 ("On-chain provenance / Ethereum") drops to Miss.
+    // Strict tightens only the Hit/Stretch line — it must NEVER harden a
+    // Stretch into a Miss. This JD has no strict Hit→Stretch override, so the
+    // reading is unchanged; crucially the honest-gap count does not grow.
     counts = await chipCounts(page);
-    expect(counts).toEqual({ hits: 7, stretches: 3, misses: 2 });
+    expect(counts).toEqual({ hits: 7, stretches: 4, misses: 1 });
 
     await page.getByRole("button", { name: /generous/i }).click();
     await page.waitForTimeout(300);
-    // Generous → three of the four base-Stretches promote to Hit; the fourth
-    // and r11 stay Stretch (the chip data sets generousStatus per-chip so the
-    // honesty-of-the-data is preserved through the slider — see ADR-0017).
-    // r10 ("On-chain provenance / Ethereum") promotes to Hit at generous; the
-    // base-Miss r11 ("AWS deep certifications") snaps to Stretch.
+    // Generous promotes three borderline Stretches to Hit, but the honest gap
+    // ("Set hiring bar / formal hiring authority") STAYS a gap — a Miss is
+    // never softened into a Stretch by sliding (the floor is fixed, ADR-0017).
+    // Misses stays 1, not 0.
     counts = await chipCounts(page);
-    expect(counts).toEqual({ hits: 10, stretches: 2, misses: 0 });
+    expect(counts).toEqual({ hits: 10, stretches: 1, misses: 1 });
   });
 
   test("switching sample pill updates chip count", async ({ page }) => {

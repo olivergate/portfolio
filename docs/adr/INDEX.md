@@ -60,7 +60,7 @@ Rule of thumb: if the edit would change what a reader believes we chose or why, 
 | [0014](./0014-anthropic-key-redis-provisioning.md) | Anthropic key + Upstash Redis provisioning model | Accepted | 2026-05-03 | — | — |
 | [0015](./0015-jd-two-stage-pipeline.md) | JD adapter uses a two-stage parse-then-match pipeline | Accepted | 2026-05-03 | — | — |
 | [0016](./0016-jd-matcher-conservative-bias.md) | JD matcher prompt is conservative-biased | Accepted | 2026-05-03 | — | — |
-| [0017](./0017-stretch-slider-semantics.md) | Stretch slider adjusts only the Hit/Stretch boundary; API receives a discrete level | Accepted | 2026-05-03 | — | — |
+| [0017](./0017-stretch-slider-semantics.md) | Stretch slider adjusts only the Hit/Stretch boundary; API receives a discrete level | Accepted | 2026-05-03 | — | 0042 (transport) |
 | [0018](./0018-no-top-line-match-percentage.md) | No top-line match percentage on `/jd` | Accepted | 2026-05-03 | — | — |
 | [0019](./0019-bullet-reorder-opt-in.md) | Bullet reorder on `/jd` is opt-in; original CV order is the truth | Superseded | 2026-05-03 | — | 0027 |
 | [0020](./0020-localstorage-replaces-url-hash-share.md) | localStorage replaces URL-hash sharing for the slider deck | Accepted | 2026-05-03 | — | — |
@@ -85,6 +85,7 @@ Rule of thumb: if the edit would change what a reader believes we chose or why, 
 | [0039](./0039-home-nav-and-project-card-screenshots.md) | Nav: Projects replaces Lab in the menu + external OWASP Trainer link; project cards lead with screenshots (gradient fallback) | Accepted | 2026-06-17 | — | — |
 | [0040](./0040-lab-route-demo-only.md) | /lab is demo-only; side-projects grid removed (projects live solely in section 06) — reverses the /lab consequence of 0038 | Accepted | 2026-06-17 | — | — |
 | [0041](./0041-favicon-fraunces-g.md) | Favicon: cream Fraunces italic "G" on a rust tile (icon.png/apple-icon.png/favicon.ico), replacing the stock Next default | Accepted | 2026-06-17 | — | — |
+| [0042](./0042-jd-matcher-scores-all-readings-in-one-call.md) | JD matcher scores all three readings in one call; stretch slider is a client-side projection (no refetch); shared LoadingPipeline | Accepted | 2026-06-17 | 0017 (transport) | — |
 
 <!--
   Add one row per ADR as you author them. Format:

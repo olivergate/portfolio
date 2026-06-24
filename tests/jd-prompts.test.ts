@@ -69,10 +69,10 @@ describe("extractToolInput", () => {
   test("happy path — returns the tool input for the named tool", () => {
     const msg = buildToolUseMessage({
       toolName: "submit_matches",
-      input: { matches: [{ requirementId: "r1", status: "hit" }] },
+      input: { matches: [{ requirementId: "r1", baseStatus: "hit" }] },
     });
     const out = extractToolInput<{ matches: unknown }>(msg, "submit_matches");
-    expect(out).toEqual({ matches: [{ requirementId: "r1", status: "hit" }] });
+    expect(out).toEqual({ matches: [{ requirementId: "r1", baseStatus: "hit" }] });
   });
 
   test("throws when no tool_use block is present (text-only with end_turn)", () => {

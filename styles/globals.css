@@ -560,6 +560,91 @@ html {
 }
 
 
+/* ─── Loading pipeline (shared by /lab and /jd) — ADR-0042 ───────────────── */
+@keyframes pipeline-load-bar {
+  0%      { transform: scaleX(0); transform-origin: left; }
+  50%     { transform: scaleX(1); transform-origin: left; }
+  50.01%  { transform-origin: right; }
+  100%    { transform: scaleX(0); transform-origin: right; }
+}
+@keyframes pipeline-caret {
+  50% { opacity: 0; }
+}
+
+.pipeline {
+  background: var(--terminal);
+  color: var(--terminal-fg);
+  padding: 1.5rem 1.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.7;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 2px,
+    rgba(255, 255, 255, 0.012) 2px,
+    rgba(255, 255, 255, 0.012) 3px
+  );
+}
+.pipeline-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: opacity 200ms;
+}
+.pipeline-row[data-state="done"] { opacity: 0.5; }
+.pipeline-row[data-state="active"] { opacity: 1; }
+.pipeline-row[data-state="pending"] { opacity: 0.25; }
+
+.pipeline-glyph { width: 14px; }
+.pipeline-row[data-state="done"] .pipeline-glyph { color: var(--terminal-green); }
+.pipeline-row[data-state="active"] .pipeline-glyph { color: var(--terminal-amber); }
+.pipeline-row[data-state="pending"] .pipeline-glyph { color: rgba(244, 238, 224, 0.4); }
+
+.pipeline-label { letter-spacing: 0.06em; }
+
+.pipeline-caret {
+  display: inline-block;
+  width: 8px;
+  height: 1em;
+  background: var(--terminal-fg);
+  margin-left: 2px;
+  vertical-align: -2px;
+  animation: pipeline-caret 0.9s steps(2) infinite;
+}
+
+.pipeline-bar {
+  flex: 1;
+  position: relative;
+  height: 1px;
+  margin-left: 8px;
+}
+.pipeline-bar > .track {
+  position: absolute;
+  inset: 0;
+  background: rgba(244, 238, 224, 0.15);
+}
+.pipeline-bar > .fill {
+  position: absolute;
+  inset: 0;
+}
+.pipeline-row[data-state="done"] .pipeline-bar > .fill {
+  background: rgba(122, 215, 122, 0.55);
+}
+.pipeline-row[data-state="active"] .pipeline-bar > .fill {
+  background: var(--terminal-amber);
+  animation: pipeline-load-bar 1.6s cubic-bezier(.4, .0, .2, 1) infinite;
+}
+.pipeline-row[data-state="pending"] .pipeline-bar > .fill {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pipeline-row[data-state="active"] .pipeline-bar > .fill { animation: none; }
+  .pipeline-caret { animation: none; }
+}
+
+
 /* ─── Blog (/blog and /blog/[slug]) ──────────────────────────────────────── */
 
 .blog-hero {

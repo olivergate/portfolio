@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { LiveBadge } from "@/components/lab/LiveBadge";
-import { LoadingPipeline } from "@/components/lab/LoadingPipeline";
 import { RetroOutput } from "@/components/lab/RetroOutput";
+import { LoadingPipeline } from "@/components/ui/LoadingPipeline";
 import type { FeaturedProject, RetroResponse } from "@/lib/retro-schemas";
 
 type Props = {
@@ -19,8 +19,14 @@ type OutputState =
   | { source: "live"; retro: RetroResponse; sampleLabel: string }
   | { source: "fallback"; retro: RetroResponse; sampleLabel: string };
 
+const PIPELINE_STEPS = [
+  "read transcript",
+  "extract beats",
+  "synthesise retro",
+  "format output",
+] as const;
 const PIPELINE_STEP_MS = 520;
-const PIPELINE_TOTAL_MS = PIPELINE_STEP_MS * 4;
+const PIPELINE_TOTAL_MS = PIPELINE_STEP_MS * PIPELINE_STEPS.length;
 
 /**
  * Featured Claude Code retro demo.
@@ -90,7 +96,7 @@ export function RetroDemo({ featured }: Props) {
     timerRef.current = setInterval(() => {
       if (genRef.current !== myGen) return;
       p += 1;
-      if (p < 4) {
+      if (p < PIPELINE_STEPS.length) {
         setLoading({ kind: "running", phase: p });
       }
     }, PIPELINE_STEP_MS);
@@ -242,7 +248,9 @@ export function RetroDemo({ featured }: Props) {
       )}
 
       <div style={{ marginTop: "1.75rem" }}>
-        {loading.kind === "running" && <LoadingPipeline phase={loading.phase} />}
+        {loading.kind === "running" && (
+          <LoadingPipeline phase={loading.phase} steps={PIPELINE_STEPS} />
+        )}
         {output && loading.kind !== "running" && (
           <RetroOutput
             retro={output.retro}

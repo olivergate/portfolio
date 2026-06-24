@@ -34,7 +34,7 @@ describe("StretchLevel boundaries (ADR-0017)", () => {
   });
 });
 
-describe("statusAtLevel preserves Miss across all levels (ADR-0016)", () => {
+describe("statusAtLevel preserves Miss across all levels (ADR-0016 / ADR-0017)", () => {
   test("a baseStatus Miss stays Miss at strict and generous if no override given", () => {
     const chip: SampleChip = SampleChip.parse({
       id: "x",
@@ -47,18 +47,43 @@ describe("statusAtLevel preserves Miss across all levels (ADR-0016)", () => {
     expect(statusAtLevel(chip, "balanced")).toBe("miss");
     expect(statusAtLevel(chip, "generous")).toBe("miss");
   });
-  test("strictStatus override applies only at strict", () => {
+  test("an override applies only at its level (Hit→Stretch at strict)", () => {
     const chip: SampleChip = SampleChip.parse({
       id: "x",
       text: "test",
-      baseStatus: "stretch",
-      strictStatus: "miss",
-      cite: [],
+      baseStatus: "hit",
+      strictStatus: "stretch",
+      cite: ["role:opensc-1"],
       reasoning: "n/a",
     });
-    expect(statusAtLevel(chip, "strict")).toBe("miss");
-    expect(statusAtLevel(chip, "balanced")).toBe("stretch");
-    expect(statusAtLevel(chip, "generous")).toBe("stretch");
+    expect(statusAtLevel(chip, "strict")).toBe("stretch");
+    expect(statusAtLevel(chip, "balanced")).toBe("hit");
+    expect(statusAtLevel(chip, "generous")).toBe("hit");
+  });
+  test("rejects a chip that crosses the Stretch/Miss floor across readings (ADR-0017)", () => {
+    // A base Miss must not soften to Stretch at generous — the floor is fixed.
+    expect(
+      SampleChip.safeParse({
+        id: "x",
+        text: "test",
+        baseStatus: "miss",
+        generousStatus: "stretch",
+        cite: [],
+        reasoning: "n/a",
+        gapFraming: "honest.",
+      }).success,
+    ).toBe(false);
+    // "miss" is not even a legal override value — a Stretch can't harden to a Miss.
+    expect(
+      SampleChip.safeParse({
+        id: "x",
+        text: "test",
+        baseStatus: "stretch",
+        strictStatus: "miss",
+        cite: [],
+        reasoning: "n/a",
+      }).success,
+    ).toBe(false);
   });
 });
 
@@ -66,7 +91,7 @@ describe("Cite schema enforces role:/project: prefix (ADR-0016 & H2 fix)", () =>
   test("role:opensc-1 valid", () => {
     const r = Match.safeParse({
       requirementId: "r1",
-      status: "hit",
+      baseStatus: "hit",
       cite: ["role:opensc-1"],
       reasoning: "ok",
     });
@@ -75,7 +100,7 @@ describe("Cite schema enforces role:/project: prefix (ADR-0016 & H2 fix)", () =>
   test("project:habit-forming-app valid", () => {
     const r = Match.safeParse({
       requirementId: "r1",
-      status: "hit",
+      baseStatus: "hit",
       cite: ["project:habit-forming-app"],
       reasoning: "ok",
     });
@@ -84,7 +109,7 @@ describe("Cite schema enforces role:/project: prefix (ADR-0016 & H2 fix)", () =>
   test("bare opensc-1 (no prefix) rejected", () => {
     const r = Match.safeParse({
       requirementId: "r1",
-      status: "hit",
+      baseStatus: "hit",
       cite: ["opensc-1"],
       reasoning: "ok",
     });
@@ -93,7 +118,7 @@ describe("Cite schema enforces role:/project: prefix (ADR-0016 & H2 fix)", () =>
   test("unknown prefix rejected", () => {
     const r = Match.safeParse({
       requirementId: "r1",
-      status: "hit",
+      baseStatus: "hit",
       cite: ["bullet:opensc-1"],
       reasoning: "ok",
     });

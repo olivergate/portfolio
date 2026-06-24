@@ -36,6 +36,7 @@ export function projectSampleChips(chips: SampleChip[], level: StretchLevel): Ch
 export function projectMatchedChips(
   matches: Match[],
   requirements: ParsedRequirement[],
+  level: StretchLevel,
 ): ChipModel[] {
   const reqById = new Map(requirements.map((r) => [r.id, r]));
   return matches.map((m) => {
@@ -43,7 +44,9 @@ export function projectMatchedChips(
     return {
       id: m.requirementId,
       text: req?.text ?? m.requirementId,
-      status: m.status,
+      // Live matches now carry all three readings (ADR-0042); project the
+      // current level the same way sample chips do — pure client-side, no refetch.
+      status: statusAtLevel(m, level),
       cite: m.cite,
       reasoning: m.reasoning,
       gapFraming: m.gapFraming,

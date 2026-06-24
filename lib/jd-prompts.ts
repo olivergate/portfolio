@@ -2,7 +2,7 @@ import "server-only";
 import type Anthropic from "@anthropic-ai/sdk";
 
 export const PARSER_PROMPT_VERSION = "jd-parser@v1";
-export const MATCHER_PROMPT_VERSION = "jd-matcher@v2";
+export const MATCHER_PROMPT_VERSION = "jd-matcher@v3";
 
 export const PARSER_SYSTEM = `You are a JD requirements extractor. Given a job description, you produce a structured list of the actual requirements and responsibilities — what a candidate would need to demonstrate to be a credible fit.
 
@@ -55,7 +55,7 @@ export const PARSER_TOOL: Anthropic.Tool = {
   },
 };
 
-export const MATCHER_SYSTEM = `You score a CV against a parsed list of JD requirements. For each requirement, you decide one of three statuses and cite the supporting evidence.
+export const MATCHER_SYSTEM = `You score a CV against a parsed list of JD requirements. For each requirement, you decide its status and cite the supporting evidence. You score ALL THREE readings (strict / balanced / generous) in a single pass — one match object per requirement — so the visitor can slide the reading without re-scoring.
 
 THREE RULES (load-bearing — every chip must obey):
 
@@ -65,22 +65,22 @@ THREE RULES (load-bearing — every chip must obey):
 
 3. A Miss is "no concrete evidence in the CV". Say so plainly in the gapFraming field — acknowledge the gap rather than pivoting away from it. The framing is short (1–2 sentences), first-person, candid, but not self-deprecating.
 
-THE STRETCH LEVEL parameter shifts the Hit/Stretch boundary:
+THE THREE READINGS — one match object carries all of them:
 
-- "strict" — only chips with strong, directly cited bullets are Hits. Borderline-cited evidence becomes Stretch.
-- "balanced" (default) — Hit/Stretch boundary at the natural reading.
-- "generous" — borderline-cited evidence can become Hit. Genuine gaps remain Miss.
+- baseStatus is the BALANCED reading: the Hit/Stretch boundary at the natural reading. Always set it.
+- strictStatus is OPTIONAL. Set it only when the strict reading differs from baseStatus — i.e. a borderline, weakly-cited Hit drops to Stretch under a conservative reading. Omit it when strict equals balanced.
+- generousStatus is OPTIONAL. Set it only when the generous reading differs from baseStatus — i.e. borderline-cited adjacency lifts a Stretch up to Hit. Omit it when generous equals balanced.
 
-The stretch level NEVER moves Stretch/Miss. A Miss at strict is still a Miss at generous. The visitor cannot slide their way out of an honest gap.
+THE READING NEVER MOVES A MISS. If baseStatus is "miss", do NOT set strictStatus or generousStatus — a Miss is a Miss at every reading. Overrides may only ever shuffle a chip between "hit" and "stretch"; they must never produce a "miss", and a base "miss" must never gain an override. The visitor cannot slide their way out of an honest gap.
 
 ON CITATIONS:
 
 - Only use cite IDs that appear in the provided CV (each role bullet has [role:<id>] tag; each project has [project:<id>] tag). Don't invent.
-- Hits always have at least one cite. Stretches usually have at least one but may have an empty array if the adjacency is general (skill-list rather than bullet-anchored). Misses have an empty cite array.
+- The cite array is shared across all readings. If the chip is a Hit at ANY reading (e.g. a Stretch at balanced that becomes a Hit at generous), it MUST carry at least one cite. Stretches may have an empty array if the adjacency is general (skill-list rather than bullet-anchored). Misses always have an empty cite array.
 
 ON REASONING:
 
-- One short sentence per chip explaining why this status. Specific, not generic. Reference the cited bullet's content where applicable.
+- One short sentence per chip explaining the status. Specific, not generic. Reference the cited bullet's content where applicable. If the reading matters, say what shifts (e.g. "a generous reading credits this directly").
 - Don't repeat the requirement back. Don't pad.
 
 ON GAP FRAMING (Misses only):
@@ -94,42 +94,43 @@ WORKED EXAMPLES:
 Example 1 — clear Hit:
   Requirement: "Deep React + TypeScript experience"
   CV bullet: "[role:redington-frontend-arch] Owned frontend architectural decisions on a React and TypeScript dashboard handling sensitive multi-tenant data..."
-  Output: { status: "hit", cite: ["role:redington-frontend-arch"], reasoning: "Owned architecture on a multi-tenant React+TS dashboard at Redington — direct match." }
+  Output: { baseStatus: "hit", cite: ["role:redington-frontend-arch"], reasoning: "Owned architecture on a multi-tenant React+TS dashboard at Redington — direct match." }
+  (A clean Hit at every reading — no strict/generous overrides.)
 
 Example 2 — clear Stretch (adjacent):
-  Requirement: "MCP servers"
-  CV: no bullet or project mentions MCP.
-  Output (balanced): { status: "miss", cite: [], reasoning: "Not on the CV.", gapFraming: "Have read the spec, haven't built one." }
-  (Note: "interest in / awareness of" doesn't lift this to Stretch — Stretch requires adjacent shipped work.)
+  Requirement: "Built and shipped LLM agents to production"
+  CV: skills and projects show LLM tooling and prototypes, but no bullet claims a production agent deployment.
+  Output: { baseStatus: "stretch", cite: ["project:retro-claude"], reasoning: "retro-claude is agent-adjacent LLM tooling, but nothing on the CV claims a production agent — adjacent, not a Hit." }
+  (No overrides: weak-but-real adjacency reads as Stretch at strict and balanced; not strong enough to lift to Hit even at generous.)
 
 Example 3 — borderline Hit/Stretch (level matters):
   Requirement: "Mentor / lead a small engineering team"
   CV bullet: "[role:redington-team-lead] Led a team of 5 engineers focused on frontend feature delivery..."
-  Output (strict): { status: "stretch", cite: ["role:redington-team-lead"], reasoning: "Led 5 engineers; the requirement says 'mentor or lead', which is broader — strict reading wants explicit mentoring evidence." }
-  Output (balanced): { status: "stretch", cite: ["role:redington-team-lead"], reasoning: "Led 5 engineers — adjacent to but not identical to a mentoring/team-lead remit." }
-  Output (generous): { status: "hit", cite: ["role:redington-team-lead"], reasoning: "Led a 5-person frontend team — generous reading credits this directly." }
+  Output: { baseStatus: "stretch", generousStatus: "hit", cite: ["role:redington-team-lead"], reasoning: "Led a 5-person frontend team — adjacent to a mentoring/team-lead remit; a generous reading credits it directly, a strict reading wants explicit mentoring evidence." }
+  (baseStatus is the balanced Stretch; strictStatus is omitted because strict also reads Stretch; generousStatus lifts to Hit. cite is present because the chip is a Hit at generous.)
 
 Example 4 — Miss stays Miss across levels:
   Requirement: "Setting hiring bar / formal hiring authority"
   CV: implies interview involvement (team lead) but no claim of hiring bar.
-  Output (strict / balanced / generous, all the same status):
-    { status: "miss", cite: [], reasoning: "CV doesn't claim hiring authority.", gapFraming: "I led a 5-engineer team but didn't own the hiring bar. I ran interviews and would approach hiring deliberately if it's part of this role." }
+  Output: { baseStatus: "miss", cite: [], reasoning: "CV doesn't claim hiring authority.", gapFraming: "I led a 5-engineer team but didn't own the hiring bar. I ran interviews and would approach hiring deliberately if it's part of this role." }
+  (No strictStatus / generousStatus — a Miss is invariant. Never set overrides on a Miss.)
 
 Example 5 — project-cited Hit:
   Requirement: "Personal mobile side-project work"
   CV project: "[project:blob-life] BlobLife — Cross-platform mobile, gamified habit tracker for people with ADHD..."
-  Output: { status: "hit", cite: ["project:blob-life"], reasoning: "BlobLife is a cross-platform mobile habit-tracking app — direct match." }
+  Output: { baseStatus: "hit", cite: ["project:blob-life"], reasoning: "BlobLife is a cross-platform mobile habit-tracking app — direct match." }
 
 Example 6 — Stretch with no cite (skill-list adjacency):
   Requirement: "Familiarity with prompt injection / OWASP AI Top 10"
   CV: skills.ai includes "Currently training in: OWASP AI Top 10, prompt injection and jailbreaks..."
-  Output (balanced): { status: "stretch", cite: [], reasoning: "Currently training in OWASP AI Top 10 and prompt injection; not yet shipped to production." }
+  Output: { baseStatus: "stretch", cite: [], reasoning: "Currently training in OWASP AI Top 10 and prompt injection; not yet shipped to production." }
+  (No cite, so this can never be a Hit — leave generousStatus unset; general awareness doesn't lift to Hit.)
 
 Example 7 — tech stack listed at role level but no bullet substantiates the claim:
   Requirement: "Production experience with Ethereum / on-chain provenance"
   CV: OpenSC role's technologies array includes "Ethereum", but no bullet substantiates direct on-chain work — the role's bullets are about Plotly Dash, React, and the analytics frontend.
-  Wrong output: { status: "hit", cite: ["role:opensc-sole-frontend"], reasoning: "OpenSC stack included Ethereum." } — the cited bullet is about Plotly Dash and React, not Ethereum. The tech list at the role level is not a bullet, and citing the closest-adjacent bullet just to satisfy the schema is dishonest.
-  Correct output (balanced): { status: "stretch", cite: [], reasoning: "Ethereum was in the OpenSC stack list but no bullet substantiates direct on-chain work." }
+  Wrong output: { baseStatus: "hit", cite: ["role:opensc-sole-frontend"], reasoning: "OpenSC stack included Ethereum." } — the cited bullet is about Plotly Dash and React, not Ethereum. The tech list at the role level is not a bullet, and citing the closest-adjacent bullet just to satisfy the schema is dishonest.
+  Correct output: { baseStatus: "stretch", cite: [], reasoning: "Ethereum was in the OpenSC stack list but no bullet substantiates direct on-chain work." }
 
 You output via the submit_matches tool only. No prose response.`;
 
@@ -145,21 +146,37 @@ export const MATCHER_TOOL: Anthropic.Tool = {
         minItems: 1,
         items: {
           type: "object",
-          required: ["requirementId", "status", "cite", "reasoning"],
+          required: ["requirementId", "baseStatus", "cite", "reasoning"],
           properties: {
             requirementId: { type: "string" },
-            status: { type: "string", enum: ["hit", "stretch", "miss"] },
+            baseStatus: {
+              type: "string",
+              enum: ["hit", "stretch", "miss"],
+              description: "Status at the balanced (default) reading. Always set.",
+            },
+            strictStatus: {
+              type: "string",
+              enum: ["hit", "stretch"],
+              description:
+                "Optional. Status at the strict reading. Set only when it differs from baseStatus, to drop a borderline Hit to Stretch. Never set on a Miss.",
+            },
+            generousStatus: {
+              type: "string",
+              enum: ["hit", "stretch"],
+              description:
+                "Optional. Status at the generous reading. Set only when it differs from baseStatus, to lift a borderline Stretch to Hit. Never set on a Miss.",
+            },
             cite: {
               type: "array",
               items: { type: "string" },
               description:
-                "Citation IDs in the form 'role:<bullet-id>' or 'project:<id>'. Empty for Misses.",
+                "Citation IDs in the form 'role:<bullet-id>' or 'project:<id>'. Non-empty if the chip is a Hit at any reading. Empty for Misses.",
             },
             reasoning: { type: "string", description: "One short sentence explaining the status." },
             gapFraming: {
               type: "string",
               description:
-                "Required only when status is 'miss'. 1–2 sentences, first-person, candid.",
+                "Required only when baseStatus is 'miss'. 1–2 sentences, first-person, candid.",
             },
           },
         },

@@ -14,6 +14,7 @@ import { FloatingTooltip } from "@/components/jd/FloatingTooltip";
 import { SamplePill } from "@/components/jd/SamplePill";
 import { StretchSlider } from "@/components/jd/StretchSlider";
 import { SummaryLine } from "@/components/jd/SummaryLine";
+import { LoadingPipeline } from "@/components/ui/LoadingPipeline";
 import {
   levelFromPosition,
   type Match,
@@ -27,21 +28,38 @@ type Props = {
   samples: SampleJD[];
 };
 
+/**
+ * Live state for a pasted JD. `matches` carries all three readings per
+ * requirement (ADR-0042), so the stretch slider is a pure client-side
+ * projection — no refetch when the reading changes.
+ */
 type LiveState = {
   jdHash: string;
   requirements: ParsedRequirement[];
-  matchesByLevel: Partial<Record<StretchLevel, Match[]>>;
+  matches: Match[];
 };
 
-type LoadingStage =
+type LoadingState =
   | { kind: "idle" }
-  | { kind: "parsing" }
-  | { kind: "matching"; level: StretchLevel }
+  | { kind: "running"; phase: number }
   | { kind: "error"; message: string };
 
 const PARSE_ENDPOINT = "/api/jd-parse";
 const MATCH_ENDPOINT = "/api/jd-match";
-const MATCH_DEBOUNCE_MS = 400;
+
+/**
+ * Designed loading pipeline (ADR-0042). The visual cadence is driven by a fixed
+ * timer, decoupled from the parse→match fetch chain — same pattern as the /lab
+ * retro demo. Cache hits wait for the timer; cold paths wait for the fetch.
+ */
+const PIPELINE_STEPS = [
+  "read job description",
+  "extract requirements",
+  "match against CV evidence",
+  "score strict / balanced / generous",
+] as const;
+const PIPELINE_STEP_MS = 520;
+const PIPELINE_TOTAL_MS = PIPELINE_STEP_MS * PIPELINE_STEPS.length;
 
 export function JDAdapter({ samples }: Props) {
   const [activeKey, setActiveKey] = useState<string>(samples[0]?.key ?? "");
@@ -51,13 +69,13 @@ export function JDAdapter({ samples }: Props) {
   const [scored, setScored] = useState(true);
   const [stretchPosition, setStretchPosition] = useState(0.5);
   const [hoverData, setHoverData] = useState<HoverData | null>(null);
-  const [loading, setLoading] = useState<LoadingStage>({ kind: "idle" });
+  const [loading, setLoading] = useState<LoadingState>({ kind: "idle" });
   /**
    * Live-region announce text (Phase 4.5). Set imperatively in handleScore at
-   * two points (start → "Analyzing…"; success → summary text). Level-change
-   * rescores don't announce — the StretchSlider's own aria-valuetext signals
-   * that change, and re-announcing on every drag would be chatter. Errors are
-   * announced by the existing role="alert" block below, not by this region.
+   * two points (start → "Analyzing…"; success → summary text). Reading changes
+   * don't announce — the StretchSlider's own aria-valuetext signals that change,
+   * and re-announcing on every drag would be chatter. Errors are announced by
+   * the existing role="alert" block below, not by this region.
    */
   const [announce, setAnnounce] = useState<string>("");
 
@@ -65,12 +83,15 @@ export function JDAdapter({ samples }: Props) {
   const [live, setLive] = useState<LiveState | null>(null);
 
   /**
-   * Generation counter — bumped on every fetch (Score click, level change).
-   * Each async closure captures the gen at start; results are dropped if a
-   * newer generation has begun (sample pick, second Score click, level slide).
-   * Prevents stale responses from clobbering current state.
+   * Generation counter — bumped on every run (Score click, sample pick, edit
+   * mid-run). The async fetch closure captures the gen at start; its result is
+   * dropped if a newer generation has begun. Prevents stale responses from
+   * clobbering current state.
    */
   const genRef = useRef(0);
+
+  /** Pipeline interval id — kept in a ref so successive runs cancel cleanly. */
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   /** Pulse-clear timeout id — kept in a ref so successive clicks don't lose it. */
   const pulseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -78,9 +99,13 @@ export function JDAdapter({ samples }: Props) {
   /** Track the currently pulsing element so back-to-back clicks clear cleanly. */
   const pulseElRef = useRef<HTMLElement | null>(null);
 
-  // Cleanup pulse timer + lingering class on unmount.
+  // Cleanup timers + lingering pulse class on unmount.
   useEffect(() => {
     return () => {
+      if (timerRef.current !== null) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
       if (pulseTimerRef.current !== null) {
         clearTimeout(pulseTimerRef.current);
         pulseTimerRef.current = null;
@@ -94,24 +119,41 @@ export function JDAdapter({ samples }: Props) {
 
   const stretchLevel: StretchLevel = levelFromPosition(stretchPosition);
 
+  /**
+   * Mirror of the current reading. handleScore is an async closure that
+   * captures stretchLevel at click time; if the visitor drags the slider while
+   * the score is in flight, the completion announce must reflect the reading
+   * the chips actually render at (the latest), not the captured one.
+   */
+  const stretchLevelRef = useRef<StretchLevel>(stretchLevel);
+  useEffect(() => {
+    stretchLevelRef.current = stretchLevel;
+  }, [stretchLevel]);
+
   const chips: ChipModel[] | null = useMemo(() => {
     if (!scored) return null;
-    if (live) {
-      const matches = live.matchesByLevel[stretchLevel];
-      if (!matches) return null;
-      return projectMatchedChips(matches, live.requirements);
-    }
+    // Both paths project the current reading client-side via statusAtLevel —
+    // live matches carry all three readings (ADR-0042), exactly like samples.
+    if (live) return projectMatchedChips(live.matches, live.requirements, stretchLevel);
     if (activeSample) return projectSampleChips(activeSample.chips, stretchLevel);
     return null;
   }, [scored, live, stretchLevel, activeSample]);
 
+  /** Stop the pipeline timer and supersede any in-flight fetch. */
+  const cancelRun = () => {
+    genRef.current += 1;
+    if (timerRef.current !== null) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
   const pickSample = (key: string) => {
     const sample = samples.find((s) => s.key === key);
     if (!sample) return;
-    // Bump generation so any in-flight handleScore / level-change fetch is
-    // ignored when it resolves — picking a sample mid-flight must not let the
+    // Supersede any in-flight run — picking a sample mid-flight must not let a
     // stale response snap the UI back.
-    genRef.current += 1;
+    cancelRun();
     setActiveKey(key);
     setJdText(sample.text);
     setScored(true);
@@ -124,136 +166,115 @@ export function JDAdapter({ samples }: Props) {
   };
 
   const handleScore = async () => {
-    if (loading.kind === "parsing" || loading.kind === "matching") return;
+    if (loading.kind === "running") return;
     if (jdText.trim().length < 20) {
       setLoading({ kind: "error", message: "JD too short. Paste at least a paragraph." });
       setAnnounce("");
       return;
     }
     const myGen = ++genRef.current;
-    setLoading({ kind: "parsing" });
+    if (timerRef.current !== null) clearInterval(timerRef.current);
     setLive(null);
+    setLoading({ kind: "running", phase: 0 });
     setAnnounce("Analyzing the job description against the CV. This usually takes a few seconds.");
-    try {
-      const parseResp = await fetch(PARSE_ENDPOINT, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ jdText }),
-      });
-      const parseJson = (await parseResp.json()) as
-        | { ok: true; requirements: ParsedRequirement[]; jdHash: string }
-        | { ok: false; stage: string; detail?: string };
-      if (genRef.current !== myGen) return; // superseded — drop response
-      if (!parseJson.ok) {
-        setLoading({
-          kind: "error",
-          message: `Parser ${parseJson.stage}: ${parseJson.detail ?? "unknown error"}`,
-        });
-        return;
-      }
-      setLoading({ kind: "matching", level: stretchLevel });
-      const matchResp = await fetch(MATCH_ENDPOINT, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          jdHash: parseJson.jdHash,
-          requirements: parseJson.requirements,
-          stretchLevel,
-        }),
-      });
-      const matchJson = (await matchResp.json()) as
-        | { ok: true; matches: Match[] }
-        | { ok: false; stage: string; detail?: string };
-      if (genRef.current !== myGen) return; // superseded — drop response
-      if (!matchJson.ok) {
-        setLoading({
-          kind: "error",
-          message: `Matcher ${matchJson.stage}: ${matchJson.detail ?? "unknown error"}`,
-        });
-        return;
-      }
-      setLive({
-        jdHash: parseJson.jdHash,
-        requirements: parseJson.requirements,
-        matchesByLevel: { [stretchLevel]: matchJson.matches },
-      });
-      setActiveKey("");
-      setScored(true);
-      setLoading({ kind: "idle" });
-      // Announce the editorial summary in the same shape SummaryLine renders.
-      // Phase 4.5: never per-token; one announcement on completion.
-      const counts = chipCounts(projectMatchedChips(matchJson.matches, parseJson.requirements));
-      const word = (n: number, s: string, p: string) => `${n} ${n === 1 ? s : p}`;
-      setAnnounce(
-        `Scored. ${word(counts.hit, "hit", "hits")}, ${word(counts.stretch, "stretch", "stretches")}, ${word(counts.miss, "honest gap", "honest gaps")}.`,
-      );
-    } catch (err) {
-      if (genRef.current !== myGen) return;
-      const message = err instanceof Error ? err.message : String(err);
-      setLoading({ kind: "error", message: `network: ${message}` });
-      setAnnounce("");
-    }
-  };
 
-  /** Refetch matches on stretch level change for live (pasted) JDs only. */
-  useEffect(() => {
-    if (!live) return;
-    if (live.matchesByLevel[stretchLevel]) return;
-    // Don't piggyback on parsing/matching — and don't re-fire on every error
-    // transition, which previously thrashed Matching… ↔ error message.
-    if (loading.kind === "parsing" || loading.kind === "matching" || loading.kind === "error") {
+    // Timer drives the pipeline visual on a fixed cadence, independent of the
+    // fetch chain below.
+    const timerStart = Date.now();
+    let p = 0;
+    timerRef.current = setInterval(() => {
+      if (genRef.current !== myGen) return;
+      p += 1;
+      if (p < PIPELINE_STEPS.length) {
+        setLoading({ kind: "running", phase: p });
+      }
+    }, PIPELINE_STEP_MS);
+
+    // Fetch chain (parse → match) runs in parallel with the timer. One match
+    // call now returns all three readings.
+    const fetchPromise = (async (): Promise<
+      { ok: true; live: LiveState } | { ok: false; message: string }
+    > => {
+      try {
+        const parseResp = await fetch(PARSE_ENDPOINT, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ jdText }),
+        });
+        const parseJson = (await parseResp.json()) as
+          | { ok: true; requirements: ParsedRequirement[]; jdHash: string }
+          | { ok: false; stage: string; detail?: string };
+        if (!parseJson.ok) {
+          return {
+            ok: false,
+            message: `Parser ${parseJson.stage}: ${parseJson.detail ?? "unknown error"}`,
+          };
+        }
+        const matchResp = await fetch(MATCH_ENDPOINT, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ jdHash: parseJson.jdHash, requirements: parseJson.requirements }),
+        });
+        const matchJson = (await matchResp.json()) as
+          | { ok: true; matches: Match[] }
+          | { ok: false; stage: string; detail?: string };
+        if (!matchJson.ok) {
+          return {
+            ok: false,
+            message: `Matcher ${matchJson.stage}: ${matchJson.detail ?? "unknown error"}`,
+          };
+        }
+        return {
+          ok: true,
+          live: {
+            jdHash: parseJson.jdHash,
+            requirements: parseJson.requirements,
+            matches: matchJson.matches,
+          },
+        };
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        return { ok: false, message: `network: ${message}` };
+      }
+    })();
+
+    const [result] = await Promise.all([
+      fetchPromise,
+      new Promise<void>((resolve) =>
+        setTimeout(resolve, Math.max(0, PIPELINE_TOTAL_MS - (Date.now() - timerStart))),
+      ),
+    ]);
+
+    if (genRef.current !== myGen) return; // superseded — drop response
+    if (timerRef.current !== null) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+
+    if (!result.ok) {
+      setLoading({ kind: "error", message: result.message });
+      setAnnounce("");
       return;
     }
 
-    // Capture generation + level at scheduling time. Fetch resolution must
-    // confirm the gen matches and the level it fetched is still current.
-    const myGen = ++genRef.current;
-    const myLevel = stretchLevel;
-    const myJdHash = live.jdHash;
-    const myRequirements = live.requirements;
+    setLive(result.live);
+    setActiveKey("");
+    setScored(true);
+    setLoading({ kind: "idle" });
 
-    const t = setTimeout(async () => {
-      if (genRef.current !== myGen) return;
-      setLoading({ kind: "matching", level: myLevel });
-      try {
-        const resp = await fetch(MATCH_ENDPOINT, {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            jdHash: myJdHash,
-            requirements: myRequirements,
-            stretchLevel: myLevel,
-          }),
-        });
-        const json = (await resp.json()) as
-          | { ok: true; matches: Match[] }
-          | { ok: false; stage: string; detail?: string };
-        if (genRef.current !== myGen) return; // superseded — drop response
-        if (!json.ok) {
-          setLoading({
-            kind: "error",
-            message: `Matcher ${json.stage}: ${json.detail ?? "unknown error"}`,
-          });
-          return;
-        }
-        setLive((prev) =>
-          prev
-            ? {
-                ...prev,
-                matchesByLevel: { ...prev.matchesByLevel, [myLevel]: json.matches },
-              }
-            : prev,
-        );
-        setLoading({ kind: "idle" });
-      } catch (err) {
-        if (genRef.current !== myGen) return;
-        const message = err instanceof Error ? err.message : String(err);
-        setLoading({ kind: "error", message: `network: ${message}` });
-      }
-    }, MATCH_DEBOUNCE_MS);
-
-    return () => clearTimeout(t);
-  }, [stretchLevel, live, loading.kind]);
+    // Announce the editorial summary at the current reading, same shape
+    // SummaryLine renders. Phase 4.5: one announcement on completion. Use the
+    // ref, not the captured stretchLevel — the visitor may have dragged the
+    // slider during the in-flight score, and the announced counts must match
+    // the chips that render.
+    const counts = chipCounts(
+      projectMatchedChips(result.live.matches, result.live.requirements, stretchLevelRef.current),
+    );
+    const word = (n: number, s: string, pl: string) => `${n} ${n === 1 ? s : pl}`;
+    setAnnounce(
+      `Scored. ${word(counts.hit, "hit", "hits")}, ${word(counts.stretch, "stretch", "stretches")}, ${word(counts.miss, "honest gap", "honest gaps")}.`,
+    );
+  };
 
   const onActivate = (chip: ChipModel) => {
     if (chip.cite.length === 0) return;
@@ -372,6 +393,15 @@ export function JDAdapter({ samples }: Props) {
             setActiveKey("");
             setScored(false);
           }
+          // Editing mid-run supersedes the in-flight score so a stale result
+          // can't snap in after the text changed; editing after an error
+          // clears the stale alert as the visitor fixes the JD.
+          if (loading.kind === "running") {
+            cancelRun();
+            setLoading({ kind: "idle" });
+          } else if (loading.kind === "error") {
+            setLoading({ kind: "idle" });
+          }
         }}
         placeholder="Paste a job description here, or pick a sample above…"
         maxLength={charLimit}
@@ -407,15 +437,11 @@ export function JDAdapter({ samples }: Props) {
           type="button"
           className="score-btn"
           onClick={handleScore}
-          disabled={loading.kind === "parsing" || loading.kind === "matching" || isSamplePicked}
+          disabled={loading.kind === "running" || isSamplePicked}
           aria-label="Score this JD"
           title={isSamplePicked ? "Sample JDs are pre-scored. Paste a custom JD to score live" : ""}
         >
-          {loading.kind === "parsing"
-            ? "Parsing…"
-            : loading.kind === "matching"
-              ? "Matching…"
-              : "Score this JD"}
+          {loading.kind === "running" ? "Scoring…" : "Score this JD"}
           <span className="arrow" aria-hidden="true">
             →
           </span>
@@ -438,8 +464,18 @@ export function JDAdapter({ samples }: Props) {
         </p>
       )}
 
+      {/* Designed loading pipeline — shown while a custom JD is scoring. The
+          live-region announcement is owned by the role="status" region above
+          (Analyzing… / Scored.), so the pipeline's own announcer is suppressed
+          to avoid two polite regions double-announcing. */}
+      {loading.kind === "running" && (
+        <div style={{ marginTop: "2.5rem" }}>
+          <LoadingPipeline phase={loading.phase} steps={PIPELINE_STEPS} announce={false} />
+        </div>
+      )}
+
       {/* Score summary + chip grid */}
-      {chips && (
+      {chips && loading.kind !== "running" && (
         <div style={{ marginTop: "2.5rem" }}>
           <SummaryLine chips={chips} />
           <div style={{ marginTop: "1.5rem" }}>

@@ -13,7 +13,13 @@ import {
   MATCHER_SYSTEM,
   MATCHER_TOOL,
 } from "@/lib/jd-prompts";
-import { Match, type MatchResponse, ParsedRequirement, StretchLevel } from "@/lib/jd-schemas";
+import {
+  Match,
+  type MatchResponse,
+  ParsedRequirement,
+  StretchLevel,
+  statusAtLevel,
+} from "@/lib/jd-schemas";
 import { cacheGet, cacheSet, makeCacheKey } from "@/lib/kv-cache";
 import { calculateCostUSD, DEFAULT_MODEL } from "@/lib/pricing";
 
@@ -25,7 +31,6 @@ const MAX_OUTPUT_TOKENS = 4000;
 const RequestSchema = z.object({
   jdHash: z.string().min(1),
   requirements: z.array(ParsedRequirement).min(1).max(20),
-  stretchLevel: StretchLevel,
 });
 
 type ErrorResponse = { ok: false; stage: string; detail?: string };
@@ -50,13 +55,13 @@ export async function POST(req: Request): Promise<NextResponse<SuccessResponse |
   // array is the real entropy — a buggy/malicious client could send a mismatched
   // hash + requirements pair and poison the cache. The request schema still accepts
   // jdHash for API symmetry with the parser response, but caching depends only on
-  // what the matcher actually reads (cvHash + stretchLevel + requirements).
+  // what the matcher actually reads (cvHash + requirements). Stretch level is no
+  // longer part of the key — one call now scores all three readings (ADR-0042).
   const cacheKey = makeCacheKey({
     endpoint: "/api/jd-match",
     promptVersion: MATCHER_PROMPT_VERSION,
     input: {
       cvHash,
-      stretchLevel: body.stretchLevel,
       requirements: body.requirements,
     },
   });
@@ -109,10 +114,6 @@ export async function POST(req: Request): Promise<NextResponse<SuccessResponse |
     "## CV evidence",
     "",
     cvText,
-    "",
-    "## Stretch level",
-    "",
-    body.stretchLevel,
     "",
     "## Requirements",
     "",
@@ -213,10 +214,16 @@ export async function POST(req: Request): Promise<NextResponse<SuccessResponse |
 }
 
 /**
- * Server-side honesty validation — enforces the rules from ADR-0016 even if
- * the model drifts. Cheaper than re-prompting; surfaces drift as a 502 so
- * the client never sees a Hit-without-cite slip through.
+ * Server-side honesty validation — enforces the rules from ADR-0016 (and the
+ * Miss-invariant from ADR-0017) even if the model drifts. The matcher now
+ * scores all three readings in one call (ADR-0042), so the rules are checked
+ * across every reading. Cheaper than re-prompting; surfaces drift as a 502 so
+ * the client never sees a Hit-without-cite or a slid-out-of gap slip through.
  */
+// Derived from the schema enum so the validator can never silently skip a
+// reading if a level is ever added or renamed.
+const STRETCH_READINGS = StretchLevel.options;
+
 function validateMatches(
   matches: import("@/lib/jd-schemas").Match[],
   requirements: import("@/lib/jd-schemas").ParsedRequirement[],
@@ -238,19 +245,31 @@ function validateMatches(
     }
     seenReqs.add(m.requirementId);
 
-    if (m.status === "hit" && m.cite.length === 0) {
+    const statuses = STRETCH_READINGS.map((reading) => statusAtLevel(m, reading));
+    const isMiss = m.baseStatus === "miss";
+
+    // The reading never moves a Miss: it's all-or-nothing across readings, so
+    // the visitor can't slide into or out of an honest gap (ADR-0016/0017).
+    if (statuses.includes("miss") && !statuses.every((s) => s === "miss")) {
+      return {
+        ok: false,
+        detail: `Miss not consistent across readings for requirement ${m.requirementId} — violates ADR-0016`,
+      };
+    }
+    // The cite array is shared across readings; a Hit at any reading needs one.
+    if (statuses.includes("hit") && m.cite.length === 0) {
       return {
         ok: false,
         detail: `Hit without cite for requirement ${m.requirementId} — violates ADR-0016`,
       };
     }
-    if (m.status === "miss" && !m.gapFraming) {
+    if (isMiss && !m.gapFraming) {
       return {
         ok: false,
         detail: `Miss without gapFraming for requirement ${m.requirementId} — violates ADR-0016`,
       };
     }
-    if (m.status === "miss" && m.cite.length > 0) {
+    if (isMiss && m.cite.length > 0) {
       return {
         ok: false,
         detail: `Miss with non-empty cite for requirement ${m.requirementId} — violates ADR-0016`,

@@ -84,15 +84,15 @@ function buildMatcherResponse(matches: unknown): Anthropic.Message {
   } as unknown as Anthropic.Message;
 }
 
-async function callMatcher(stretchLevel: "strict" | "balanced" | "generous") {
+async function callMatcher() {
   // Import lazily so vi.mock has installed by the time the route loads.
+  // One call now scores all three readings (ADR-0042) — no stretchLevel input.
   const { POST } = await import("@/app/api/jd-match/route");
   const req = new Request("http://test/api/jd-match", {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
       jdHash: "abc123",
-      stretchLevel,
       requirements: [
         { id: "r1", text: "React + TypeScript", category: "hard", weight: 1 },
         { id: "r2", text: "MCP servers", category: "nice", weight: 0.3 },
@@ -105,7 +105,7 @@ async function callMatcher(stretchLevel: "strict" | "balanced" | "generous") {
 // ─── Tests ─────────────────────────────────────────────────────────────────
 
 describe("matcher route — schema validation", () => {
-  test("returns 400 when stretchLevel is missing", async () => {
+  test("returns 400 when requirements is empty", async () => {
     const { POST } = await import("@/app/api/jd-match/route");
     const req = new Request("http://test/api/jd-match", {
       method: "POST",
@@ -120,10 +120,10 @@ describe("matcher route — schema validation", () => {
     mockMessageCreate = async () =>
       buildMatcherResponse([
         // missing reasoning + invalid status
-        { requirementId: "r1", status: "yes", cite: [] },
-        { requirementId: "r2", status: "miss", cite: [], reasoning: "n/a" },
+        { requirementId: "r1", baseStatus: "yes", cite: [] },
+        { requirementId: "r2", baseStatus: "miss", cite: [], reasoning: "n/a" },
       ]);
-    const resp = await callMatcher("balanced");
+    const resp = await callMatcher();
     expect(resp.status).toBe(502);
     const json = (await resp.json()) as { ok: boolean; stage?: string };
     expect(json.ok).toBe(false);
@@ -135,10 +135,16 @@ describe("matcher route — honesty validator (ADR-0016)", () => {
   test("rejects a Hit with empty cite", async () => {
     mockMessageCreate = async () =>
       buildMatcherResponse([
-        { requirementId: "r1", status: "hit", cite: [], reasoning: "I just feel it." },
-        { requirementId: "r2", status: "miss", cite: [], reasoning: "n/a", gapFraming: "honest." },
+        { requirementId: "r1", baseStatus: "hit", cite: [], reasoning: "I just feel it." },
+        {
+          requirementId: "r2",
+          baseStatus: "miss",
+          cite: [],
+          reasoning: "n/a",
+          gapFraming: "honest.",
+        },
       ]);
-    const resp = await callMatcher("balanced");
+    const resp = await callMatcher();
     expect(resp.status).toBe(502);
     const json = (await resp.json()) as { ok: boolean; stage?: string; detail?: string };
     expect(json.ok).toBe(false);
@@ -151,13 +157,13 @@ describe("matcher route — honesty validator (ADR-0016)", () => {
       buildMatcherResponse([
         {
           requirementId: "r1",
-          status: "hit",
+          baseStatus: "hit",
           cite: ["role:opensc-sole-frontend"],
           reasoning: "yes.",
         },
-        { requirementId: "r2", status: "miss", cite: [], reasoning: "no MCP." },
+        { requirementId: "r2", baseStatus: "miss", cite: [], reasoning: "no MCP." },
       ]);
-    const resp = await callMatcher("balanced");
+    const resp = await callMatcher();
     expect(resp.status).toBe(502);
     const json = (await resp.json()) as { ok: boolean; stage?: string; detail?: string };
     expect(json.ok).toBe(false);
@@ -170,13 +176,19 @@ describe("matcher route — honesty validator (ADR-0016)", () => {
       buildMatcherResponse([
         {
           requirementId: "r1",
-          status: "hit",
+          baseStatus: "hit",
           cite: ["role:totally-fake-bullet"],
           reasoning: "made up.",
         },
-        { requirementId: "r2", status: "miss", cite: [], reasoning: "n/a", gapFraming: "honest." },
+        {
+          requirementId: "r2",
+          baseStatus: "miss",
+          cite: [],
+          reasoning: "n/a",
+          gapFraming: "honest.",
+        },
       ]);
-    const resp = await callMatcher("balanced");
+    const resp = await callMatcher();
     expect(resp.status).toBe(502);
     const json = (await resp.json()) as { ok: boolean; stage?: string; detail?: string };
     expect(json.ok).toBe(false);
@@ -190,12 +202,12 @@ describe("matcher route — honesty validator (ADR-0016)", () => {
         // r2 omitted
         {
           requirementId: "r1",
-          status: "hit",
+          baseStatus: "hit",
           cite: ["role:opensc-sole-frontend"],
           reasoning: "yes.",
         },
       ]);
-    const resp = await callMatcher("balanced");
+    const resp = await callMatcher();
     expect(resp.status).toBe(502);
     const json = (await resp.json()) as { ok: boolean; stage?: string; detail?: string };
     expect(json.ok).toBe(false);
@@ -208,19 +220,19 @@ describe("matcher route — honesty validator (ADR-0016)", () => {
       buildMatcherResponse([
         {
           requirementId: "r1",
-          status: "hit",
+          baseStatus: "hit",
           cite: ["role:opensc-sole-frontend"],
           reasoning: "Sole frontend on the OpenSC dashboard.",
         },
         {
           requirementId: "r2",
-          status: "miss",
+          baseStatus: "miss",
           cite: [],
           reasoning: "no MCP work.",
           gapFraming: "Have read the spec, haven't built one.",
         },
       ]);
-    const resp = await callMatcher("balanced");
+    const resp = await callMatcher();
     expect(resp.status).toBe(200);
     const json = (await resp.json()) as { ok: boolean; matches: unknown[]; cached: boolean };
     expect(json.ok).toBe(true);
@@ -229,7 +241,7 @@ describe("matcher route — honesty validator (ADR-0016)", () => {
     expect(anthropicCallCount).toBe(1);
 
     // Second call same args → cache hit.
-    const resp2 = await callMatcher("balanced");
+    const resp2 = await callMatcher();
     const json2 = (await resp2.json()) as { ok: boolean; cached: boolean };
     expect(json2.cached).toBe(true);
     // F3.1: cache hit must NOT recall Anthropic. A regression where the route
@@ -246,13 +258,19 @@ describe("matcher route — honesty validator (ADR-0016)", () => {
       buildMatcherResponse([
         {
           requirementId: "r1",
-          status: "hit",
+          baseStatus: "hit",
           cite: ["project:totally-fake-project"],
           reasoning: "made up project.",
         },
-        { requirementId: "r2", status: "miss", cite: [], reasoning: "n/a", gapFraming: "honest." },
+        {
+          requirementId: "r2",
+          baseStatus: "miss",
+          cite: [],
+          reasoning: "n/a",
+          gapFraming: "honest.",
+        },
       ]);
-    const resp = await callMatcher("balanced");
+    const resp = await callMatcher();
     expect(resp.status).toBe(502);
     const json = (await resp.json()) as { ok: boolean; stage?: string; detail?: string };
     expect(json.ok).toBe(false);
@@ -265,22 +283,104 @@ describe("matcher route — honesty validator (ADR-0016)", () => {
       buildMatcherResponse([
         {
           requirementId: "r1",
-          status: "hit",
+          baseStatus: "hit",
           cite: ["project:blob-life"],
           reasoning: "Cross-platform mobile habit tracker — BlobLife is in active development.",
         },
         {
           requirementId: "r2",
-          status: "miss",
+          baseStatus: "miss",
           cite: [],
           reasoning: "no MCP.",
           gapFraming: "Read the spec, haven't built one.",
         },
       ]);
-    const resp = await callMatcher("balanced");
+    const resp = await callMatcher();
     expect(resp.status).toBe(200);
     const json = (await resp.json()) as { ok: boolean };
     expect(json.ok).toBe(true);
+  });
+});
+
+describe("matcher route — multi-level honesty (ADR-0042)", () => {
+  test("rejects a base Miss that gains a non-Miss override (can't slide out of a gap)", async () => {
+    mockMessageCreate = async () =>
+      buildMatcherResponse([
+        {
+          requirementId: "r1",
+          baseStatus: "hit",
+          cite: ["role:opensc-sole-frontend"],
+          reasoning: "yes.",
+        },
+        // r2 is a Miss at balanced but illegally promotes to Hit at generous.
+        {
+          requirementId: "r2",
+          baseStatus: "miss",
+          generousStatus: "hit",
+          cite: ["role:opensc-sole-frontend"],
+          reasoning: "slid out of a gap.",
+          gapFraming: "honest.",
+        },
+      ]);
+    const resp = await callMatcher();
+    expect(resp.status).toBe(502);
+    const json = (await resp.json()) as { ok: boolean; stage?: string; detail?: string };
+    expect(json.ok).toBe(false);
+    expect(json.stage).toBe("honesty-validate");
+    expect(json.detail).toContain("Miss not consistent across readings");
+  });
+
+  test("rejects a chip that is a Hit only at generous but carries no cite", async () => {
+    mockMessageCreate = async () =>
+      buildMatcherResponse([
+        // Stretch at balanced, Hit at generous, but empty cite — a Hit at any
+        // reading must carry evidence (cite is shared across readings).
+        {
+          requirementId: "r1",
+          baseStatus: "stretch",
+          generousStatus: "hit",
+          cite: [],
+          reasoning: "borderline.",
+        },
+        {
+          requirementId: "r2",
+          baseStatus: "miss",
+          cite: [],
+          reasoning: "n/a",
+          gapFraming: "honest.",
+        },
+      ]);
+    const resp = await callMatcher();
+    expect(resp.status).toBe(502);
+    const json = (await resp.json()) as { ok: boolean; stage?: string; detail?: string };
+    expect(json.ok).toBe(false);
+    expect(json.stage).toBe("honesty-validate");
+    expect(json.detail).toContain("Hit without cite");
+  });
+
+  test("accepts a valid multi-level match (Stretch at balanced, Hit at generous)", async () => {
+    mockMessageCreate = async () =>
+      buildMatcherResponse([
+        {
+          requirementId: "r1",
+          baseStatus: "stretch",
+          generousStatus: "hit",
+          cite: ["role:opensc-sole-frontend"],
+          reasoning: "adjacent; a generous reading credits it directly.",
+        },
+        {
+          requirementId: "r2",
+          baseStatus: "miss",
+          cite: [],
+          reasoning: "no MCP.",
+          gapFraming: "honest.",
+        },
+      ]);
+    const resp = await callMatcher();
+    expect(resp.status).toBe(200);
+    const json = (await resp.json()) as { ok: boolean; matches: unknown[] };
+    expect(json.ok).toBe(true);
+    expect(json.matches).toHaveLength(2);
   });
 });
 
@@ -319,7 +419,6 @@ describe("matcher route — cost ceiling (ADR-0010)", () => {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
         jdHash: "abc",
-        stretchLevel: "balanced",
         requirements: [{ id: "r1", text: "X", category: "hard", weight: 1 }],
       }),
     });

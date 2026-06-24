@@ -12,12 +12,18 @@ import { expect, test } from "@playwright/test";
 
 test.describe("/lab — Claude Code retro demo", () => {
   test("page renders with hero and featured demo, no side-projects grid", async ({ page }) => {
+    // /lab 308-redirects to /#lab (ADR-0028 route consolidation), so this lands
+    // on the home page's LabSection — hero is an <h2> ("Things I'm building
+    // with LLMs"), with the featured demo below it.
     await page.goto("/lab");
-    await expect(page.locator(".lab-hero h1")).toContainText("Retro Claude");
-    await expect(page.locator(".lab-hero h1 em")).toContainText("Demo");
+    await expect(page.locator(".lab-hero h2")).toContainText("Things I'm building");
+    await expect(page.locator(".lab-hero h2 em")).toContainText("with LLMs");
     await expect(page.locator(".lab-demo-shell h2")).toBeVisible();
     await expect(page.locator(".lab-live-badge")).toBeVisible();
-    await expect(page.locator(".lab-card")).toHaveCount(0);
+    // No side-projects grid in the Lab section itself (ADR-0040) — projects live
+    // in the CV's 06 section (which renders its own .lab-card cards under #cv),
+    // so scope the count to #lab.
+    await expect(page.locator("#lab .lab-card")).toHaveCount(0);
   });
 
   test("clicking a sample pill populates the transcript editor", async ({ page }) => {
@@ -60,7 +66,7 @@ test.describe("/lab — Claude Code retro demo", () => {
     await page.locator(".lab-run-btn").click();
 
     // Pipeline appears.
-    await expect(page.locator(".lab-pipeline")).toBeVisible();
+    await expect(page.locator(".pipeline")).toBeVisible();
 
     // Output appears once timer + fetch settle (pipeline runs ~2s).
     await expect(page.locator(".lab-retro")).toBeVisible({ timeout: 5000 });

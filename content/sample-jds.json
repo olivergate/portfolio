@@ -75,7 +75,6 @@
         "id": "r10",
         "text": "On-chain provenance / Ethereum",
         "baseStatus": "stretch",
-        "strictStatus": "miss",
         "generousStatus": "stretch",
         "cite": ["role:opensc-sole-frontend"],
         "reasoning": "OpenSC stack listed Ethereum, but the CV doesn't claim primary ownership of the on-chain layer. Strict reading would call this a miss; generous would credit production exposure.",
@@ -85,8 +84,6 @@
         "id": "r11",
         "text": "Set hiring bar / formal hiring authority",
         "baseStatus": "miss",
-        "strictStatus": "miss",
-        "generousStatus": "stretch",
         "cite": [],
         "reasoning": "Team-lead at Redington implies interview involvement, but the CV doesn't claim ownership of a hiring bar. Honest gap; generous reading credits adjacent experience.",
         "gapFraming": "I led a 5-engineer team but the CV doesn't speak to setting a hiring bar — happy to talk about the interviews I ran and how I'd approach this if it's load-bearing for the role."
@@ -134,7 +131,6 @@
         "id": "a4",
         "text": "Production LLM work — agents, tool-use",
         "baseStatus": "stretch",
-        "strictStatus": "miss",
         "generousStatus": "stretch",
         "cite": [],
         "reasoning": "Three side projects in flight using LLMs; no production agent system shipped at scale.",
@@ -152,8 +148,6 @@
         "id": "a6",
         "text": "Evals",
         "baseStatus": "miss",
-        "strictStatus": "miss",
-        "generousStatus": "stretch",
         "cite": [],
         "reasoning": "No production evals on the CV.",
         "gapFraming": "Reading + experimenting with eval frameworks; nothing production-grade yet. Honest gap."
@@ -169,8 +163,6 @@
         "id": "a8",
         "text": "MCP servers",
         "baseStatus": "miss",
-        "strictStatus": "miss",
-        "generousStatus": "stretch",
         "cite": [],
         "reasoning": "Not on the CV.",
         "gapFraming": "Have read the spec, haven't built one. Could spike a working server in a day or two if it'd help the conversation."
@@ -186,8 +178,6 @@
         "id": "a10",
         "text": "Developer tooling background",
         "baseStatus": "miss",
-        "strictStatus": "miss",
-        "generousStatus": "stretch",
         "cite": [],
         "reasoning": "No dev-tool company on the CV.",
         "gapFraming": "Personal Claude Code setup is dev-tooling-shaped, but I haven't been paid to build dev tools."
@@ -261,8 +251,6 @@
         "id": "f9",
         "text": "London / hybrid 2 days/week",
         "baseStatus": "miss",
-        "strictStatus": "miss",
-        "generousStatus": "stretch",
         "cite": [],
         "reasoning": "Currently Valencia-based, remote.",
         "gapFraming": "Valencia-based and remote-first. Open to fly-in cadence — happy to discuss what would actually work."
@@ -271,8 +259,6 @@
         "id": "f10",
         "text": "Playwright",
         "baseStatus": "miss",
-        "strictStatus": "miss",
-        "generousStatus": "stretch",
         "cite": [],
         "reasoning": "Cypress on the CV, not Playwright.",
         "gapFraming": "Cypress experience reads across; haven't shipped Playwright but would be a quick ramp."
