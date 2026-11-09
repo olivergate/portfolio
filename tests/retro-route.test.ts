@@ -28,10 +28,14 @@ vi.mock("@/lib/cost-log", () => ({
 }));
 
 const cacheStore = new Map<string, unknown>();
+let cacheAvailable = true;
 vi.mock("@/lib/kv-cache", () => ({
   makeCacheKey: (parts: { endpoint: string; promptVersion: string; input: unknown }) =>
     `cache:${parts.endpoint}:${parts.promptVersion}:${JSON.stringify(parts.input).length}`,
-  cacheGet: async (k: string) => cacheStore.get(k) ?? null,
+  cacheGet: async (k: string) => {
+    if (!cacheAvailable) throw new Error("Cache unreachable");
+    return cacheStore.get(k) ?? null;
+  },
   cacheSet: async (k: string, v: unknown) => {
     cacheStore.set(k, v);
   },
@@ -53,6 +57,7 @@ vi.mock("@/lib/ratelimit", () => ({
 
 beforeEach(() => {
   cacheStore.clear();
+  cacheAvailable = true;
   mockMessageCreate = null;
   anthropicCallCount = 0;
   ratelimitAllow = true;
@@ -154,6 +159,16 @@ describe("retro route — happy path + caching", () => {
     expect(json2.cached).toBe(true);
     expect(anthropicCallCount).toBe(1);
   });
+});
+
+test("shows a sample without making a model call when the cache is unreachable", async () => {
+  cacheAvailable = false;
+  const response = await callRetro();
+  expect(response.status).toBe(503);
+  const payload = await response.json();
+  expect(payload).toMatchObject({ ok: false, stage: "cache-get" });
+  expect(payload.fallback.retro.wentWell.length).toBeGreaterThan(0);
+  expect(anthropicCallCount).toBe(0);
 });
 
 describe("retro route — schema validation", () => {

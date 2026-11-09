@@ -146,11 +146,14 @@ export function RetroDemo({ featured }: Props) {
       return;
     }
 
-    if (json.fallback) {
+    const fallback = json.fallback;
+    if (fallback) {
       setOutput({
         source: "fallback",
-        retro: json.fallback.retro,
-        sampleLabel: activeSample.label,
+        retro: fallback.retro,
+        sampleLabel:
+          featured.samples.find((sample) => sample.id === fallback.sampleId)?.label ??
+          activeSample.label,
       });
       setLoading({ kind: "idle" });
       return;

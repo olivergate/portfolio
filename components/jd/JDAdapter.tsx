@@ -208,7 +208,9 @@ export function JDAdapter({ samples }: Props) {
           return {
             ok: false,
             message:
-              "I couldn’t read the requirements from that description. Try again or pick a sample.",
+              parseResp.status >= 500
+                ? "Live scoring is unavailable. Pick a sample to see how it works."
+                : "I couldn’t read the requirements from that description. Try again or pick a sample.",
           };
         }
         const matchResp = await fetch(MATCH_ENDPOINT, {
@@ -222,7 +224,7 @@ export function JDAdapter({ samples }: Props) {
         if (!matchJson.ok) {
           return {
             ok: false,
-            message: "The CV match didn’t finish. Try again or pick a sample.",
+            message: "Live scoring is unavailable. Pick a sample to see how it works.",
           };
         }
         return {
@@ -233,9 +235,8 @@ export function JDAdapter({ samples }: Props) {
             matches: matchJson.matches,
           },
         };
-      } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        return { ok: false, message: `network: ${message}` };
+      } catch {
+        return { ok: false, message: "I couldn’t reach the matcher. Try again or pick a sample." };
       }
     })();
 

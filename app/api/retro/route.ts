@@ -73,10 +73,10 @@ export async function POST(req: Request): Promise<NextResponse<SuccessResponse |
   let cached: RetroResponse | null = null;
   try {
     cached = await cacheGet<RetroResponse>(cacheKey);
-  } catch (err) {
+  } catch {
     return NextResponse.json(
-      { ok: false, stage: "cache-get", detail: String(err) },
-      { status: 500 },
+      { ok: false, stage: "cache-get", fallback: pickFallback(transcript) },
+      { status: 503 },
     );
   }
   if (cached) {
@@ -89,10 +89,10 @@ export async function POST(req: Request): Promise<NextResponse<SuccessResponse |
   let rl: Awaited<ReturnType<typeof limiter.limit>>;
   try {
     rl = await limiter.limit(ip);
-  } catch (err) {
+  } catch {
     return NextResponse.json(
-      { ok: false, stage: "ratelimit-check", detail: String(err) },
-      { status: 500 },
+      { ok: false, stage: "ratelimit-check", fallback: pickFallback(transcript) },
+      { status: 503 },
     );
   }
   if (!rl.success) {
@@ -111,10 +111,10 @@ export async function POST(req: Request): Promise<NextResponse<SuccessResponse |
   let ceiling: Awaited<ReturnType<typeof checkCostCeiling>>;
   try {
     ceiling = await checkCostCeiling();
-  } catch (err) {
+  } catch {
     return NextResponse.json(
-      { ok: false, stage: "ceiling-check", detail: String(err) },
-      { status: 500 },
+      { ok: false, stage: "ceiling-check", fallback: pickFallback(transcript) },
+      { status: 503 },
     );
   }
   if (!ceiling.ok) {
