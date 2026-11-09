@@ -284,8 +284,8 @@ describe("matcher route — honesty validator (ADR-0016)", () => {
         {
           requirementId: "r1",
           baseStatus: "hit",
-          cite: ["project:blob-life"],
-          reasoning: "Cross-platform mobile habit tracker — BlobLife is in active development.",
+          cite: ["project:teacherhub"],
+          reasoning: "TeacherHub is a selected project with working evaluations.",
         },
         {
           requirementId: "r2",

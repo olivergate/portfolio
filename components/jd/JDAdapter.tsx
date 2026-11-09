@@ -90,10 +90,10 @@ export function JDAdapter({ samples }: Props) {
    */
   const genRef = useRef(0);
 
-  /** Pipeline interval id — kept in a ref so successive runs cancel cleanly. */
+  /** Pipeline interval id | kept in a ref so successive runs cancel cleanly. */
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  /** Pulse-clear timeout id — kept in a ref so successive clicks don't lose it. */
+  /** Pulse-clear timeout id | kept in a ref so successive clicks don't lose it. */
   const pulseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /** Track the currently pulsing element so back-to-back clicks clear cleanly. */
@@ -207,7 +207,8 @@ export function JDAdapter({ samples }: Props) {
         if (!parseJson.ok) {
           return {
             ok: false,
-            message: `Parser ${parseJson.stage}: ${parseJson.detail ?? "unknown error"}`,
+            message:
+              "I couldn’t read the requirements from that description. Try again or pick a sample.",
           };
         }
         const matchResp = await fetch(MATCH_ENDPOINT, {
@@ -221,7 +222,7 @@ export function JDAdapter({ samples }: Props) {
         if (!matchJson.ok) {
           return {
             ok: false,
-            message: `Matcher ${matchJson.stage}: ${matchJson.detail ?? "unknown error"}`,
+            message: "The CV match didn’t finish. Try again or pick a sample.",
           };
         }
         return {
@@ -245,7 +246,7 @@ export function JDAdapter({ samples }: Props) {
       ),
     ]);
 
-    if (genRef.current !== myGen) return; // superseded — drop response
+    if (genRef.current !== myGen) return; // superseded | drop response
     if (timerRef.current !== null) {
       clearInterval(timerRef.current);
       timerRef.current = null;
@@ -326,7 +327,7 @@ export function JDAdapter({ samples }: Props) {
   return (
     <div>
       {/*
-        Phase 4.5 live region — persistent in the DOM (must exist on first
+        Phase 4.5 live region | persistent in the DOM (must exist on first
         render for SRs to subscribe), aria-atomic=false so only the changed
         portion is read. Updated imperatively in handleScore at two points
         (start + completion); never per-token. Errors are announced by the
@@ -422,8 +423,8 @@ export function JDAdapter({ samples }: Props) {
         }}
       >
         <span id={hintId} style={{ flex: "1 1 360px", minWidth: 0 }}>
-          ↳ pasted JDs are sent to a server route to score against the CV; not stored, not shared,
-          not logged
+          Custom job descriptions go to Anthropic for scoring. The site caches the extracted
+          requirements and scores. Use a sample if the description is private.
         </span>
         <span id={charCountId} style={{ fontVariantNumeric: "tabular-nums" }}>
           {characterCount.toLocaleString()}{" "}

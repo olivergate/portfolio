@@ -39,7 +39,7 @@ export function Footer() {
       <Link href="/accessibility" style={{ color: "inherit" }}>
         Accessibility
       </Link>
-      <span>last revised — May 2026</span>
+      <span>Last revised November 2026</span>
       {isHome && <span>4 axes · ∞ settings</span>}
     </footer>
   );

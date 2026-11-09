@@ -13,7 +13,7 @@ export { extractToolInput } from "@/lib/jd-prompts";
  *
  * Doc companion: docs/prompts/retro-v1.md.
  */
-export const RETRO_PROMPT_VERSION = "retro@v1";
+export const RETRO_PROMPT_VERSION = "retro@v2";
 
 export const RETRO_SYSTEM = `You generate a structured retrospective for a Claude Code working session, given the session transcript. The audience is the engineer who ran the session — they want a sharp, honest read of what happened and what to take forward.
 
@@ -26,6 +26,8 @@ Four sections, every output:
 3. learnings — durable takeaways worth keeping. Each learning has a short title (one phrase) and a body (1–3 sentences) that explains *why* this matters and how to apply it. Draw only from evidence in the transcript. 1–6 items.
 
 4. additions — suggested skills, slash commands, or process changes that would have helped this session. Each has a short code-style title (e.g. "/audit-context", "skill: feature-spec-review") and a body describing what it does. Optional — emit zero if the transcript doesn't suggest any. Up to 6.
+
+Use short, plain sentences and concrete examples. Use commas or full stops in place of em dashes.
 
 HONESTY RULES (load-bearing):
 

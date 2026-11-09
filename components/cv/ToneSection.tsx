@@ -31,7 +31,7 @@ export function ToneSection({ tone }: Props) {
           }}
         >
           <span>Tone manifesto</span>
-          <span aria-hidden="true">—</span>
+          <span aria-hidden="true">·</span>
           <span>{total} pledges</span>
         </div>
 

@@ -5,12 +5,12 @@ import { fontVariables } from "@/lib/fonts";
 import "@/styles/globals.css";
 
 const SITE_DESCRIPTION =
-  "Spending most of my current bandwidth on agent orchestration and harness design, on top of 7+ years senior full-stack (React/TypeScript, Python) across data platforms and consumer products.";
+  "Senior full-stack developer with a frontend focus. Seven years building React, TypeScript and Python products across supply-chain analytics and financial research.";
 
 export const metadata: Metadata = {
   title: {
     default: "Oliver Kaikane Gate",
-    template: "%s — Oliver Kaikane Gate",
+    template: "%s | Oliver Kaikane Gate",
   },
   description: SITE_DESCRIPTION,
   metadataBase: new URL("https://olivergate.com"),
@@ -20,14 +20,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "profile",
     siteName: "Oliver Kaikane Gate",
-    title: "Oliver Kaikane Gate — Senior Full Stack Developer",
+    title: "Oliver Kaikane Gate | Senior Full Stack Developer",
     description: SITE_DESCRIPTION,
     url: "https://olivergate.com",
     locale: "en_GB",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Oliver Kaikane Gate — Senior Full Stack Developer",
+    title: "Oliver Kaikane Gate | Senior Full Stack Developer",
     description: SITE_DESCRIPTION,
   },
 };

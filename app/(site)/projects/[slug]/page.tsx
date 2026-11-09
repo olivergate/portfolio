@@ -37,7 +37,7 @@ export default async function ProjectPage({ params }: { params: Promise<RoutePar
       <header className="blog-post-header" data-reveal>
         <div className="blog-post-meta">
           <span>Project</span>
-          <span aria-hidden="true">—</span>
+          <span aria-hidden="true">·</span>
           <span>{project.stack}</span>
         </div>
         <h1 className="blog-post-title">{project.title}</h1>
@@ -67,7 +67,7 @@ export default async function ProjectPage({ params }: { params: Promise<RoutePar
                   <a href={link.url} target="_blank" rel="noopener noreferrer">
                     {link.label}
                   </a>
-                  {link.note && <span style={{ color: "var(--muted)" }}> — {link.note}</span>}
+                  {link.note && <span style={{ color: "var(--muted)" }}> · {link.note}</span>}
                 </li>
               ))}
             </ul>
@@ -76,7 +76,7 @@ export default async function ProjectPage({ params }: { params: Promise<RoutePar
       </article>
 
       <footer className="blog-post-footer">
-        <Link href="/#projects" className="blog-post-back">
+        <Link href="/projects" className="blog-post-back">
           ← All projects
         </Link>
       </footer>

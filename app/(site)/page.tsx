@@ -1,5 +1,3 @@
-import { About } from "@/components/cv/About";
-import { Avocations } from "@/components/cv/Avocations";
 import { Education } from "@/components/cv/Education";
 import { Experience } from "@/components/cv/Experience";
 import { Header } from "@/components/cv/Header";
@@ -20,23 +18,18 @@ export default function HomePage() {
     <div className="cv-surface">
       <section id="cv">
         <Header header={cv.header} />
-        <About about={cv.about} />
-        <Experience overview={cv.experienceOverview} roles={cv.roles} />
-        <Education education={cv.education} />
+        <Experience roles={cv.roles} />
         <Skills skills={cv.skills} />
         <Projects projectSlugs={cv.projectSlugs} allProjects={projects.projects} />
-        <Avocations avocations={cv.avocations} />
+        <Education education={cv.education} />
       </section>
 
       {/*
-        JD adapter is a sibling top-level section, but in document flow it
-        still sits directly after the CV section's Outside work (07), before
-        Tone — so the visitor reads "JD under Outside work" as required.
-        It must be a sibling (not nested in #cv) so the spy nav's
+        JD remains a sibling (not nested in #cv) so the spy nav's
         IntersectionObserver can detect it as a distinct intersection
-        target — when nested, #cv always wins and the JD label never lights.
+        target | when nested, #cv always wins and the JD label never lights.
         Chip clicks still resolve to the canonical CV bullets up-page via
-        data-bullet-id / data-project-id (no duplicate CV — see ADR-0029).
+        data-bullet-id / data-project-id (no duplicate CV | see ADR-0029).
       */}
       <section id="jd" style={{ marginTop: "var(--gap-section)" }}>
         <JDSection samples={samples} />

@@ -8,8 +8,7 @@ type Props = {
 
 // Compact, print-only Projects. The web <Projects> renders full clickable cards with
 // a "Read more →" affordance that is meaningless in a PDF and runs the doc to a third
-// page. This collapses each project to title — stack — one-line summary so all five
-// fit on page 2 while staying single-column and fully text-extractable.
+// page. This collapses each project to title — stack — one-line summary while staying single-column and fully text-extractable.
 export function ProjectsPrint({ projectSlugs, allProjects }: Props) {
   const bySlug = new Map(allProjects.map((p) => [p.slug, p]));
   const resolved = projectSlugs
@@ -18,7 +17,7 @@ export function ProjectsPrint({ projectSlugs, allProjects }: Props) {
 
   return (
     <section id="projects" style={{ marginTop: "var(--gap-section)" }}>
-      <SectionHeader number="06" title="Projects" />
+      <SectionHeader number="03" title="Selected projects" />
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-block)" }}>
         {resolved.map((project) => (
           <div key={project.slug} style={{ breakInside: "avoid" }}>

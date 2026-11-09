@@ -1,9 +1,8 @@
 {
   "header": {
     "name": "Oliver Kaikane Gate",
-    "tagline": "Seven years as a full stack developer, specialising in all things front end. Right now I'm focused on agentic engineering: working out the practices and workflows that are safe, efficient, and don't produce spaghetti.",
+    "tagline": "Senior full-stack developer with seven years building production software. I work mostly in React and TypeScript, with Python and Node.js behind the UI. I owned the main analytics dashboard at OpenSC and led a five-person frontend team at Redington.",
     "location": "Valencia, Spain (remote)",
-    "availability": "Open to relocation to Amsterdam and The Hague · Highly Skilled Migrant sponsorship",
     "contact": {
       "email": "oliver.kg2@gmail.com",
       "phone": "+34 633 861 683"
@@ -16,11 +15,10 @@
   },
   "about": {
     "paragraphs": [
-      "Came to engineering from Philosophy of Technology. That training taught me to question the framing of a problem before answering it. Junior full stack to leading a five-person frontend team along the way.",
-      "I'm a tested full stack developer and I love coding. Right now that means agentic engineering. My passion is crafting user experiences."
+      "I build interfaces and the services behind them, translating complex domain requirements into tools people can use. My background in Philosophy of Technology informs how I question requirements and explain technical decisions."
     ]
   },
-  "experienceOverview": "Most of my bandwidth now goes to agentic engineering, built to a production standard. TeacherHub is the clearest proof: a language-learning platform whose homework-generation pipeline runs under a CEFR-aligned LLM-as-judge eval suite I built, so shipping an AI feature meant measuring whether it actually holds up. That sits on seven years of production engineering: three years at Redington leading a five-person frontend team on a multi-tenant fintech platform, then four years at OpenSC owning the supply chain analytics dashboard end to end for customers like Nespresso and Austral Fisheries. React/TypeScript on the frontend; Python, Node, C#, Kotlin on the backend.",
+  "experienceOverview": "Seven years building production software across supply-chain analytics and financial research. Owned the main analytics dashboard at OpenSC; joined Redington as a junior and progressed to leading a five-person frontend team within two years.",
   "roles": [
     {
       "id": "opensc",
@@ -28,19 +26,19 @@
       "company": "OpenSC",
       "start": "2022-07",
       "end": "2026-04",
-      "summary": "Sustainability impact venture co-founded by WWF and BCG, providing supply chain traceability for global brands. Standardised messy 'first three miles' farm data into EPCIS, then surfaced it through dashboards used by Nespresso, Austral Fisheries, and internal teams to validate ethical sourcing claims and farmer payments.",
+      "summary": "Supply-chain traceability venture co-founded by WWF and BCG. Built tools for Nespresso, Austral Fisheries and internal teams to investigate sourcing, provenance and farmer payments.",
       "bullets": [
         {
           "id": "opensc-sole-frontend",
-          "text": "Sole engineer on the main analytics dashboard. Built and maintained the whole thing. Plotly Dash for the analytical core, React and Next.js for the consumer-facing pages."
+          "text": "Owned the main analytics dashboard as its sole engineer, from implementation through maintenance: Python and Plotly Dash for analysis, with React and Next.js for consumer-facing pages."
         },
         {
           "id": "opensc-nespresso-payments",
-          "text": "Built the traceability and payments validation system used by Nespresso to verify coffee sourcing across Rainforest Alliance and their internal AAA premium-farmer program, including checks that base prices tracked the London robusta price index and that farmer payments matched contracted standards."
+          "text": "Built traceability and payment validation used by Nespresso to check coffee sourcing and farmer payments against Rainforest Alliance and AAA programme requirements."
         },
         {
           "id": "opensc-anomaly-graph",
-          "text": "Modelled supply-chain relationships so infiltration, exfiltration, capacity breaches, and untraced origin coffee became queryable patterns rather than per-supply-chain spot checks."
+          "text": "Modelled supply-chain relationships so untraced coffee, capacity breaches and unexpected stock movements could be investigated through graph queries rather than individual supply-chain spot checks."
         },
         {
           "id": "opensc-austral-fisheries",
@@ -48,11 +46,11 @@
         },
         {
           "id": "opensc-dagster-yaml",
-          "text": "Replaced bespoke per-cluster orchestrations in Dagster with a YAML-configured, data-contract-driven ingestion layer. New supply chains can be added by config now."
+          "text": "Replaced bespoke Dagster orchestration with a YAML-configured ingestion layer and data contracts, allowing new supply chains to be added through configuration."
         },
         {
           "id": "opensc-data-quality-monitoring",
-          "text": "Built a data entry flow that made it hard to put bad data in: input checks, guardrails, and reviews at the point of capture. Plus monitoring for ingestion accuracy and frequency across all supply chain feeds."
+          "text": "Built data-entry validation and review flows at the point of capture, supported by monitoring of ingestion accuracy and frequency."
         }
       ],
       "technologies": [
@@ -63,12 +61,8 @@
         "Plotly Dash",
         "Dagster",
         "Kuzu",
-        "Kotlin",
-        "AWS",
-        "Kubernetes",
-        "Postgres",
-        "Ethereum",
-        "Airflow"
+        "PostgreSQL",
+        "AWS"
       ]
     },
     {
@@ -77,23 +71,23 @@
       "company": "Redington",
       "start": "2019-02",
       "end": "2022-06",
-      "summary": "UK pensions consultancy. Core contributor on the frontend of a multi-tenant research platform used by several thousand consultants across 7 tenants to track investments and maintain observability across portfolios. Joined as a junior; promoted to leading a frontend team within two years as the company scaled from 10 engineers to 8 teams.",
+      "summary": "UK pensions consultancy. Built the frontend of a multi-tenant investment research platform used by several thousand consultants across seven tenants.",
       "bullets": [
         {
           "id": "redington-frontend-arch",
-          "text": "Key contributor through my junior years, then led frontend architectural decisions on a React and TypeScript multi-tenant dashboard. Sensitive financial data; tenant isolation was the design constraint everything else worked around."
+          "text": "Led frontend architecture decisions for a React and TypeScript dashboard handling sensitive financial data across multiple tenants, with tenant isolation as a core constraint."
         },
         {
           "id": "redington-team-lead",
-          "text": "Led a five-person frontend team focused on feature delivery, consistently the highest-performing team on UI work."
+          "text": "Joined as a junior developer and progressed within two years to leading a five-person frontend team responsible for feature delivery."
         },
         {
           "id": "redington-cypress",
-          "text": "Introduced Cypress E2E testing across the platform, which raised deployment confidence and cut human error at release time."
+          "text": "Introduced Cypress end-to-end testing across the platform to automate release checks and reduce manual release errors."
         },
         {
           "id": "redington-charity",
-          "text": "Chaired the Bristol charity committee. Helped a charity left dry by multiple high-cost agencies. We ran a one-day workshop to surface issues, then migrated their database and supporting infrastructure onto Airtable. Pushed for more company-sponsored charity days and helped colleagues find their own."
+          "text": "Led a pro bono discovery workshop for a charity, then migrated its database and supporting infrastructure to Airtable."
         }
       ],
       "technologies": [
@@ -102,11 +96,9 @@
         "MUI",
         "Cypress",
         "Jest",
-        "AWS",
-        ".NET (C#)",
+        "C# / .NET",
         "PostgreSQL",
-        "DDD",
-        "Event sourcing paradigm"
+        "AWS"
       ]
     }
   ],
@@ -117,67 +109,35 @@
       "school": "Leeds University",
       "start": "2014-09",
       "end": "2017-06",
-      "notes": [
-        "Specialised in Philosophy of Technology",
-        "Rhetoric and structured argument: built the habit of restating a question before answering it",
-        "The skills I learnt at university shaped how I approach design conversations, whether UX or technical. Meeting success is not only about results and actions, but about getting the most out of everyone in the room. I try to make sure that happens."
-      ]
+      "notes": ["Specialised in Philosophy of Technology."]
     }
   ],
   "skills": {
     "primary": ["React", "Next.js", "TypeScript", "Node.js", "Python", "PostgreSQL", "AWS"],
     "ai": [
-      "Eval testing",
-      "LLM pipelines across OpenAI and Anthropic APIs (GPT-4, Whisper, Claude)",
-      "Agent orchestration",
-      "Agentic harness",
-      "Skills, agents, hooks and strategy for agentic engineering",
-      "MCP servers with OAuth 2.1",
-      "OWASP LLM Top 10",
-      "Prompt injection and jailbreak patterns"
+      "LLM pipelines",
+      "Rubric-based evaluation",
+      "Judge calibration",
+      "OpenAI and Anthropic APIs"
     ],
     "frontend": [
       "React",
       "Next.js",
       "TypeScript",
-      "Cypress",
-      "Jest",
-      "MUI",
-      "Chakra",
-      "TailwindCSS",
-      "Ant Design",
-      "Mantine",
-      "Redux",
       "React Query",
       "React Hook Form",
-      "Kotlin (Android)"
+      "MUI",
+      "Mantine",
+      "Cypress",
+      "Jest"
     ],
-    "backend": [
-      "Python (FastAPI, Dagster, pandas, Plotly Dash)",
-      "Node.js",
-      "C# / .NET",
-      "Kotlin (Spring Boot)",
-      "PostgreSQL",
-      "MartenDB",
-      "Kuzu (graph DB)",
-      "Airflow"
-    ],
-    "infra": [
-      "AWS (S3, EKS, EC2, SNS, SQS, Lambda, IAM, RDS, CloudWatch)",
-      "Terraform",
-      "Azure (some)",
-      "Vercel",
-      "Supabase",
-      "GitHub Actions",
-      "Octopus Deploy / TeamCity",
-      "CircleCI"
-    ],
+    "backend": ["Python", "Node.js", "C# / .NET", "PostgreSQL", "FastAPI", "Dagster"],
+    "infra": ["AWS", "Terraform", "Vercel", "Supabase", "GitHub Actions"],
     "leadership": [
-      "Led a five-person frontend team at Redington",
-      "Completed external senior IC / principal-engineer soft-skills training (2024)",
-      "Ran external consulting engagement (LifeCycle) end-to-end"
+      "Frontend architecture and five-person team leadership at Redington",
+      "Discovery and delivery for a pro bono charity engagement"
     ]
   },
-  "projectSlugs": ["teacherhub", "claude-gui", "blob-life", "retro-claude", "owasp-trainer"],
+  "projectSlugs": ["teacherhub", "owasp-trainer"],
   "avocations": ["Food and cooking", "Travelling", "Reading", "Chess", "Running"]
 }

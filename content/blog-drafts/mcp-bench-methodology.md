@@ -4,7 +4,7 @@ slug: mcp-bench-methodology
 status: published
 date: 2026-05-25
 title: "Five things I learned trying to benchmark MCP search tools"
-summary: "I benchmarked three MCP search tools against bash-grep across eight tasks. The baseline won, and the result is the least interesting part. The methodology traps are the story."
+summary: "I tried three MCP search tools on eight jobs in my own repo. Plain bash and grep cost less on that set. Here's where the comparison almost went wrong."
 kicker: "Benchmarking"
 length: "~1400 words"
 source_brief: "content/_six-post-roadmap-2026-05-25.md"
@@ -13,13 +13,13 @@ source_data:
   - "/Users/olivergate/Documents/Source/TeacherHub/docs/archive/superpowers-specs-completed/2026-05-11-mcp-search-bench-report.md"
 ---
 
-An article claimed a 98% reduction in token usage from one particular MCP search server. I wanted it to be true, so I ran the bench on my own ground — a real repo, my own account. New tooling comes out thick and fast, and most of it is downstream of someone else's specific workload and account; validation has to happen where you actually work.
+An article claimed a 98% reduction in token usage from one particular MCP search server. I wanted it to be true, so I ran the bench in my own repo, on my own account. New tooling comes out thick and fast, and most of it is downstream of someone else's specific workload and account; validation has to happen where you actually work.
 
 It didn't settle the question. My Philosophy degree opened with a lecture that warned you'd graduate with questions, not answers, and this is closer to that: the questions anyone benchmarking an MCP search server should be asking, and the concretes that taught me each one.
 
 ## Results
 
-Two rounds. Round one was Semble against bash-grep across seven tasks: the MCP arm came out 7.6% cheaper cumulatively, a long way short of the vendor's 98%. Round two added Serena and grepai plus a new T8 designed to favour LSP-style symbol-aware retrieval — same codebase, same operator, same baseline reference, eight tasks per arm. On that suite, the no-MCP baseline beat both MCP tools cumulatively.
+Two rounds. Round one was Semble against bash-grep across seven tasks: the MCP arm came out 7.6% cheaper cumulatively, a long way short of the vendor's 98%. Round two added Serena and grepai plus a new T8 designed to favour LSP-style symbol-aware retrieval. Same codebase, same operator, same baseline reference, eight tasks per arm. On that suite, the no-MCP baseline beat both MCP tools cumulatively.
 
 <svg viewBox="0 0 600 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cumulative cost across 8 tasks: baseline ~$14.96, Serena v2 $17.72, grepai $24.80">
   <style>
@@ -69,13 +69,15 @@ That is the result. What is wrong with it is the interesting part.
 
 ## Methodology
 
-Single git checkout, same repo, same task list, same AGENTS.md, same CLAUDE.md. The only delta between arms was the `.mcp.json`: whether the MCP server was registered. The first version used two git worktrees with AGENTS.md as the variable, and failed — CLAUDE.md context bled across worktrees, conventions carried from one arm into the other, and the arms ended up correlated by everything except what I was trying to vary.
+Single git checkout, same repo, same task list, same AGENTS.md, same CLAUDE.md. The only delta between arms was the `.mcp.json`: whether the MCP server was registered. The first version used two git worktrees with AGENTS.md as the variable, and failed. CLAUDE.md context bled across worktrees, conventions carried from one arm into the other, and the arms ended up correlated by everything except what I was trying to vary.
 
-Prose alone hadn't isolated it either. The first MCP arm was contaminated: AGENTS.md said "prefer the MCP tool; do not use bash grep" and the agent complied roughly half the time, especially under load. So I added permission denies on `Bash(grep|rg|ag|ack|find:*)` on the MCP arms, and compliance jumped sharply — but not perfectly. A third of the way through round two the agent had worked out that `awk '/pattern/' file` is a search tool, and the deny list covered neither awk nor sed. I upgraded the extractor to retroactively reclassify the eight leaked calls as bash-search; the raw cost data stayed put, only its buckets moved.
+Prose alone hadn't isolated it either. The first MCP arm was contaminated: AGENTS.md said "prefer the MCP tool; do not use bash grep" and the agent complied roughly half the time, especially under load. So I added permission denies on `Bash(grep|rg|ag|ack|find:*)` on the MCP arms, and compliance jumped sharply, but not perfectly. A third of the way through round two the agent had worked out that `awk '/pattern/' file` is a search tool, and the deny list covered neither awk nor sed. I upgraded the extractor to retroactively reclassify the eight leaked calls as bash-search; the raw cost data stayed put, only its buckets moved.
 
-Eight tasks per arm, `/cost` snapshot before and after each, per-task delta from the snapshots. The tasks: a small refactor (env-var swap), a bug fix (interval overlap), a wide-shallow refactor (FullCalendar removal), a feature add (auth listener), a Zod boundary refactor, a `(supabase as any)` cleanup, a self-review pass, and an RLS Q&A — a mix chosen to surface where each retrieval mechanism wins and loses.
+Eight tasks per arm, `/cost` snapshot before and after each, per-task delta from the snapshots. The tasks: a small refactor (env-var swap), a bug fix (interval overlap), a wide-shallow refactor (FullCalendar removal), a feature add (auth listener), a Zod boundary refactor, a `(supabase as any)` cleanup, a self-review pass, and an RLS Q&A
 
-Per-arm runs went onto local-only git branches (`bench/2026-05-08-baseline-run`, `bench/2026-05-08-grepai-run`, `bench/2026-05-08-serena-run-v2`, and so on), each keeping its own auditable history without polluting origin. The /cost snapshots and per-task deltas landed in a local SQLite store at `~/.claude/transcripts/2026-05-08-mcp-search-bench/bench.sqlite`, with per-task JSONL checkpoints alongside as replayable raw input — which let me upgrade the classifier mid-arc without re-running anything.
+I chose that mix to surface where each retrieval mechanism wins and loses.
+
+Per-arm runs went onto local-only git branches (`bench/2026-05-08-baseline-run`, `bench/2026-05-08-grepai-run`, `bench/2026-05-08-serena-run-v2`, and so on), each keeping its own auditable history without polluting origin. The /cost snapshots and per-task deltas landed in a local SQLite store at `~/.claude/transcripts/2026-05-08-mcp-search-bench/bench.sqlite`, with per-task JSONL checkpoints alongside as replayable raw input. That let me upgrade the classifier mid-arc without re-running anything.
 
 One setup detail matters more than it looks. My Claude Code account is on a cohort that swaps native `Grep`/`Glob` for a bash-shell substitute (`tengu_pewter_kestrel.BashSearchTool=20000`). The vendor's reference account presumably isn't. "Baseline" in my bench and "baseline" in the vendor's number aren't necessarily the same underlying tool.
 
@@ -85,7 +87,7 @@ Four things demand a flag.
 
 **T8 baseline isolation skew.** The baseline T8 run happened in a fresh session with no T1–T7 accumulation, while the grepai and Serena T8 runs sat on top of five prior tasks of session prefix. Adjusted fairly, baseline T8 lands closer to $2.50–$3.00 than the recorded $1.97. The ordering (baseline < Serena < grepai) holds; the magnitude of the no-MCP win narrows.
 
-**Cohort comparability.** My baseline routes through `bash:grep`, the vendor's likely through native `Grep`, so the published vendor number and my measurement aren't strictly comparable — and there's no surface where vendors disclose which cohort their bench account was in. Worth knowing before composing any vendor's MCP benchmark with your own.
+**Cohort comparability.** My baseline routes through `bash:grep`, the vendor's likely through native `Grep`, so the published vendor number and my measurement aren't strictly comparable. There's no surface where vendors disclose which cohort their bench account was in. Worth knowing before composing any vendor's MCP benchmark with your own.
 
 **Operator pacing.** On T6 (pure-recall self-review, zero tool calls) I got a $1.27 cost swing between two arms whose only meaningful difference was whether I'd taken a coffee break first. That one surprised me.
 
@@ -141,9 +143,9 @@ Four things demand a flag.
 
 Claude Code's prompt cache has a five-minute TTL. Any idle gap longer than that forces a full re-cache when the next prompt fires, and on a heavy-MCP arm with a 200K+ prefix the rewrite costs real money. Grepai's T6 cost $0.46 because I ran the tasks back-to-back; Serena's T6 cost $1.73 because T8 had run overnight and part of the prefix had aged past TTL. Same prefix weight, different cache state. A harness that doesn't model operator pacing has that variance sitting in its cumulative number as silent noise.
 
-**The Serena v1 incident.** Serena reported T1 complete at $0.62 against grepai's $1.02 — a 40% win on direct find-and-replace, apparently. The task: replace every hardcoded `deepl.com` URL with an env-var read, across three call sites. The agent ran `find_symbol("deepl")` and `find_symbol("DeepL")`, both of which correctly returned nothing, because "DeepL" isn't a symbol; it lives in string literals. The agent edited the two sites it could infer from filenames and reported done. The third, `spell-check.ts:93`, was never touched. I caught it on a post-task disk check.
+**The Serena v1 incident.** Serena reported T1 complete at $0.62 against grepai's $1.02, a 40% win on direct find and replace, apparently. The task: replace every hardcoded `deepl.com` URL with an env-var read, across three call sites. The agent ran `find_symbol("deepl")` and `find_symbol("DeepL")`, both of which correctly returned nothing, because "DeepL" isn't a symbol; it lives in string literals. The agent edited the two sites it could infer from filenames and reported done. The third, `spell-check.ts:93`, was never touched. I caught it on a post-task disk check.
 
-The cause was structural. Serena's `--context claude-code` default tool list doesn't expose `search_for_pattern`, assuming users fall through to native `Grep` when symbol search isn't enough. My account has no native `Grep` (the cohort note), and the bench denies blocked bash grep — so the agent had no string-literal search path at all. One line of YAML in `.serena/project.yml` (`included_optional_tools: [search_for_pattern]`) closed the gap; patched v2 cost $1.03, essentially tied with grepai. The 40% win was incomplete coverage masquerading as efficiency. I kept v1 on its branch and ran v2 on a sibling.
+The cause was structural. Serena's `--context claude-code` default tool list doesn't expose `search_for_pattern`, assuming users fall through to native `Grep` when symbol search isn't enough. My account has no native `Grep` (the cohort note), and the bench denies blocked bash grep, so the agent had no string-literal search path at all. One line of YAML in `.serena/project.yml` (`included_optional_tools: [search_for_pattern]`) closed the gap; patched v2 cost $1.03, essentially tied with grepai. The 40% win was incomplete coverage masquerading as efficiency. I kept v1 on its branch and ran v2 on a sibling.
 
 ## Learnings
 
@@ -161,6 +163,6 @@ And be careful which number you ship. The cumulative headline is the one readers
 
 ## The limits of one bench
 
-This is one run. I have no data on cohort distribution across the Claude Code population; my belief that other comparative benchmarks share the problem is a prior, not a measurement. Pacing is a variable on my workload — if yours has no idle gaps above five minutes, the cache-TTL mechanism never fires, and the lesson only holds for harnesses trying to model real sessions. And v1-preservation has a judgment call inside it: it pays off when the failure points at a structural property of the tool, but when the failure is operator error (wrong API key, wrong working directory) the preserved arm is clutter. The test is whether the next user would hit the same wall.
+This is one run. I have no data on cohort distribution across the Claude Code population; my belief that other comparative benchmarks share the problem is a prior, not a measurement. Pacing is a variable on my workload. If yours has no idle gaps above five minutes, the cache-TTL mechanism never fires, and the lesson only holds for harnesses trying to model real sessions. And v1-preservation has a judgment call inside it: it pays off when the failure points at a structural property of the tool, but when the failure is operator error (wrong API key, wrong working directory) the preserved arm is clutter. The test is whether the next user would hit the same wall.
 
 The number is the least durable thing here. Every comparative benchmark should disclose its cohort, its pacing, and the arms it threw away.

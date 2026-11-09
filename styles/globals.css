@@ -1214,19 +1214,6 @@ html {
   color: var(--fg);
   /* :focus-visible outline painted by the universal rule (Phase 4.5). */
 }
-.fab-about {
-  color: var(--muted);
-  text-decoration: none;
-  padding: 0.25rem 0;
-  border-bottom: 1px solid transparent;
-  transition: color var(--motion-base), border-color var(--motion-base);
-}
-.fab-about:hover,
-.fab-about:focus-visible {
-  color: var(--fg);
-  border-bottom-color: var(--accent);
-  /* :focus-visible outline painted by the universal rule (Phase 4.5). */
-}
 
 /* Narrow-viewport tightening — at <=480px the closed pill drops the "STYLE"
    word (kept in the DOM for SR users; visually hidden) and the padding tightens

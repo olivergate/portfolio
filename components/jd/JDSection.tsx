@@ -18,10 +18,8 @@ export function JDSection({ samples }: Props) {
           color: "var(--fg-soft)",
         }}
       >
-        Paste a JD. The chips below highlight which requirements I&rsquo;d land cleanly, where
-        I&rsquo;d stretch, and where I&rsquo;d be honest about a gap. Click a Hit chip to jump to
-        the cited bullet up-page in the CV. The slider tunes the matching threshold; if you&rsquo;re
-        reading conservatively, drag it left.
+        Paste a job description or pick a sample. Click a hit to see the work that backs it up. The
+        slider gives you a stricter or more generous reading. A gap stays a gap.
       </p>
 
       <JDAdapter samples={samples} />

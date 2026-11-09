@@ -100,13 +100,17 @@ test.describe("JD adapter — sample JD interactions", () => {
       () => Array.from(document.querySelectorAll("button.chip")).length === 10,
     );
     const counts = await chipCounts(page);
-    expect(counts).toEqual({ hits: 3, stretches: 4, misses: 3 });
+    expect(counts).toEqual({ hits: 4, stretches: 3, misses: 3 });
+    await page.getByRole("button", { name: "Stretch: Evals", exact: true }).hover();
+    await expect(page.getByRole("tooltip")).toContainText(
+      "TeacherHub includes real pipeline evaluations, recorded failures and rubric calibration.",
+    );
   });
 
   test("privacy disclosure copy is honest (no false 'private to your browser')", async ({
     page,
   }) => {
-    const copy = page.getByText(/sent to a server route to score against the CV/i);
+    const copy = page.getByText(/Custom job descriptions go to Anthropic/i);
     await expect(copy).toBeVisible();
     const tooHonest = page.getByText(/private to your browser; nothing is sent anywhere/i);
     await expect(tooHonest).toHaveCount(0);

@@ -172,7 +172,7 @@ describe("Sample-JDs content file is schema-clean and honest (ADR-0016)", () => 
     }
   });
 
-  test("F1.1 regression — a3, a4, r10 must not resolve to Hit at generous", async () => {
+  test("Sample scores distinguish the trainer from unsupported production experience", async () => {
     const fs = await import("node:fs");
     const path = await import("node:path");
     const raw = fs.readFileSync(path.join(process.cwd(), "content", "sample-jds.json"), "utf8");
@@ -185,7 +185,8 @@ describe("Sample-JDs content file is schema-clean and honest (ADR-0016)", () => 
       expect(c, `chip ${id} not found in sample-jds.json`).toBeDefined();
       return c as SampleChip;
     };
-    expect(statusAtLevel(findChip("a3"), "generous")).not.toBe("hit");
+    expect(statusAtLevel(findChip("a3"), "balanced")).toBe("hit");
+    expect(findChip("a3").cite).toEqual(["project:owasp-trainer"]);
     expect(statusAtLevel(findChip("a4"), "generous")).not.toBe("hit");
     expect(statusAtLevel(findChip("r10"), "generous")).not.toBe("hit");
   });

@@ -31,7 +31,7 @@ export async function generateMetadata({
   const subPage = project?.subPages.find((s) => s.slug === sub);
   if (!project || !subPage) return { title: "Not found" };
   return {
-    title: `${subPage.title} — ${project.title}`,
+    title: `${subPage.title} | ${project.title}`,
     description: project.summary,
   };
 }
@@ -50,7 +50,7 @@ export default async function ProjectSubPage({ params }: { params: Promise<Route
           <Link href={`/projects/${project.slug}`} style={{ color: "var(--muted)" }}>
             {project.title}
           </Link>
-          <span aria-hidden="true">—</span>
+          <span aria-hidden="true">·</span>
           <span>{subPage.title}</span>
         </div>
         <h1 className="blog-post-title">{subPage.title}</h1>

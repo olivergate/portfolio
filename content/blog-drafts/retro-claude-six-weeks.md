@@ -4,7 +4,7 @@ slug: retro-claude-six-weeks
 status: published
 date: 2026-05-25
 title: "Six weeks of structured retros: what the corpus made me change, and what it didn't"
-summary: "74 structured session retros against a closed-set ontology: three workflow changes the data forced, and the limit where measurement stopped helping."
+summary: "I kept 74 session reviews over six weeks. Three things changed about how I worked. One problem kept coming back."
 kicker: "Retros"
 length: "~950 words"
 source_brief: "content/_six-post-roadmap-2026-05-25.md"
@@ -20,13 +20,13 @@ source_data:
 
 I wrote a tool because I couldn't trust my agent's retro on its own work.
 
-An agent that just ran a session is invested in its own decisions and defends a coherent narrative. Ask it "did this work?" and you get optimistic answers — the answers you'd expect from someone who just spent three hours building an interpretation of what they did.
+An agent that just ran a session is invested in its own decisions and defends a coherent narrative. Ask it "did this work?" and you get optimistic answers. The sort you'd expect from someone who just spent three hours building an interpretation of what they did.
 
 So for six weeks I've ended every Claude Code session with a slash command, `/clear-review`. It captures a structured retro into YAML, against a closed-set ontology, with mandatory evidence citations on every self-assessment. The corpus stands at 74 sessions. It has changed how I work in three named ways, and shown me exactly where measurement stops helping.
 
 ## The tool
 
-The retro moment is the only point in the lifecycle where the session is in working memory, the transcript is cheap to reach, and the user is present — so signals are still cleanly attributable. That window closes within minutes of `/clear`; ADR-0011 rests the whole tool on it.
+The retro moment is the only point in the lifecycle where the session is in working memory, the transcript is cheap to reach, and the user is present, so signals are still cleanly attributable. That window closes within minutes of `/clear`; ADR-0011 rests the whole tool on it.
 
 I did the retro by hand for a month before building anything; a month of that teaches you what the command should be. When it became daily work, I built the tool.
 
@@ -41,9 +41,9 @@ The narrative stays the agent's. It just has to point at the artefacts.
 
 ## The corpus, week six
 
-74 retros. 873 entries classified at `fit_confidence: high`, 44 at `forced`, 7 at `other` — about 5% forced/other across the corpus, which is how I know the v0.2 cut is holding. v0.1 had hovered near 25% on the sessions that triggered it.
+74 retros. 873 entries classified at `fit_confidence: high`, 44 at `forced`, 7 at `other`. About 5% forced/other across the corpus, which is how I know the v0.2 cut is holding. v0.1 had hovered near 25% on the sessions that triggered it.
 
-One signal dominates: `verification-skipped-self`, 199 occurrences across the 74 sessions — the most-recurring observation in the data. Hold that number. It is both the strongest evidence the tool produces and the clearest mark of its limit.
+One signal dominates: `verification-skipped-self`, 199 occurrences across the 74 sessions. It was the most common observation. It is both the strongest evidence the tool produces and the clearest mark of its limit.
 
 ## Three changes the data forced
 

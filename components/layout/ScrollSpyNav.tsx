@@ -10,9 +10,9 @@ type Entry = Anchor | Route;
 
 const ENTRIES: Entry[] = [
   { kind: "anchor", id: "cv", label: "CV" },
-  { kind: "anchor", id: "projects", label: "Projects" },
   { kind: "anchor", id: "jd", label: "JD" },
   { kind: "anchor", id: "tone", label: "Tone" },
+  { kind: "route", href: "/projects", label: "Projects" },
   {
     kind: "route",
     href: "https://owasp-tester.vercel.app",
@@ -65,22 +65,8 @@ export function ScrollSpyNav() {
           else visible.delete(entry.target.id);
         }
         if (visible.size === 0) return;
-        // Prefer the innermost visible section. #projects is the CV's 06
-        // section, nested inside #cv — without this the enveloping #cv (whose
-        // top sits far above the viewport) always wins on min-top and the
-        // Projects label never lights. Skip any section that contains another
-        // visible section (i.e. an ancestor), then pick the topmost of the rest.
         let best: { id: string; top: number } | null = null;
         for (const [id, e] of visible) {
-          const el = document.getElementById(id);
-          const isAncestor =
-            el !== null &&
-            [...visible.keys()].some((other) => {
-              if (other === id) return false;
-              const otherEl = document.getElementById(other);
-              return otherEl !== null && el.contains(otherEl);
-            });
-          if (isAncestor) continue;
           const top = e.boundingClientRect.top;
           if (best === null || top < best.top) best = { id, top };
         }

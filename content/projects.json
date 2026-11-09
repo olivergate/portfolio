@@ -2,23 +2,23 @@
   "featured": {
     "slug": "claude-code-retro",
     "title": "Session retrospective generator",
-    "blurb": "Paste a Claude Code transcript and the demo synthesises a retro: what went well, what slowed things down, learnings catalogue entries, and suggested skills to add. The same format my real retros take after every working session.",
+    "blurb": "Paste a Claude Code transcript or pick a sample. The demo pulls out what helped, what slowed things down and what you might change next time.",
     "techPills": ["Claude API", "Anthropic SDK", "tool use", "Next.js"],
     "samples": [
       {
         "id": "refactor",
         "label": "Refactoring auth flow",
-        "transcript": "[18:02] User: Need to refactor the auth flow. Currently we have JWTs in localStorage and a separate session check that hits /me on every page load. Want to consolidate.\n[18:02] Claude: Let me read auth/jwt.ts and auth/session.ts first.\n[18:04] Claude: Found three call sites for getCurrentUser() — pages/dashboard, pages/settings, components/Header. Suggest centralising in a SessionProvider with React Query for the /me check (cached 5min, refetch on focus).\n[18:05] User: do it\n[18:23] Claude: Done. Two things to flag:\n - The settings page was passing user.id into a useEffect dep array that's now provided by context — kept the dep but it'll only fire on user change now, which is correct.\n - There's a race in the existing logout handler I noticed while in there. Filed a note in TODO.md rather than fixing in this PR.\n[18:24] User: good call. Run tests.\n[18:25] Claude: 47 pass, 2 fail — both in auth.test.ts, both expect the old localStorage shape. Fixing.\n[18:31] Claude: 49 pass. Anything else?\n[18:32] User: ship it"
+        "transcript": "[18:02] User: Need to refactor the auth flow. Currently we have JWTs in localStorage and a separate session check that hits /me on every page load. Want to consolidate.\n[18:02] Claude: Let me read auth/jwt.ts and auth/session.ts first.\n[18:04] Claude: Found three call sites for getCurrentUser(); pages/dashboard, pages/settings, components/Header. Suggest centralising in a SessionProvider with React Query for the /me check (cached 5min, refetch on focus).\n[18:05] User: do it\n[18:23] Claude: Done. Two things to flag:\n - The settings page was passing user.id into a useEffect dep array that's now provided by context; kept the dep but it'll only fire on user change now, which is correct.\n - There's a race in the existing logout handler I noticed while in there. Filed a note in TODO.md rather than fixing in this PR.\n[18:24] User: good call. Run tests.\n[18:25] Claude: 47 pass, 2 fail; both in auth.test.ts, both expect the old localStorage shape. Fixing.\n[18:31] Claude: 49 pass. Anything else?\n[18:32] User: ship it"
       },
       {
         "id": "debug",
         "label": "Debugging deploy issue",
-        "transcript": "[09:14] User: prod deploy failing. CloudWatch is showing \"ECONNREFUSED\" from the worker after rollout.\n[09:14] Claude: I'll start with the deploy diff and the worker logs around the failure window.\n[09:18] Claude: Three suspects in the diff: env var rename (DB_URL → DATABASE_URL), a new feature flag, and a Dockerfile base bump. The error timing matches container start, so I'd look at the env rename first.\n[09:19] User: yeah we did rename that\n[09:21] Claude: Worker has a hard-coded reference to process.env.DB_URL in workers/jobs/index.ts:14. Missed it in the rename PR. Fix is one line.\n[09:22] User: send the fix\n[09:23] Claude: Done. Also grepped the repo for \"DB_URL\" — no other stragglers. Suggest adding the env var rename to the deploy checklist as a process change.\n[09:24] User: ship and document."
+        "transcript": "[09:14] User: prod deploy failing. CloudWatch is showing \"ECONNREFUSED\" from the worker after rollout.\n[09:14] Claude: I'll start with the deploy diff and the worker logs around the failure window.\n[09:18] Claude: Three suspects in the diff: env var rename (DB_URL → DATABASE_URL), a new feature flag, and a Dockerfile base bump. The error timing matches container start, so I'd look at the env rename first.\n[09:19] User: yeah we did rename that\n[09:21] Claude: Worker has a hard-coded reference to process.env.DB_URL in workers/jobs/index.ts:14. Missed it in the rename PR. Fix is one line.\n[09:22] User: send the fix\n[09:23] Claude: Done. Also grepped the repo for \"DB_URL\"; no other stragglers. Suggest adding the env var rename to the deploy checklist as a process change.\n[09:24] User: ship and document."
       },
       {
         "id": "feature",
         "label": "Building a feature from spec",
-        "transcript": "[14:01] User: New feature — bulk export from the dashboard. Spec attached. Walk me through your plan first, don't write code yet.\n[14:02] Claude: Read SPEC.md. Plan:\n 1. Add a /export/jobs route, returns paginated job list + status.\n 2. Add a \"Bulk export\" button to the dashboard table; opens a modal with format + date range.\n 3. Worker job in workers/exports — generates CSV, uploads to S3, sends signed URL via email.\n 4. Tests at each layer.\nTwo open questions: (a) Auth on the signed URL — same-domain only, or any-domain? (b) Should we rate-limit per user?\n[14:04] User: same-domain only, rate-limit at 5/hour. Go.\n[14:38] Claude: Ready for review. One thing I'm not happy with: the modal is pulling format options from a constant; should be a config so non-engineers can edit. Worth a follow-up?\n[14:39] User: yes, file it. Anything else?\n[14:40] Claude: Tests pass. Commit message draft attached."
+        "transcript": "[14:01] User: New feature; bulk export from the dashboard. Spec attached. Walk me through your plan first, don't write code yet.\n[14:02] Claude: Read SPEC.md. Plan:\n 1. Add a /export/jobs route, returns paginated job list + status.\n 2. Add a \"Bulk export\" button to the dashboard table; opens a modal with format + date range.\n 3. Worker job in workers/exports; generates CSV, uploads to S3, sends signed URL via email.\n 4. Tests at each layer.\nTwo open questions: (a) Auth on the signed URL; same-domain only, or any-domain? (b) Should we rate-limit per user?\n[14:04] User: same-domain only, rate-limit at 5/hour. Go.\n[14:38] Claude: Ready for review. One thing I'm not happy with: the modal is pulling format options from a constant; should be a config so non-engineers can edit. Worth a follow-up?\n[14:39] User: yes, file it. Anything else?\n[14:40] Claude: Tests pass. Commit message draft attached."
       }
     ]
   },
@@ -26,9 +26,9 @@
     {
       "slug": "teacherhub",
       "title": "TeacherHub",
-      "summary": "Language-learning platform with a CEFR-aligned LLM-as-judge eval suite over its homework-generation pipeline.",
-      "stack": "Next.js 15, Mantine, Supabase (Postgres + RLS), Vercel, OpenAI GPT-4o, DeepL, Capacitor",
-      "techPills": ["Next.js", "Supabase", "OpenAI", "Eval suite"],
+      "summary": "My Spanish teacher and I used a shared Google Doc for lessons. I built TeacherHub to keep notes, homework and progress together. Tests found lost vocabulary and exercises where the wrong answer matched the correction. I adjusted the scoring so a fair summary could pass and missing content would still fail.",
+      "stack": "React, Next.js, TypeScript, Mantine, Supabase, OpenAI, Anthropic, Vitest",
+      "techPills": ["React", "TypeScript", "Supabase", "AI evaluations"],
       "glyph": "あ",
       "gradient": { "from": "#f4d35e", "via": "#e26d5a", "to": "#5a3a3a" },
       "image": {
@@ -39,7 +39,7 @@
         {
           "label": "GitHub",
           "url": "https://github.com/olivergate/TeacherHub",
-          "note": "Private repo. Ask me and I'll grant view access."
+          "note": "Private repo. Ask me if you want to take a look."
         }
       ],
       "subPages": [
@@ -53,7 +53,7 @@
     {
       "slug": "claude-gui",
       "title": "Claude CLI cockpit",
-      "summary": "Multi-window Electron cockpit for the Claude Code CLI: files touched, agents in use, tool calls, rejected calls, and structured review findings, all on one surface.",
+      "summary": "I wanted to see what three Claude Code sessions were doing without reading three terminals. This Electron app shows the files they touch, the tools they call and the reviews that need a look.",
       "stack": "Electron, node-pty + xterm.js, SQLite, Anthropic SDK",
       "techPills": ["Electron", "node-pty", "SQLite", "Anthropic SDK"],
       "glyph": "◧",
@@ -66,7 +66,7 @@
         {
           "label": "GitHub",
           "url": "https://github.com/olivergate/claude-gui",
-          "note": "Private repo. Ask me and I'll grant view access."
+          "note": "Private repo. Ask me if you want to take a look."
         }
       ],
       "subPages": [
@@ -79,20 +79,20 @@
     {
       "slug": "blob-life",
       "title": "BlobLife",
-      "summary": "Gamified habit-tracking app for people with ADHD. Four phases of the day, a blob companion that reflects how it's going, and a habitat that grows with consistency.",
+      "summary": "A Flutter app for the things you mean to do and then forget. Type or say what you want to remember. It goes into Today as a reminder, habit or routine.",
       "stack": "Flutter (Dart), Riverpod, Drift (SQLite), Claude Haiku via Supabase Edge Functions",
       "techPills": ["Flutter", "Riverpod", "Drift", "Claude Haiku"],
       "glyph": "◐",
       "gradient": { "from": "#cde4d3", "via": "#6b8a7a", "to": "#2c3e36" },
       "image": {
-        "src": "/projects/blob-life/home.png",
-        "alt": "BlobLife morning home screen with a soft check-in prompt and a list of today's intentions"
+        "src": "/projects/blob-life/today-november.png",
+        "alt": "BlobLife Today screen showing a note from last night and three steps in a morning routine"
       },
       "links": [
         {
           "label": "GitHub",
           "url": "https://github.com/olivergate/blob-life",
-          "note": "Private repo. Ask me and I'll grant view access."
+          "note": "Private repo. Ask me if you want to take a look."
         }
       ],
       "subPages": [
@@ -105,7 +105,7 @@
     {
       "slug": "retro-claude",
       "title": "Retro Claude",
-      "summary": "Skill and telemetry store on top of the Claude Code CLI: per-session retros classified against a personal ontology, telemetry over agent usage, friction, learnings, and gotchas.",
+      "summary": "After a Claude Code session I write down what went well, what got in the way and what I'd do differently. This tool puts those notes in files I can search and compare across sessions.",
       "stack": "Claude Code CLI, custom skills and subagents, YAML session records, Supabase telemetry",
       "techPills": ["Claude Code", "Subagents", "Supabase", "Ontology"],
       "glyph": "↻",
@@ -114,7 +114,7 @@
         {
           "label": "GitHub",
           "url": "https://github.com/olivergate/retro-claude",
-          "note": "Private repo. Ask me and I'll grant view access."
+          "note": "Private repo. Ask me if you want to take a look."
         }
       ],
       "subPages": [
@@ -127,20 +127,20 @@
     {
       "slug": "owasp-trainer",
       "title": "OWASP Top 10 Trainer",
-      "summary": "Interactive trainer for the OWASP Top 10:2025 and the LLM Top 10. Learn a risk, take a quiz, then patch vulnerable code and prove the fix against live exploit tests that run in your browser.",
+      "summary": "Read about a security bug, take the quiz and fix the code. The OWASP web and LLM tracks both run exploit tests in your browser so you can see whether your fix holds.",
       "stack": "React + TypeScript + Vite, Web Worker + Pyodide sandboxes, Vercel Functions, Upstash Redis, Resend",
       "techPills": ["React", "Vite", "Pyodide", "Vercel Functions", "Upstash"],
       "glyph": "⛉",
       "gradient": { "from": "#d6e0f0", "via": "#5566a8", "to": "#1c1f33" },
       "image": {
-        "src": "/projects/owasp-trainer/lab.png",
-        "alt": "The OWASP trainer code lab: a vulnerable getDocument function in an editor with a brief and a Run exploit tests button"
+        "src": "/projects/owasp-trainer/overview-november.png",
+        "alt": "OWASP Trainer overview with the web and LLM module lists and links to both mixed tests"
       },
       "links": [
         {
           "label": "Live demo",
           "url": "https://owasp-tester.vercel.app",
-          "note": "Runs entirely in your browser; nothing you type is uploaded."
+          "note": "Lab code runs in your browser. Signing in can sync your progress."
         },
         {
           "label": "GitHub",

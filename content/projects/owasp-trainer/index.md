@@ -3,7 +3,12 @@ slug: owasp-trainer
 status: published
 ---
 
-Security training that's all slides teaches recognition, not repair. This trainer makes you fix the code. It covers two syllabuses, the OWASP Top 10:2025 for web and the OWASP Top 10 for LLM Applications, and every one of the twenty risks runs the same loop: read a short lesson with a diagram and two real incidents, pass a quiz, then open a code lab and patch a genuinely vulnerable function. Your fix only counts when live exploit tests stop breaking it and the legitimate behaviour still works.
+I wanted a way to practise fixing security bugs. In each lab you get a small broken function. Read the lesson, take the quiz, then edit the code. The tests check that the attack fails and the normal case still works.
+
+<figure>
+<img src="/projects/owasp-trainer/overview-november.png" alt="OWASP Trainer overview with web and LLM security modules" />
+<figcaption>The live trainer in November 2026.</figcaption>
+</figure>
 
 <figure>
 <img src="/projects/owasp-trainer/lab.png" alt="The Broken Access Control code lab: a vulnerable getDocument function in an editor with a brief about the IDOR and a Run exploit tests button" />

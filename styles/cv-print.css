@@ -29,9 +29,12 @@
   grid-template-columns: 1fr;
 }
 
-/* Section-header rule line carries a fixed 0.85rem padding-bottom on the live
-   site (×7 sections ≈ 95px). A class rule, so — unlike the components' inline
-   styles — print CSS can override it. The single highest-leverage page reclaim. */
+.cv-print #skills {
+  break-before: page;
+  padding-top: 11mm;
+}
+
+/* Compact the section-header spacing for print. */
 .cv-print .section-header {
   padding-bottom: 0.35rem;
 }

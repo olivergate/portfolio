@@ -3,7 +3,7 @@ slug: right-aligned-development
 title: "I miss right-aligned development"
 date: 2026-05-25
 status: published
-summary: "Multi-agent fanout gives a solo developer the parallelism of a team back. It gives back none of the mutual reading. Naming the loss, so the recovery layer gets built on purpose."
+summary: "Agents let me work on several things at once. I still miss what happens when a teammate reads the work."
 kicker: "Team patterns lost"
 length: "~900 words"
 post: 3

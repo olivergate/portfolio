@@ -19,12 +19,12 @@ export { CANNED_SAMPLE_IDS, type CannedSampleId };
 export const CANNED_RETROS: Record<CannedSampleId, RetroResponse> = {
   refactor: {
     wentWell: [
-      "Claude read both auth files before suggesting an approach — no premature solutioning.",
+      "Claude read both auth files before suggesting an approach; no premature solutioning.",
       "Surfaced an out-of-scope race condition without trying to expand the PR.",
       "Caught the localStorage-shaped test failures and fixed them in one pass instead of asking.",
     ],
     slowed: [
-      "I didn't specify the caching policy up front — Claude proposed 5min/refetch-on-focus and I accepted, but I'd have wanted to think about it for 30 seconds first.",
+      "I didn't specify the caching policy up front; Claude proposed 5min/refetch-on-focus and I accepted, but I'd have wanted to think about it for 30 seconds first.",
       "The /me consolidation should arguably have been a design discussion before code; we got lucky that the answer was obvious.",
     ],
     learnings: [
@@ -46,12 +46,12 @@ export const CANNED_RETROS: Record<CannedSampleId, RetroResponse> = {
   },
   debug: {
     wentWell: [
-      "Triaged the diff before the logs — fastest path given a clean failure window.",
+      "Triaged the diff before the logs; fastest path given a clean failure window.",
       "Followed the one-line fix with a repo-wide grep for stragglers; cheap and exactly the right paranoia.",
       "Suggested a deploy-checklist update without me asking.",
     ],
     slowed: [
-      "We should have caught this in CI — there was no test that would have failed on a missing env var.",
+      "We should have caught this in CI; there was no test that would have failed on a missing env var.",
       "The rename PR review was approved by me without grepping; I'd run a stricter checklist next time.",
     ],
     learnings: [
@@ -73,7 +73,7 @@ export const CANNED_RETROS: Record<CannedSampleId, RetroResponse> = {
   },
   feature: {
     wentWell: [
-      "Plan-first request worked — Claude surfaced the auth + rate-limit ambiguity before any code was written.",
+      "Plan-first request worked; Claude surfaced the auth + rate-limit ambiguity before any code was written.",
       "Self-flagged the format-options-as-constant smell and asked rather than silently expanding scope.",
       "Commit message draft saved a couple of minutes at the end.",
     ],
@@ -88,7 +88,7 @@ export const CANNED_RETROS: Record<CannedSampleId, RetroResponse> = {
       },
       {
         title: "UX decisions hidden in specs",
-        body: "The spec described the behaviour but not the surface — we ended up designing the modal in chat. Catch this earlier.",
+        body: "The spec described the behaviour but not the surface; we ended up designing the modal in chat. Catch this earlier.",
       },
     ],
     additions: [

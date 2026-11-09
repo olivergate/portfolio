@@ -1,6 +1,4 @@
 import type { CSSProperties } from "react";
-import { About } from "@/components/cv/About";
-import { Avocations } from "@/components/cv/Avocations";
 import { Education } from "@/components/cv/Education";
 import { Experience } from "@/components/cv/Experience";
 import { Header } from "@/components/cv/Header";
@@ -31,18 +29,17 @@ export const metadata = {
 // var(--size-h1), var(--gap-section), …), and inline styles outrank class rules,
 // so the only way to compress a screen-tuned layout into a ~2-page CV is to
 // override the token VALUES here and let them cascade through every component.
-// At native screen spacing the same render is 8 pages.
 const PRINT_SCALE: Record<string, string> = {
   "--size-h1": "27px",
-  "--size-h2": "11.5px",
-  "--size-h3": "12px",
-  "--size-tagline": "10px",
-  "--size-body": "9.5px",
-  "--size-meta": "7.8px",
-  "--line": "1.33",
-  "--gap-section": "8px",
-  "--gap-block": "5px",
-  "--gap-item": "2px",
+  "--size-h2": "14px",
+  "--size-h3": "14px",
+  "--size-tagline": "13px",
+  "--size-body": "13px",
+  "--size-meta": "10px",
+  "--line": "1.4",
+  "--gap-section": "14px",
+  "--gap-block": "10px",
+  "--gap-item": "4px",
   "--pad-card": "8px",
   "--skill-gap": "3px",
   "--skill-pad": "2px 7px",
@@ -59,7 +56,7 @@ export default function CvPrintPage() {
     <div className="cv-surface cv-print" style={tokens}>
       <Header header={cv.header} variant="print" />
 
-      {/* Funnel + bare-text links in the body top — survive ATS stripping and
+      {/* Bare-text links in the body top — survive ATS stripping and
           printing; clickable where the viewer allows. */}
       {links ? (
         <p
@@ -87,20 +84,13 @@ export default function CvPrintPage() {
               </a>
             </>
           ) : null}
-          <br />
-          <span style={{ color: "var(--muted)" }}>
-            This PDF is the static snapshot. Paste your role at olivergate.com/jd and the live site
-            scores itself against it — honestly, gaps included.
-          </span>
         </p>
       ) : null}
 
-      <About about={cv.about} />
-      <Experience overview={cv.experienceOverview} roles={cv.roles} />
-      <Education education={cv.education} />
+      <Experience roles={cv.roles} />
       <Skills skills={cv.skills} />
       <ProjectsPrint projectSlugs={cv.projectSlugs} allProjects={projects.projects} />
-      <Avocations avocations={cv.avocations} />
+      <Education education={cv.education} />
     </div>
   );
 }

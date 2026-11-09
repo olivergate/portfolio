@@ -5,7 +5,7 @@ status: published
 
 ## A fix you can prove beats a fact you can recall
 
-The decision under everything else: a lab passes only when real exploit tests stop succeeding and the legitimate behaviour still works. That rules out the two cheap escapes, memorising the answer and breaking the function to silence the test. It also sets an authoring contract — the vulnerable starter has to genuinely fail the exploits, the solution has to genuinely pass them — enforced by a script, not by trust.
+The decision under everything else: a lab passes only when real exploit tests stop succeeding and the legitimate behaviour still works. That rules out the two cheap escapes, memorising the answer and breaking the function to silence the test. It also sets an authoring rule the script checks. The starter has to fail the exploit tests and the solution has to pass them.
 
 ## The LLM track patches code, not vibes
 

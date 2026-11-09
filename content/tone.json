@@ -1,42 +1,40 @@
 {
   "intro": {
-    "paragraphs": [
-      "Six positions on how I work. These are commitments — what I aim for, not what I always pull off."
-    ]
+    "paragraphs": ["This is how I try to work. I don't get it right every time."]
   },
   "pledges": [
     {
       "number": 1,
       "title": "Culture is king",
-      "text": "Inclusive teams produce better work than uniform ones. The ideas a monoculture misses only show up in rooms where it's safe to disagree. A leader's job is building that room."
+      "text": "I want people on the team who see things I miss. That only helps if they can tell me when I'm wrong. Making room for that is part of leading."
     },
     {
       "number": 2,
       "title": "Framing is first",
-      "text": "I push on definitions before estimates. Most of the engineering disasters I've watched were technically clean, written well, shipped on time, but were answering the wrong question. Time spent on the framing costs less than misdirected building, builds trust and team cohesion."
+      "text": "Before I estimate a job, I want to know what problem we're solving. I've seen good code go out on time and solve the wrong thing. A conversation at the start is cheaper than a rewrite."
     },
     {
       "number": 3,
       "title": "Documentation and clear decisions",
-      "text": "Keeping a log of architectural decisions is now more than just good practice for future engineers. It's core to the agentic approach. This site has thirty-one so far, including the ones that document deviations and reversals. The point is being able to argue with a past decision when context shifts and keep the LLMs in the loop on why."
+      "text": "I write down why we made a decision. If the facts change, I want to be able to read it back and disagree with myself. It also gives the next engineer or agent somewhere to start."
     },
     {
       "number": 4,
       "title": "Right-aligned development",
-      "text": "Before picking up new work, scan the board right-to-left. Looking for: someone who needs a review, someone stuck on something I have context on, someone working in an area I'm about to touch. Usually one of those is a cheaper unblock than starting new work. I've been calling it right-aligned development (RAD)."
+      "text": "Before I take a new ticket, I read the board from right to left. Is someone waiting for a review? Is someone stuck on a thing I know? Five minutes there can be worth more than another ticket in progress."
     },
     {
       "number": 5,
       "title": "Honesty over polish",
-      "text": "I'd rather a CV bullet or an ADR read truthfully than impressively. The JD matcher on this site is tuned to flag my own gaps as honest gaps rather than stretch them into matches."
+      "text": "If the CV can't back up a claim, leave it out. That's the idea behind the job matcher here. It can tell you where the evidence runs out."
     },
     {
       "number": 6,
       "title": "No absolutism in technological choices",
-      "text": "My default criteria for tech choices: SOLID, maintainability, and agentic readiness — tools and structures an LLM can reason about. I'll break any of them deliberately when the product needs a different balance, provided I write down why. For example, ADR-0001 picks Next.js over the LLM design's recommended Astro."
+      "text": "I want code people can maintain and agents can follow. I'll break a rule when the product needs it. I write down why. This site uses Next.js. The first design suggested Astro, and the decision record explains the change."
     }
   ],
   "signature": {
-    "text": "Oliver Kaikane Gate — Valencia, May 2026"
+    "text": "Oliver Kaikane Gate, Valencia"
   }
 }

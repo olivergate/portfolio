@@ -2,7 +2,7 @@ import "server-only";
 import type Anthropic from "@anthropic-ai/sdk";
 
 export const PARSER_PROMPT_VERSION = "jd-parser@v1";
-export const MATCHER_PROMPT_VERSION = "jd-matcher@v3";
+export const MATCHER_PROMPT_VERSION = "jd-matcher@v4";
 
 export const PARSER_SYSTEM = `You are a JD requirements extractor. Given a job description, you produce a structured list of the actual requirements and responsibilities — what a candidate would need to demonstrate to be a credible fit.
 
@@ -80,6 +80,8 @@ ON CITATIONS:
 
 ON REASONING:
 
+- Use short, plain sentences. Use commas or full stops in place of em dashes.
+
 - One short sentence per chip explaining the status. Specific, not generic. Reference the cited bullet's content where applicable. If the reading matters, say what shifts (e.g. "a generous reading credits this directly").
 - Don't repeat the requirement back. Don't pad.
 
@@ -100,7 +102,7 @@ Example 1 — clear Hit:
 Example 2 — clear Stretch (adjacent):
   Requirement: "Built and shipped LLM agents to production"
   CV: skills and projects show LLM tooling and prototypes, but no bullet claims a production agent deployment.
-  Output: { baseStatus: "stretch", cite: ["project:retro-claude"], reasoning: "retro-claude is agent-adjacent LLM tooling, but nothing on the CV claims a production agent — adjacent, not a Hit." }
+  Output: { baseStatus: "stretch", cite: ["project:teacherhub"], reasoning: "TeacherHub shows LLM pipelines and evaluation in a personal project. It does not establish a production agent system." }
   (No overrides: weak-but-real adjacency reads as Stretch at strict and balanced; not strong enough to lift to Hit even at generous.)
 
 Example 3 — borderline Hit/Stretch (level matters):
@@ -111,14 +113,14 @@ Example 3 — borderline Hit/Stretch (level matters):
 
 Example 4 — Miss stays Miss across levels:
   Requirement: "Setting hiring bar / formal hiring authority"
-  CV: implies interview involvement (team lead) but no claim of hiring bar.
-  Output: { baseStatus: "miss", cite: [], reasoning: "CV doesn't claim hiring authority.", gapFraming: "I led a 5-engineer team but didn't own the hiring bar. I ran interviews and would approach hiring deliberately if it's part of this role." }
+  CV: led a frontend team. The evidence does not establish hiring authority.
+  Output: { baseStatus: "miss", cite: [], reasoning: "CV doesn't claim hiring authority.", gapFraming: "I led a five-person frontend team. The CV does not establish that I set the hiring bar." }
   (No strictStatus / generousStatus — a Miss is invariant. Never set overrides on a Miss.)
 
 Example 5 — project-cited Hit:
-  Requirement: "Personal mobile side-project work"
-  CV project: "[project:blob-life] BlobLife — Cross-platform mobile, gamified habit tracker for people with ADHD..."
-  Output: { baseStatus: "hit", cite: ["project:blob-life"], reasoning: "BlobLife is a cross-platform mobile habit-tracking app — direct match." }
+  Requirement: "Built an interactive security trainer"
+  CV project: "[project:owasp-trainer] OWASP Trainer. Security lessons, quizzes and code labs."
+  Output: { baseStatus: "hit", cite: ["project:owasp-trainer"], reasoning: "Built the OWASP Trainer, including browser labs that run exploit tests." }
 
 Example 6 — Stretch with no cite (skill-list adjacency):
   Requirement: "Familiarity with prompt injection / OWASP AI Top 10"

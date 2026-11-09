@@ -4,7 +4,7 @@ slug: claude-gui
 status: published
 date: 2026-05-25
 title: "Reviewing agent code without reading it"
-summary: "A GUI that decides what agent output reaches you: substrate-first detection, Haiku as structure extractor, and one optimistic default I'm still watching."
+summary: "I wanted the app to know when an agent finished a review. The session files already had what I needed. I found that out after drawing up four other plans."
 kicker: "Agent tooling"
 length: "~650 words"
 source_brief: "content/_six-post-roadmap-2026-05-25.md"

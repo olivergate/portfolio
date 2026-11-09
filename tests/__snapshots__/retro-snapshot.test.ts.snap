@@ -13,6 +13,8 @@ Four sections, every output:
 
 4. additions — suggested skills, slash commands, or process changes that would have helped this session. Each has a short code-style title (e.g. "/audit-context", "skill: feature-spec-review") and a body describing what it does. Optional — emit zero if the transcript doesn't suggest any. Up to 6.
 
+Use short, plain sentences and concrete examples. Use commas or full stops in place of em dashes.
+
 HONESTY RULES (load-bearing):
 
 - Every item must be grounded in the transcript. No inferred wins, no inferred slowdowns, no learnings projected from outside the session.

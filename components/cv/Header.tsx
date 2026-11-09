@@ -32,10 +32,10 @@ export function Header({ header, variant = "web" }: Props) {
         }}
       >
         <span>CV / 2026</span>
-        <span aria-hidden="true">—</span>
+        <span aria-hidden="true">·</span>
         <span>{location}</span>
-        <span aria-hidden="true">—</span>
-        <span>Available for senior IC roles</span>
+        <span aria-hidden="true">·</span>
+        <span>Available for senior full-stack roles</span>
       </div>
 
       <h1

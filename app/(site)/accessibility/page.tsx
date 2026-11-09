@@ -1,14 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { SectionHeader } from "@/components/cv/SectionHeader";
 
 export const metadata: Metadata = {
   title: "Accessibility",
-  description:
-    "Conformance claim, test methods, known limits, and contact for accessibility issues. Targets WCAG 2.2 AA across every page and every reachable slider state.",
+  description: "The accessibility checks I run, what they cover and how to report a problem.",
 };
-
-const LAST_AUDITED = "2026-05-14";
 
 export default function AccessibilityPage() {
   return (
@@ -34,10 +30,8 @@ export default function AccessibilityPage() {
           }}
         >
           <span>Accessibility</span>
-          <span aria-hidden="true">—</span>
+          <span aria-hidden="true">·</span>
           <span>WCAG 2.2 AA</span>
-          <span aria-hidden="true">—</span>
-          <span>Last audited {LAST_AUDITED}</span>
         </div>
         <h1
           style={{
@@ -70,8 +64,7 @@ export default function AccessibilityPage() {
         <p style={{ fontSize: "var(--size-tagline)", textWrap: "pretty" }}>
           This site targets <strong>WCAG 2.2 Level AA</strong> across every page and every reachable
           slider state. The conformance claim is self-assessed: no third-party VPAT, no signed
-          audit. It&rsquo;s the bar that&rsquo;s automated in CI, walked manually before each
-          release, and listed honestly with its limits below.
+          audit. The checks below cover parts of that target.
         </p>
       </section>
 
@@ -89,8 +82,8 @@ export default function AccessibilityPage() {
         >
           <li>
             <strong>axe-core via Playwright</strong>: tagged at WCAG 2.0/2.1/2.2 levels A and AA,
-            run on every route at five representative slider positions plus the JD adapter across
-            idle, typed-in, scored, and expanded-miss states.
+            run on the CV at representative slider positions and on selected other pages, including
+            several states of the job matcher.
           </li>
           <li>
             <strong>Contrast snapshot</strong>: a Vitest enumerates the four-slider grid at step 0.1
@@ -98,16 +91,11 @@ export default function AccessibilityPage() {
             ratios snapshot so regressions surface as diffs.
           </li>
           <li>
-            <strong>Lighthouse CI</strong>: accessibility score = 100 on <code>/</code>,{" "}
-            <code>/jd</code>, <code>/lab</code>, and <code>/accessibility</code> at default slider
-            state.
-          </li>
-          <li>
             <strong>Biome a11y rule group</strong>: recommended set enabled at error level on every{" "}
             <code>.tsx</code> in CI.
           </li>
           <li>
-            <strong>Manual walkthrough</strong>: keyboard-only, VoiceOver + Safari, NVDA + Firefox,
+            <strong>Manual checklist</strong>: keyboard-only, VoiceOver + Safari, NVDA + Firefox,
             400% browser zoom, OS-level reduced motion, OS-level high contrast / forced colors, iOS
             VoiceOver on a real device. Checklist at <code>docs/runbooks/a11y-manual.md</code>.
           </li>
@@ -127,11 +115,11 @@ export default function AccessibilityPage() {
           }}
         >
           <li>
-            <strong>Contrast floor is AA, not AAA.</strong> At every reachable slider state, body
-            and accent text hit ≥ 4.5:1 against the background. The site does not promise the AAA
-            7:1 floor, because the refined-polish default cream palette can&rsquo;t carry it without
-            losing its character. The worst-case ratio across the slider grid is{" "}
-            <strong>5.46:1</strong> on muted text.
+            <strong>Contrast floor is AA, not AAA.</strong> In the automated slider grid, the
+            checked body and accent colours reach 4.5:1 against the background. The site does not
+            promise the AAA 7:1 floor, because the refined-polish default cream palette can&rsquo;t
+            carry it without losing its character. The automated contrast check records the lowest
+            ratios it finds.
           </li>
           <li>
             <strong>The rethemer panel is dark by design.</strong> The slider deck pill and panel
@@ -143,8 +131,8 @@ export default function AccessibilityPage() {
           <li>
             <strong>OS prefs win via cascade only.</strong> When <code>prefers-contrast: more</code>{" "}
             or <code>forced-colors: active</code> are on, the page restyles via CSS, but the slider
-            position you chose is preserved. The contrast Vitest guarantees AA is held at every
-            slider state, so OS prefs and slider state coexist without forcing a choice.
+            position you chose is preserved. The contrast test samples the slider values. It does
+            not cover every browser or operating system combination.
           </li>
           <li>
             <strong>Self-assessed claim, no VPAT.</strong> No third-party audit has been
@@ -156,7 +144,7 @@ export default function AccessibilityPage() {
       <section style={{ marginTop: "var(--gap-section)" }}>
         <SectionHeader number="03" title="Reproduce locally" />
         <p style={{ maxWidth: "68ch", textWrap: "pretty" }}>
-          The full automated bar runs as a single command from a checkout of the source:
+          Run the automated checks from a checkout of the source.
         </p>
         <pre
           style={{
@@ -185,22 +173,6 @@ export default function AccessibilityPage() {
           </a>
           . Honest gap reports are welcome; that&rsquo;s the same posture the JD adapter takes about
           itself.
-        </p>
-        <p
-          style={{
-            maxWidth: "68ch",
-            textWrap: "pretty",
-            marginTop: "1rem",
-            color: "var(--fg-soft)",
-          }}
-        >
-          The full rationale (slider-token strategy, OS-pref handling, screen-reader strategy,
-          alternatives considered) lives in{" "}
-          <Link href="/decisions" style={{ color: "var(--accent)", textDecoration: "underline" }}>
-            ADR-0032 — Accessibility approach
-          </Link>{" "}
-          when the <code>/decisions</code> page is live; until then it&rsquo;s in the repo at{" "}
-          <code>docs/adr/0032-accessibility-approach.md</code>.
         </p>
       </section>
     </div>

@@ -1,10 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { LineSlider } from "@/components/controls/LineSlider";
 import { useStyleContext } from "@/components/controls/style-context";
-import { FOUR_SLIDERS_POST_HREF } from "@/lib/blog-links";
 import { getPresetName } from "@/lib/preset-name";
 
 const ACCENTS = {
@@ -113,9 +111,6 @@ export function RethemeFab() {
             >
               ↺ RESET
             </button>
-            <Link href={FOUR_SLIDERS_POST_HREF} className="fab-about">
-              About these sliders →
-            </Link>
           </div>
         </fieldset>
       )}

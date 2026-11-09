@@ -56,7 +56,7 @@ export function Education({ education }: Props) {
               }}
             >
               {entry.degree}
-              <span style={{ color: "var(--muted)", fontWeight: 400 }}> — {entry.school}</span>
+              <span style={{ color: "var(--muted)", fontWeight: 400 }}> · {entry.school}</span>
             </h3>
             <span
               style={{

@@ -34,6 +34,7 @@ function Role({ role, isFirst }: { role: CVRole; isFirst: boolean }) {
   return (
     <article
       id={`role-${role.id}`}
+      data-role={role.id}
       data-reveal
       style={{
         marginTop: isFirst ? 0 : "var(--gap-block)",
@@ -64,7 +65,7 @@ function Role({ role, isFirst }: { role: CVRole; isFirst: boolean }) {
           }}
         >
           {role.title}
-          <span style={{ color: "var(--muted)", fontWeight: 400 }}> — {role.company}</span>
+          <span style={{ color: "var(--muted)", fontWeight: 400 }}> · {role.company}</span>
         </h3>
         <span
           style={{
@@ -154,36 +155,17 @@ function Role({ role, isFirst }: { role: CVRole; isFirst: boolean }) {
   );
 }
 
-type Props = { roles: CV["roles"]; overview: CV["experienceOverview"] };
+type Props = { roles: CV["roles"] };
 
-export function Experience({ roles, overview }: Props) {
+export function Experience({ roles }: Props) {
   return (
-    <>
-      <section id="overview" style={{ marginTop: "var(--gap-section)" }}>
-        <SectionHeader number="02" title="Experience overview" />
-        <p
-          data-reveal
-          style={{
-            fontSize: "var(--size-body)",
-            lineHeight: "var(--line)",
-            color: "var(--fg)",
-            maxWidth: "72ch",
-            textWrap: "pretty",
-            margin: 0,
-          }}
-        >
-          {overview}
-        </p>
-      </section>
-
-      <section id="experience" style={{ marginTop: "var(--gap-section)" }}>
-        <SectionHeader number="03" title="Experience" />
-        <div>
-          {roles.map((role, i) => (
-            <Role key={role.id} role={role} isFirst={i === 0} />
-          ))}
-        </div>
-      </section>
-    </>
+    <section id="experience" style={{ marginTop: "var(--gap-section)" }}>
+      <SectionHeader number="01" title="Experience" />
+      <div>
+        {roles.map((role, i) => (
+          <Role key={role.id} role={role} isFirst={i === 0} />
+        ))}
+      </div>
+    </section>
   );
 }

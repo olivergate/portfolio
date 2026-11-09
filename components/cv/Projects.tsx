@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { SectionHeader } from "@/components/cv/SectionHeader";
 import { ProjectCard } from "@/components/lab/ProjectCard";
 import type { Project } from "@/lib/retro-schemas";
@@ -8,7 +9,7 @@ type Props = {
 };
 
 /**
- * CV section 06. Renders the same gradient ProjectCard treatment used on /lab
+ * Renders selected projects using the gradient ProjectCard treatment
  * (ADR-0038) so projects appear once on the home page — the Lab section at the
  * foot of the page no longer duplicates the grid. The cards opt into
  * `citeTarget` so the JD matcher's project chips still scroll to and pulse the
@@ -23,12 +24,17 @@ export function Projects({ projectSlugs, allProjects }: Props) {
 
   return (
     <section id="projects" style={{ marginTop: "var(--gap-section)" }}>
-      <SectionHeader number="06" title="Projects" />
+      <SectionHeader number="03" title="Selected projects" />
       <div className="cv-projects-grid">
         {resolved.map((project) => (
           <ProjectCard key={project.slug} project={project} citeTarget reveal />
         ))}
       </div>
+      <p style={{ marginTop: "var(--gap-item)" }}>
+        <Link href="/projects" className="blog-post-back">
+          All projects →
+        </Link>
+      </p>
     </section>
   );
 }

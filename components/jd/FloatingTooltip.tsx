@@ -69,7 +69,7 @@ export function FloatingTooltip({ data }: Props) {
       >
         {heading}
       </div>
-      {chip.reasoning}
+      {chip.reasoning.replace(/\s*—\s*/g, ", ")}
       {isHit && chip.cite.length > 0 && (
         <div
           style={{

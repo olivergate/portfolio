@@ -71,7 +71,7 @@ export function Chip({ chip, index, onActivate, onHoverChange }: Props) {
         });
       }}
       onBlur={() => onHoverChange(null)}
-      aria-label={`${s.label}: ${chip.text}`}
+      aria-label={`${s.label}: ${chip.text.replace(/\s*—\s*/g, ", ")}`}
       // Miss chips toggle an expanded gap-framing reveal on click; expose the
       // disclosure state to SRs. Hit chips activate a CV scroll/pulse and
       // don't toggle, so we omit aria-expanded entirely on them (Phase 4.5).
@@ -138,7 +138,7 @@ export function Chip({ chip, index, onActivate, onHoverChange }: Props) {
           textWrap: "balance",
         }}
       >
-        {chip.text}
+        {chip.text.replace(/\s*—\s*/g, ", ")}
       </div>
       {expanded && isMiss && (
         <div
@@ -155,7 +155,7 @@ export function Chip({ chip, index, onActivate, onHoverChange }: Props) {
             textWrap: "pretty",
           }}
         >
-          “{chip.gapFraming || chip.reasoning}”
+          “{(chip.gapFraming || chip.reasoning).replace(/\s*—\s*/g, ", ")}”
         </div>
       )}
     </button>

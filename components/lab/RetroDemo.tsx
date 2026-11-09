@@ -158,7 +158,7 @@ export function RetroDemo({ featured }: Props) {
 
     setLoading({
       kind: "error",
-      message: `${json.stage}: ${json.detail ?? "unknown error"}`,
+      message: "The review didn’t finish. Try again or pick a sample.",
     });
   };
 
@@ -224,6 +224,11 @@ export function RetroDemo({ featured }: Props) {
           aria-label="Claude Code transcript"
         />
       </div>
+
+      <p className="lab-run-meta">
+        Transcripts go to Anthropic. The site caches the review it gets back. Use a sample if your
+        transcript contains private material.
+      </p>
 
       {/* Run + meta */}
       <div className="lab-run-row">

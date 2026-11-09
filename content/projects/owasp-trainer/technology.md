@@ -9,7 +9,7 @@ React 18 + TypeScript (strict) on Vite, hash-routed, no router library and no st
 
 ## The sandbox
 
-Running learner-written code safely is the heart of it. **JavaScript labs** execute in a sandboxed Web Worker with no DOM and no network and a 4-second timeout to contain infinite loops; the exploit tests call the patched functions with real attack inputs. **Python labs** load Pyodide (CPython in WebAssembly) on demand and run against a real in-memory SQLite database. If a sandbox can't start, labs fall back to static pattern checks where available. `new Function()` is essential here — the whole point is to execute the learner's fix — so the threat model is "untrusted code in your own browser tab", never on a server.
+Running learner-written code safely is the heart of it. **JavaScript labs** execute in a sandboxed Web Worker with no DOM and no network and a 4-second timeout to contain infinite loops; the exploit tests call the patched functions with real attack inputs. **Python labs** load Pyodide (CPython in WebAssembly) on demand and run against a real in-memory SQLite database. If a sandbox can't start, labs fall back to static pattern checks where available. The lab uses `new Function()` to run the learner's fix. It runs in the browser tab.
 
 ## The optional sync layer
 

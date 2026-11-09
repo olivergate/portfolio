@@ -37,7 +37,7 @@ export default function BlogIndexPage() {
       <header className="blog-hero" data-reveal>
         <div className="blog-hero-meta">
           <span>Blog</span>
-          <span aria-hidden="true">—</span>
+          <span aria-hidden="true">·</span>
           <span>
             {posts.length} {posts.length === 1 ? "post" : "posts"}
           </span>

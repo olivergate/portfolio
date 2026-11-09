@@ -77,14 +77,14 @@ export default async function BlogPostPage({ params }: { params: Promise<RoutePa
             borderBottom: "1px solid var(--accent)",
           }}
         >
-          DRAFT — {post.status}
+          DRAFT · {post.status}
         </div>
       )}
 
       <header className="blog-post-header" data-reveal>
         <div className="blog-post-meta">
           {post.kicker && <span>{post.kicker}</span>}
-          {post.kicker && <span aria-hidden="true">—</span>}
+          {post.kicker && <span aria-hidden="true">·</span>}
           <time dateTime={post.date}>{formatDate(post.date)}</time>
         </div>
         <h1 className="blog-post-title">{post.title}</h1>

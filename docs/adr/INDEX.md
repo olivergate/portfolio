@@ -87,6 +87,10 @@ Rule of thumb: if the edit would change what a reader believes we chose or why, 
 | [0041](./0041-favicon-fraunces-g.md) | Favicon: cream Fraunces italic "G" on a rust tile (icon.png/apple-icon.png/favicon.ico), replacing the stock Next default | Accepted | 2026-06-17 | — | — |
 | [0042](./0042-jd-matcher-scores-all-readings-in-one-call.md) | JD matcher scores all three readings in one call; stretch slider is a client-side projection (no refetch); shared LoadingPipeline | Accepted | 2026-06-17 | 0017 (transport) | — |
 
+| [0043](./0043-frontend-focused-senior-full-stack-cv.md) | Frontend-focused senior full-stack CV; experience-first ordering and verified evaluation examples | Accepted | 2026-11-09 | 0037, 0038 (content and ordering) | — |
+
+| [0044](./0044-portfolio-project-index-and-copy.md) | Project index and public copy | Accepted | 2026-11-09 | 0043 (project discovery) | — |
+
 <!--
   Add one row per ADR as you author them. Format:
   | [NNNN](./NNNN-<slug>.md) | <title> | <status> | <YYYY-MM-DD> | <NNNN or —> | <NNNN or —> |
