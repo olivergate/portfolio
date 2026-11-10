@@ -31,7 +31,7 @@
     {
       "number": 6,
       "title": "No absolutism in technological choices",
-      "text": "I want code people can maintain and agents can follow. I'll break a rule when the product needs it. I write down why. This site uses Next.js. The first design suggested Astro, and the decision record explains the change."
+      "text": "I want code people can maintain and agents can follow. I'll break a rule when the product needs it. I write down why. Every decision is a trade-off. I look for what works best for the product, the people who use it and the team building it."
     }
   ],
   "signature": {
