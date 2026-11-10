@@ -1,9 +1,7 @@
 import "server-only";
 import { createHash } from "node:crypto";
-import { Redis } from "@upstash/redis";
+import { redis } from "@/lib/redis";
 import { stableStringify } from "@/lib/stable-stringify";
-
-const redis = Redis.fromEnv();
 
 export type CacheKeyParts = {
   endpoint: string;

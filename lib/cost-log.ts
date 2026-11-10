@@ -1,8 +1,6 @@
 import "server-only";
-import { Redis } from "@upstash/redis";
 import { nanoid } from "nanoid";
-
-const redis = Redis.fromEnv();
+import { redis } from "@/lib/redis";
 
 export type CostEntry = {
   id: string;

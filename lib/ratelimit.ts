@@ -1,6 +1,6 @@
 import "server-only";
 import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
+import { redis } from "@/lib/redis";
 
 /**
  * Phase 4 — per-route, per-IP rate limiting for the retro demo.
@@ -14,8 +14,6 @@ import { Redis } from "@upstash/redis";
  * Sliding window (10 requests / 1 hour) via @upstash/ratelimit on the same
  * Upstash Redis instance the cache + cost-log already use. No new infra.
  */
-
-const redis = Redis.fromEnv();
 
 let cachedLimiter: Ratelimit | null = null;
 
