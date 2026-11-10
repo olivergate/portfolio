@@ -26,9 +26,9 @@
     {
       "slug": "teacherhub",
       "title": "TeacherHub",
-      "summary": "My Spanish teacher and I used a shared Google Doc for lessons. I built TeacherHub to keep notes, homework and progress together. Tests found lost vocabulary and exercises where the wrong answer matched the correction. I adjusted the scoring so a fair summary could pass and missing content would still fail.",
+      "summary": "I built TeacherHub so language teachers and their students could book lessons, meet over video and pick up where they left off. Teachers can turn their lesson notes into homework. Students can go back over corrections, practise words from their lessons and see what still needs work.",
       "stack": "React, Next.js, TypeScript, Mantine, Supabase, OpenAI, Anthropic, Vitest",
-      "techPills": ["React", "TypeScript", "Supabase", "AI evaluations"],
+      "techPills": ["React", "Next.js", "TypeScript", "Supabase"],
       "glyph": "あ",
       "gradient": { "from": "#f4d35e", "via": "#e26d5a", "to": "#5a3a3a" },
       "image": {
